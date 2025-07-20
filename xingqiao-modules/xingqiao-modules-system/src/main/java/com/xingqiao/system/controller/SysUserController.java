@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+
+import com.xingqiao.system.api.domain.CommonUser;
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,7 +53,7 @@ import com.xingqiao.system.service.ISysUserService;
  */
 @RestController
 @RequestMapping("/user")
-public class SysUserController extends BaseController
+public class  SysUserController extends BaseController
 {
     @Autowired
     private ISysUserService userService;
@@ -130,8 +133,10 @@ public class SysUserController extends BaseController
         Set<String> roles = permissionService.getRolePermission(sysUser);
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(sysUser);
+        CommonUser commonUser = new CommonUser();
+        BeanUtils.copyProperties(sysUser, commonUser);
         LoginUser sysUserVo = new LoginUser();
-        sysUserVo.setSysUser(sysUser);
+        sysUserVo.setUser(commonUser);
         sysUserVo.setRoles(roles);
         sysUserVo.setPermissions(permissions);
         return R.ok(sysUserVo);
@@ -175,7 +180,9 @@ public class SysUserController extends BaseController
     public AjaxResult getInfo()
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        SysUser user = loginUser.getSysUser();
+        CommonUser commonUser = loginUser.getUser();
+        SysUser user = new SysUser();
+        BeanUtils.copyProperties(commonUser, user);
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(user);
         // 权限集合
@@ -254,7 +261,7 @@ public class SysUserController extends BaseController
         {
             return error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
         }
-        else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user))
+        else if (StringUtils.isNotEmpty(user.getPhoneNumber()) && !userService.checkPhoneUnique(user))
         {
             return error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
@@ -283,7 +290,7 @@ public class SysUserController extends BaseController
         {
             return error("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
         }
-        else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user))
+        else if (StringUtils.isNotEmpty(user.getPhoneNumber()) && !userService.checkPhoneUnique(user))
         {
             return error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         }

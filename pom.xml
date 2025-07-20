@@ -38,6 +38,7 @@
         <tomcat.version>9.0.106</tomcat.version>
         <logback.version>1.2.13</logback.version>
         <spring-framework.version>5.3.39</spring-framework.version>
+        <dubbo.version>3.3.0-beta.1</dubbo.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -78,6 +79,22 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Dubbo 依赖管理 -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-dependencies-bom</artifactId>
+                <version>3.2.10</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <!-- 覆盖logback的依赖配置-->

@@ -2,6 +2,8 @@ package com.xingqiao.system.api.model;
 
 import java.io.Serializable;
 import java.util.Set;
+
+import com.xingqiao.system.api.domain.CommonUser;
 import com.xingqiao.system.api.domain.SysUser;
 
 /**
@@ -56,7 +58,7 @@ public class LoginUser implements Serializable
     /**
      * 用户信息
      */
-    private SysUser sysUser;
+    private CommonUser user;
 
     public String getToken()
     {
@@ -138,13 +140,11 @@ public class LoginUser implements Serializable
         this.roles = roles;
     }
 
-    public SysUser getSysUser()
-    {
-        return sysUser;
+    public CommonUser getUser() {
+        return user;
     }
 
-    public void setSysUser(SysUser sysUser)
-    {
-        this.sysUser = sysUser;
+    public void setUser(CommonUser user) {
+        this.user = user;
     }
 }

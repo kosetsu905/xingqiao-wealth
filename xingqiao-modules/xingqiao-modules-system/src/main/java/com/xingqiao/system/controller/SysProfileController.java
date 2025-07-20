@@ -2,6 +2,9 @@ package com.xingqiao.system.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import com.xingqiao.system.api.domain.CommonUser;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,12 +71,15 @@ public class SysProfileController extends BaseController
     public AjaxResult updateProfile(@RequestBody SysUser user)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        SysUser currentUser = loginUser.getSysUser();
+        CommonUser commonUser = loginUser.getUser();
+        SysUser currentUser = new SysUser();
+        BeanUtils.copyProperties(commonUser, currentUser);
+
         currentUser.setNickName(user.getNickName());
         currentUser.setEmail(user.getEmail());
-        currentUser.setPhonenumber(user.getPhonenumber());
+        currentUser.setPhoneNumber(user.getPhoneNumber());
         currentUser.setSex(user.getSex());
-        if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(currentUser))
+        if (StringUtils.isNotEmpty(user.getPhoneNumber()) && !userService.checkPhoneUnique(currentUser))
         {
             return error("修改用户'" + loginUser.getUsername() + "'失败，手机号码已存在");
         }
@@ -101,7 +107,7 @@ public class SysProfileController extends BaseController
         String newPassword = params.get("newPassword");
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserid();
-        String password = loginUser.getSysUser().getPassword();
+        String password = loginUser.getUser().getPassword();
         if (!SecurityUtils.matchesPassword(oldPassword, password))
         {
             return error("修改密码失败，旧密码错误");
@@ -114,8 +120,8 @@ public class SysProfileController extends BaseController
         if (userService.resetUserPwd(userId, newPassword) > 0)
         {
             // 更新缓存用户密码&密码最后更新时间
-            loginUser.getSysUser().setPwdUpdateDate(DateUtils.getNowDate());
-            loginUser.getSysUser().setPassword(newPassword);
+            loginUser.getUser().setPwdUpdateDate(DateUtils.getNowDate());
+            loginUser.getUser().setPassword(newPassword);
             tokenService.setLoginUser(loginUser);
             return success();
         }
@@ -145,7 +151,7 @@ public class SysProfileController extends BaseController
             String url = fileResult.getData().getUrl();
             if (userService.updateUserAvatar(loginUser.getUserid(), url))
             {
-                String oldAvatarUrl = loginUser.getSysUser().getAvatar();
+                String oldAvatarUrl = loginUser.getUser().getAvatar();
                 if (StringUtils.isNotEmpty(oldAvatarUrl))
                 {
                     remoteFileService.delete(oldAvatarUrl);
@@ -153,7 +159,7 @@ public class SysProfileController extends BaseController
                 AjaxResult ajax = AjaxResult.success();
                 ajax.put("imgUrl", url);
                 // 更新缓存用户头像
-                loginUser.getSysUser().setAvatar(url);
+                loginUser.getUser().setAvatar(url);
                 tokenService.setLoginUser(loginUser);
                 return ajax;
             }

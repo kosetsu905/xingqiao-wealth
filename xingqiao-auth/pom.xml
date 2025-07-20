@@ -51,7 +51,18 @@
             <groupId>com.xingqiao</groupId>
             <artifactId>xingqiao-common-security</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>61.1</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 	
     <build>

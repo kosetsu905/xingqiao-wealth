@@ -71,4 +71,13 @@ com.xingqiao
 16. 在线构建器：拖动表单元素生成相应的HTML代码。
 17. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
 
+命名规则
+
+临时表：以tmp_为前缀
+备份表：以bak_为前缀
+布尔字段以is_、has_、can_开头：is_active
+时间字段使用_at后缀：created_at
+统计字段使用total_前缀：total_login_count
+
+
 

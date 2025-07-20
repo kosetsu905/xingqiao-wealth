@@ -132,4 +132,11 @@ public class Constants
      */
     public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
             "org.springframework", "org.apache", "com.xingqiao.common.core.utils.file" };
+
+    /**
+     * 验证码保存redis  key
+     */
+    public static final String CODE_KEY = "code:";
+    public static final Long CODE_TTL = 300L;
+    public static final Integer REGISTERSTEP = 1;
 }

@@ -31,19 +31,18 @@ public class SysPasswordService
     /**
      * 登录账户密码错误次数缓存键名
      * 
-     * @param username 用户名
+     * @param account 用户名
      * @return 缓存键key
      */
-    private String getCacheKey(String username)
+    private String getCacheKey(String account)
     {
-        return CacheConstants.PWD_ERR_CNT_KEY + username;
+        return CacheConstants.PWD_ERR_CNT_KEY + account;
     }
 
-    public void validate(SysUser user, String password)
+    public void validate(String oldPassword,String account, String password)
     {
-        String username = user.getUserName();
 
-        Integer retryCount = redisService.getCacheObject(getCacheKey(username));
+        Integer retryCount = redisService.getCacheObject(getCacheKey(account));
 
         if (retryCount == null)
         {
@@ -53,26 +52,26 @@ public class SysPasswordService
         if (retryCount >= Integer.valueOf(maxRetryCount).intValue())
         {
             String errMsg = String.format("密码输入错误%s次，帐户锁定%s分钟", maxRetryCount, lockTime);
-            recordLogService.recordLogininfor(username, Constants.LOGIN_FAIL,errMsg);
+            recordLogService.recordLogininfor(account, Constants.LOGIN_FAIL,errMsg);
             throw new ServiceException(errMsg);
         }
 
-        if (!matches(user, password))
+        if (!matches(oldPassword, password))
         {
             retryCount = retryCount + 1;
-            recordLogService.recordLogininfor(username, Constants.LOGIN_FAIL, String.format("密码输入错误%s次", retryCount));
-            redisService.setCacheObject(getCacheKey(username), retryCount, lockTime, TimeUnit.MINUTES);
+            recordLogService.recordLogininfor(account, Constants.LOGIN_FAIL, String.format("密码输入错误%s次", retryCount));
+            redisService.setCacheObject(getCacheKey(account), retryCount, lockTime, TimeUnit.MINUTES);
             throw new ServiceException("用户不存在/密码错误");
         }
         else
         {
-            clearLoginRecordCache(username);
+            clearLoginRecordCache(account);
         }
     }
 
-    public boolean matches(SysUser user, String rawPassword)
+    public boolean matches(String password, String rawPassword)
     {
-        return SecurityUtils.matchesPassword(rawPassword, user.getPassword());
+        return SecurityUtils.matchesPassword(rawPassword, password);
     }
 
     public void clearLoginRecordCache(String loginName)

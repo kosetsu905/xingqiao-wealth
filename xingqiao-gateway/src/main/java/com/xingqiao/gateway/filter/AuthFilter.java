@@ -39,11 +39,21 @@ public class AuthFilter implements GlobalFilter, Ordered
     private RedisService redisService;
 
 
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain)
     {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
+
+
+        // 新增客户端类型解析逻辑
+        String clientType = request.getHeaders().getFirst("X-Client-Type");
+        if (StringUtils.isEmpty(clientType)) {
+            clientType= "platform";
+        }
+        log.warn("客户端类型："+clientType);
+
 
         String url = request.getURI().getPath();
         // 跳过不需要验证的路径

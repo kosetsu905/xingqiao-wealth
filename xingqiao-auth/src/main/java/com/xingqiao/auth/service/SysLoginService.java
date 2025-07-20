@@ -1,5 +1,9 @@
 package com.xingqiao.auth.service;
 
+import com.xingqiao.auth.form.CodeReqDTO;
+import com.xingqiao.common.core.utils.RandomUtil;
+import com.xingqiao.system.api.domain.CommonUser;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.xingqiao.common.core.constant.CacheConstants;
@@ -19,6 +23,12 @@ import com.xingqiao.system.api.RemoteUserService;
 import com.xingqiao.system.api.domain.SysUser;
 import com.xingqiao.system.api.model.LoginUser;
 
+import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 登录校验方法
  * 
@@ -27,7 +37,7 @@ import com.xingqiao.system.api.model.LoginUser;
 @Component
 public class SysLoginService
 {
-    @Autowired
+    @Resource
     private RemoteUserService remoteUserService;
 
     @Autowired
@@ -80,7 +90,11 @@ public class SysLoginService
         }
 
         LoginUser userInfo = userResult.getData();
-        SysUser user = userResult.getData().getSysUser();
+
+        CommonUser commonUser = userResult.getData().getUser();
+        SysUser user = new SysUser();
+        BeanUtils.copyProperties(commonUser, user);
+
         if (UserStatus.DELETED.getCode().equals(user.getDelFlag()))
         {
             recordLogService.recordLogininfor(username, Constants.LOGIN_FAIL, "对不起，您的账号已被删除");
@@ -91,7 +105,7 @@ public class SysLoginService
             recordLogService.recordLogininfor(username, Constants.LOGIN_FAIL, "用户已停用，请联系管理员");
             throw new ServiceException("对不起，您的账号：" + username + " 已停用");
         }
-        passwordService.validate(user, password);
+        passwordService.validate(user.getPassword(),user.getUserName(), password);
         recordLogService.recordLogininfor(username, Constants.LOGIN_SUCCESS, "登录成功");
         recordLoginInfo(user.getUserId());
         return userInfo;
@@ -152,5 +166,27 @@ public class SysLoginService
             throw new ServiceException(registerResult.getMsg());
         }
         recordLogService.recordLogininfor(username, Constants.REGISTER, "注册成功");
+    }
+
+    public Map<String, Object> sendCode(CodeReqDTO codeReqDTO) {
+        //生成随机的6位数验证码
+        String code = RandomUtil.randomNumbers(6);
+        //判断验证码类型
+        if (StringUtils.isNotEmpty(codeReqDTO.getPhoneNumber())) {
+            //发送手机验证码
+            //发送成功保存到redis中，设置有效时间
+            redisService.setCacheObject(Constants.CODE_KEY +
+                            codeReqDTO.getStep()+":"+codeReqDTO.getPhoneNumber(),
+                    code, Constants.CODE_TTL, TimeUnit.SECONDS);
+        }
+
+        if (StringUtils.isNotEmpty(codeReqDTO.getEmail())) {
+            //发送邮箱验证码
+            //发送成功保存到redis中，设置有效时间
+            redisService.setCacheObject(Constants.CODE_KEY +
+                            codeReqDTO.getStep()+":"+codeReqDTO.getEmail(),
+                    code, Constants.CODE_TTL, TimeUnit.SECONDS);
+        }
+        return Collections.emptyMap();
     }
 }
