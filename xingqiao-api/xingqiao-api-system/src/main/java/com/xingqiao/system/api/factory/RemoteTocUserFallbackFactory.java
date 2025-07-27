@@ -2,7 +2,7 @@ package com.xingqiao.system.api.factory;
 
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.system.api.RemoteTocUserService;
-import com.xingqiao.system.api.domain.CUser;
+import com.xingqiao.system.api.domain.SysUser;
 import com.xingqiao.system.api.model.LoginUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class RemoteTocUserFallbackFactory implements FallbackFactory<RemoteTocUs
             }
 
             @Override
-            public R<Boolean> registerUserInfo(CUser cUser, String source)
+            public R<Boolean> registerUserInfo(SysUser cUser, String source)
             {
                 return R.fail("注册用户失败:" + throwable.getMessage());
             }

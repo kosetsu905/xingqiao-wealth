@@ -3,7 +3,6 @@ package com.xingqiao.common.datascope.aspect;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xingqiao.system.api.domain.CommonUser;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -71,7 +70,7 @@ public class DataScopeAspect
         LoginUser loginUser = SecurityUtils.getLoginUser();
         if (StringUtils.isNotNull(loginUser))
         {
-            CommonUser currentUser = loginUser.getUser();
+            SysUser currentUser = loginUser.getUser();
             // 如果是超级管理员，则不过滤数据
             if (StringUtils.isNotNull(currentUser) && !currentUser.isAdmin())
             {
@@ -90,7 +89,7 @@ public class DataScopeAspect
      * @param userAlias 用户别名
      * @param permission 权限字符
      */
-    public static void dataScopeFilter(JoinPoint joinPoint, CommonUser user, String deptAlias, String userAlias, String permission)
+    public static void dataScopeFilter(JoinPoint joinPoint, SysUser user, String deptAlias, String userAlias, String permission)
     {
         StringBuilder sqlString = new StringBuilder();
         List<String> conditions = new ArrayList<String>();

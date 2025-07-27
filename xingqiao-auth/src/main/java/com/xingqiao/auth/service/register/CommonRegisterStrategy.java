@@ -14,7 +14,7 @@ import com.xingqiao.common.core.utils.StringUtils;
 import com.xingqiao.common.redis.service.RedisService;
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.system.api.RemoteTocUserService;
-import com.xingqiao.system.api.domain.CUser;
+import com.xingqiao.system.api.domain.SysUser;
 import com.xingqiao.system.api.enums.RegisterType;
 
 import java.util.Collections;
@@ -61,12 +61,11 @@ public class CommonRegisterStrategy implements ReisterStrategy {
         }
 
         // 注册用户信息
-        CUser cUser = new CUser();
+        SysUser cUser = new SysUser();
         cUser.setCountryCode(request.getCountryCode());
         cUser.setPhoneNumber(request.getPhoneNumber());
         cUser.setUserType(request.getUserType());
-        cUser.setAccount(request.getAccount());
-        cUser.setUserName(request.getAccount());
+        cUser.setUserName(request.getUserName());
         cUser.setEmail(request.getEmail());
         cUser.setNickName(request.getNickName());
         cUser.setPwdUpdateDate(DateUtils.getNowDate());

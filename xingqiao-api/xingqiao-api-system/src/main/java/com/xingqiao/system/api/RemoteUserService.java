@@ -25,12 +25,12 @@ public interface RemoteUserService
     /**
      * 通过用户名查询用户信息
      *
-     * @param username 用户名
+     * @param userName 用户名
      * @param source 请求来源
      * @return 结果
      */
-    @GetMapping("/user/info/{username}")
-    public R<LoginUser> getUserInfo(@PathVariable("username") String username, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
+    @GetMapping("/user/info/{userName}")
+    public R<LoginUser> getUserInfo(@PathVariable("userName") String userName, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
 
     /**
      * 注册用户信息

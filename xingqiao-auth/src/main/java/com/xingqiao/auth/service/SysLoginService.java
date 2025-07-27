@@ -2,7 +2,6 @@ package com.xingqiao.auth.service;
 
 import com.xingqiao.auth.form.CodeReqDTO;
 import com.xingqiao.common.core.utils.RandomUtil;
-import com.xingqiao.system.api.domain.CommonUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -91,7 +90,7 @@ public class SysLoginService
 
         LoginUser userInfo = userResult.getData();
 
-        CommonUser commonUser = userResult.getData().getUser();
+        SysUser commonUser = userResult.getData().getUser();
         SysUser user = new SysUser();
         BeanUtils.copyProperties(commonUser, user);
 

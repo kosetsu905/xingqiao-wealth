@@ -2,8 +2,7 @@ package com.xingqiao.system.controller;
 
 import java.util.Arrays;
 import java.util.Map;
-
-import com.xingqiao.system.api.domain.CommonUser;
+import com.xingqiao.system.api.enums.UserType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,10 +55,11 @@ public class SysProfileController extends BaseController
     public AjaxResult profile()
     {
         String username = SecurityUtils.getUsername();
-        SysUser user = userService.selectUserByUserName(username);
+        String userType = SecurityUtils.getUserType();
+        SysUser user = userService.selectUserByUserName(username,userType);
         AjaxResult ajax = AjaxResult.success(user);
-        ajax.put("roleGroup", userService.selectUserRoleGroup(username));
-        ajax.put("postGroup", userService.selectUserPostGroup(username));
+        ajax.put("roleGroup", userService.selectUserRoleGroup(username, UserType.PLATFORM.getCode()));
+        ajax.put("postGroup", userService.selectUserPostGroup(username, UserType.PLATFORM.getCode()));
         return ajax;
     }
 
@@ -71,7 +71,7 @@ public class SysProfileController extends BaseController
     public AjaxResult updateProfile(@RequestBody SysUser user)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        CommonUser commonUser = loginUser.getUser();
+        SysUser commonUser = loginUser.getUser();
         SysUser currentUser = new SysUser();
         BeanUtils.copyProperties(commonUser, currentUser);
 

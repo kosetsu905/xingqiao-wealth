@@ -78,9 +78,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where r.role_id = #{roleId}
 	</select>
 	
-	<select id="selectRolesByUserName" parameterType="String" resultMap="SysRoleResult">
+	<select id="selectRolesByUserName"  resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
-		WHERE r.del_flag = '0' and u.user_name = #{userName}
+		WHERE r.del_flag = '0' and u.user_name = #{userName} and u.user_type = #{userType}
 	</select>
 	
 	<select id="checkRoleNameUnique" parameterType="String" resultMap="SysRoleResult">

@@ -10,21 +10,21 @@ public class LoginBody
     /**
      * 用户名
      */
-    private String username;
+    private String userName;
 
     /**
      * 用户密码
      */
     private String password;
 
-    public String getUsername()
+    public String getUserName()
     {
-        return username;
+        return userName;
     }
 
     public void setUsername(String username)
     {
-        this.username = username;
+        this.userName = username;
     }
 
     public String getPassword()

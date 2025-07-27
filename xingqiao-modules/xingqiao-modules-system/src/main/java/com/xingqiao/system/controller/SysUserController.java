@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
-import com.xingqiao.system.api.domain.CommonUser;
+import com.xingqiao.system.api.enums.UserType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +124,8 @@ public class  SysUserController extends BaseController
     @GetMapping("/info/{username}")
     public R<LoginUser> info(@PathVariable("username") String username)
     {
-        SysUser sysUser = userService.selectUserByUserName(username);
+        //平台端用户
+        SysUser sysUser = userService.selectUserByUserName(username, UserType.PLATFORM.getCode());
         if (StringUtils.isNull(sysUser))
         {
             return R.fail("用户名或密码错误");
@@ -133,7 +134,7 @@ public class  SysUserController extends BaseController
         Set<String> roles = permissionService.getRolePermission(sysUser);
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(sysUser);
-        CommonUser commonUser = new CommonUser();
+        SysUser commonUser = new SysUser();
         BeanUtils.copyProperties(sysUser, commonUser);
         LoginUser sysUserVo = new LoginUser();
         sysUserVo.setUser(commonUser);
@@ -180,7 +181,7 @@ public class  SysUserController extends BaseController
     public AjaxResult getInfo()
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        CommonUser commonUser = loginUser.getUser();
+        SysUser commonUser = loginUser.getUser();
         SysUser user = new SysUser();
         BeanUtils.copyProperties(commonUser, user);
         // 角色集合

@@ -2,6 +2,7 @@ package com.xingqiao.system.mapper;
 
 import java.util.List;
 import com.xingqiao.system.domain.SysPost;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 岗位信息 数据层
@@ -47,7 +48,7 @@ public interface SysPostMapper
      * @param userName 用户名
      * @return 结果
      */
-    public List<SysPost> selectPostsByUserName(String userName);
+    public List<SysPost> selectPostsByUserName(@Param("userName") String userName,@Param("userType") String userType);
 
     /**
      * 删除岗位信息

@@ -3,7 +3,10 @@ package com.xingqiao.system.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import javax.validation.Validator;
+
+import com.xingqiao.system.api.enums.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,19 +44,19 @@ public class SysUserServiceImpl implements ISysUserService
 {
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
-    @Autowired
+    @Resource
     private SysUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private SysRoleMapper roleMapper;
 
-    @Autowired
+    @Resource
     private SysPostMapper postMapper;
 
-    @Autowired
+    @Resource
     private SysUserRoleMapper userRoleMapper;
 
-    @Autowired
+    @Resource
     private SysUserPostMapper userPostMapper;
 
     @Autowired
@@ -111,9 +114,9 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 用户对象信息
      */
     @Override
-    public SysUser selectUserByUserName(String userName)
+    public SysUser selectUserByUserName(String userName,String userType)
     {
-        return userMapper.selectUserByUserName(userName);
+        return userMapper.selectUserByUserName(userName,userType);
     }
 
     /**
@@ -135,9 +138,9 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 结果
      */
     @Override
-    public String selectUserRoleGroup(String userName)
+    public String selectUserRoleGroup(String userName,String userType)
     {
-        List<SysRole> list = roleMapper.selectRolesByUserName(userName);
+        List<SysRole> list = roleMapper.selectRolesByUserName(userName,userType);
         if (CollectionUtils.isEmpty(list))
         {
             return StringUtils.EMPTY;
@@ -152,9 +155,9 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 结果
      */
     @Override
-    public String selectUserPostGroup(String userName)
+    public String selectUserPostGroup(String userName,String userType)
     {
-        List<SysPost> list = postMapper.selectPostsByUserName(userName);
+        List<SysPost> list = postMapper.selectPostsByUserName(userName,userType);
         if (CollectionUtils.isEmpty(list))
         {
             return StringUtils.EMPTY;
@@ -172,7 +175,7 @@ public class SysUserServiceImpl implements ISysUserService
     public boolean checkUserNameUnique(SysUser user)
     {
         Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
-        SysUser info = userMapper.checkUserNameUnique(user.getUserName());
+        SysUser info = userMapper.checkUserNameUnique(user.getUserName(),UserType.PLATFORM.getCode());
         if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
         {
             return UserConstants.NOT_UNIQUE;
@@ -190,7 +193,7 @@ public class SysUserServiceImpl implements ISysUserService
     public boolean checkPhoneUnique(SysUser user)
     {
         Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
-        SysUser info = userMapper.checkPhoneUnique(user.getPhoneNumber());
+        SysUser info = userMapper.checkPhoneUnique(user.getPhoneNumber(),UserType.PLATFORM.getCode());
         if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
         {
             return UserConstants.NOT_UNIQUE;
@@ -208,7 +211,7 @@ public class SysUserServiceImpl implements ISysUserService
     public boolean checkEmailUnique(SysUser user)
     {
         Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
-        SysUser info = userMapper.checkEmailUnique(user.getEmail());
+        SysUser info = userMapper.checkEmailUnique(user.getEmail(),UserType.PLATFORM.getCode());
         if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
         {
             return UserConstants.NOT_UNIQUE;
@@ -498,7 +501,7 @@ public class SysUserServiceImpl implements ISysUserService
             try
             {
                 // 验证是否存在这个用户
-                SysUser u = userMapper.selectUserByUserName(user.getUserName());
+                SysUser u = userMapper.selectUserByUserName(user.getUserName(), UserType.PLATFORM.getCode());
                 if (StringUtils.isNull(u))
                 {
                     BeanValidators.validateWithException(validator, user);
@@ -546,6 +549,11 @@ public class SysUserServiceImpl implements ISysUserService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Override
+    public int deleteCUserByUserIds(Long[] userIds) {
+        return userMapper.deleteCUserByUserIds(userIds);
     }
 
 }

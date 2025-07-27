@@ -40,7 +40,7 @@ public interface ISysUserService
      * @param userName 用户名
      * @return 用户对象信息
      */
-    public SysUser selectUserByUserName(String userName);
+    public SysUser selectUserByUserName(String userName,String userType);
 
     /**
      * 通过用户ID查询用户
@@ -56,7 +56,7 @@ public interface ISysUserService
      * @param userName 用户名
      * @return 结果
      */
-    public String selectUserRoleGroup(String userName);
+    public String selectUserRoleGroup(String userName,String userType);
 
     /**
      * 根据用户ID查询用户所属岗位组
@@ -64,7 +64,7 @@ public interface ISysUserService
      * @param userName 用户名
      * @return 结果
      */
-    public String selectUserPostGroup(String userName);
+    public String selectUserPostGroup(String userName,String userType);
 
     /**
      * 校验用户名称是否唯一
@@ -203,4 +203,6 @@ public interface ISysUserService
      * @return 结果
      */
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+
+    int deleteCUserByUserIds(Long[] userIds);
 }

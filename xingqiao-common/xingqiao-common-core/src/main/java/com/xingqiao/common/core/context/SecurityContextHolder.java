@@ -65,10 +65,18 @@ public class SecurityContextHolder
     {
         return get(SecurityConstants.DETAILS_USERNAME);
     }
+    public static String getUserType()
+    {
+        return get(SecurityConstants.DETAILS_USERTYPE);
+    }
 
     public static void setUserName(String username)
     {
         set(SecurityConstants.DETAILS_USERNAME, username);
+    }
+    public static void setUserType(String userType)
+    {
+        set(SecurityConstants.DETAILS_USERTYPE, userType);
     }
 
     public static String getUserKey()

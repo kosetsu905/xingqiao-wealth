@@ -8,7 +8,7 @@ public class RegisterReqDTO {
     /**
      * 登录账号
      */
-    private String account;
+    private String userName;
 
     /**
      * 手机国家区号
@@ -49,8 +49,6 @@ public class RegisterReqDTO {
      */
     private RegisterType registerType;
 
-
-    private String userName;
 
 
     private String nickName;

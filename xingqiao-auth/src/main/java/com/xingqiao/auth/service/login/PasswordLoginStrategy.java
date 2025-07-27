@@ -15,7 +15,7 @@ import com.xingqiao.common.core.utils.ip.IpUtils;
 import com.xingqiao.common.redis.service.RedisService;
 import com.xingqiao.common.security.service.TokenService;
 import com.xingqiao.system.api.RemoteTocUserService;
-import com.xingqiao.system.api.domain.CommonUser;
+import com.xingqiao.system.api.domain.SysUser;
 import com.xingqiao.system.api.enums.LoginType;
 import com.xingqiao.system.api.model.LoginUser;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class PasswordLoginStrategy implements LoginStrategy {
     @Override
     public Map<String, Object> login(LoginReqDTO request) {
         // 用户名或密码为空 错误
-        if (StringUtils.isAnyBlank(request.getAccount(), request.getPassword()))
+        if (StringUtils.isAnyBlank(request.getUserName(), request.getPassword()))
         {
             log.warn("账号/密码必须填写");
             throw new ServiceException("账号/密码必须填写");
@@ -53,8 +53,8 @@ public class PasswordLoginStrategy implements LoginStrategy {
             throw new ServiceException("用户密码不在指定范围");
         }
         // 账号不在指定范围内 错误
-        if (request.getAccount().length() < UserConstants.USERNAME_MIN_LENGTH
-                || request.getAccount().length() > UserConstants.USERNAME_MAX_LENGTH)
+        if (request.getUserName().length() < UserConstants.USERNAME_MIN_LENGTH
+                || request.getUserName().length() > UserConstants.USERNAME_MAX_LENGTH)
         {
            log.warn("账号不在指定范围");
             throw new ServiceException("账号不在指定范围");
@@ -67,7 +67,7 @@ public class PasswordLoginStrategy implements LoginStrategy {
             throw new ServiceException("很遗憾，访问IP已被列入系统黑名单");
         }
         // 查询用户信息
-        R<LoginUser> userResult = remoteUserService.getUserInfo(request.getAccount(),request.getUserType(), SecurityConstants.INNER);
+        R<LoginUser> userResult = remoteUserService.getUserInfo(request.getUserName(),request.getUserType(), SecurityConstants.INNER);
 
         if (R.FAIL == userResult.getCode())
         {
@@ -75,14 +75,14 @@ public class PasswordLoginStrategy implements LoginStrategy {
         }
 
         LoginUser userInfo = userResult.getData();
-        CommonUser user = userResult.getData().getUser();
+        SysUser user = userResult.getData().getUser();
         if (UserStatus.DELETED.getCode().equals(user.getDelFlag()))
         {
-            throw new ServiceException("对不起，您的账号：" + request.getAccount() + " 已被删除");
+            throw new ServiceException("对不起，您的账号：" + request.getUserName() + " 已被删除");
         }
         if (UserStatus.DISABLE.getCode().equals(user.getStatus()))
         {
-            throw new ServiceException("对不起，您的账号：" + request.getAccount() + " 已停用");
+            throw new ServiceException("对不起，您的账号：" + request.getUserName() + " 已停用");
         }
         passwordService.validate(user.getPassword(),user.getUserName(), request.getPassword());
 

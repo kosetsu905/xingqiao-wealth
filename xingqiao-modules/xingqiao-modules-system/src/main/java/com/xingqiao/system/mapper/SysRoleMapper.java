@@ -2,6 +2,7 @@ package com.xingqiao.system.mapper;
 
 import java.util.List;
 import com.xingqiao.system.api.domain.SysRole;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 角色表 数据层
@@ -55,7 +56,7 @@ public interface SysRoleMapper
      * @param userName 用户名
      * @return 角色列表
      */
-    public List<SysRole> selectRolesByUserName(String userName);
+    public List<SysRole> selectRolesByUserName(@Param("userName") String userName,@Param("userType")  String userType);
 
     /**
      * 校验角色名称是否唯一

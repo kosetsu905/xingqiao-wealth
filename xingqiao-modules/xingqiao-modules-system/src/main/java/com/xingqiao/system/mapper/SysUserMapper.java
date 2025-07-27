@@ -41,7 +41,7 @@ public interface SysUserMapper
      * @param userName 用户名
      * @return 用户对象信息
      */
-    public SysUser selectUserByUserName(String userName);
+    public SysUser selectUserByUserName(@Param("userName") String userName,@Param("userType") String userType);
 
     /**
      * 通过用户ID查询用户
@@ -107,15 +107,15 @@ public interface SysUserMapper
      * @param userName 用户名称
      * @return 结果
      */
-    public SysUser checkUserNameUnique(String userName);
+    public SysUser checkUserNameUnique(@Param("userName")  String userName,@Param("userType") String userType);
 
     /**
      * 校验手机号码是否唯一
      *
-     * @param phonenumber 手机号码
+     * @param phoneNumber 手机号码
      * @return 结果
      */
-    public SysUser checkPhoneUnique(String phonenumber);
+    public SysUser checkPhoneUnique(@Param("phoneNumber") String phoneNumber,@Param("userType") String userType);
 
     /**
      * 校验email是否唯一
@@ -123,5 +123,7 @@ public interface SysUserMapper
      * @param email 用户邮箱
      * @return 结果
      */
-    public SysUser checkEmailUnique(String email);
+    public SysUser checkEmailUnique(@Param("email")  String email,@Param("userType") String userType);
+
+    int deleteCUserByUserIds(Long[] userIds);
 }

@@ -19,9 +19,9 @@ public class SecurityConstants
 
 
     /**
-     * 账号
+     * 用户名字段
      */
-    public static final String DETAILS_ACCOUNT = "account";
+    public static final String DETAILS_USERTYPE = "usertype";
 
     /**
      * 授权信息字段

@@ -14,7 +14,7 @@ public class LoginReqDTO {
     /**
      * 手机号
      */
-    private String account;
+    private String userName;
 
 
     /**

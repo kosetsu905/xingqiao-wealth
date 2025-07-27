@@ -34,6 +34,14 @@ public class SysUser extends BaseEntity
     @Excel(name = "登录名称")
     private String userName;
 
+    /** 国家区号 */
+    @Excel(name = "国家区号")
+    private String countryCode;
+
+    /** 用户类型 ，00：平台，01：客户，02：经纪人 */
+    @Excel(name = "用户类型")
+    private String userType;
+
     /** 用户昵称 */
     @Excel(name = "用户名称")
     private String nickName;
@@ -116,6 +124,22 @@ public class SysUser extends BaseEntity
     public boolean isAdmin()
     {
         return isAdmin(this.userId);
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public static boolean isAdmin(Long userId)
@@ -317,6 +341,7 @@ public class SysUser extends BaseEntity
             .append("userId", getUserId())
             .append("deptId", getDeptId())
             .append("userName", getUserName())
+            .append("userType", getUserType())
             .append("nickName", getNickName())
             .append("email", getEmail())
             .append("phoneNumber", getPhoneNumber())
