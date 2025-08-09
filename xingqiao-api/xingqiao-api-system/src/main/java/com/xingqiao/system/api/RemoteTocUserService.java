@@ -4,7 +4,7 @@ import com.xingqiao.common.core.constant.SecurityConstants;
 import com.xingqiao.common.core.constant.ServiceNameConstants;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.system.api.domain.SysUser;
-import com.xingqiao.system.api.factory.RemoteUserFallbackFactory;
+import com.xingqiao.system.api.factory.RemoteTocUserFallbackFactory;
 import com.xingqiao.system.api.model.LoginUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * 
  * @author xingqiao
  */
-@FeignClient(contextId = "remoteTocUserService", value = ServiceNameConstants.SYSTEM_SERVICE, fallbackFactory = RemoteUserFallbackFactory.class)
+@FeignClient(contextId = "remoteTocUserService", value = ServiceNameConstants.SYSTEM_SERVICE, fallbackFactory = RemoteTocUserFallbackFactory.class)
 public interface RemoteTocUserService
 {
     /**

@@ -1,3 +1,5 @@
 com.xingqiao.system.api.factory.RemoteUserFallbackFactory
 com.xingqiao.system.api.factory.RemoteLogFallbackFactory
 com.xingqiao.system.api.factory.RemoteFileFallbackFactory
+com.xingqiao.system.api.factory.RemoteTocUserFallbackFactory
+com.xingqiao.system.api.factory.RemoteEmailFallbackFactory

@@ -8,6 +8,7 @@ import com.xingqiao.common.core.constant.Constants;
 import com.xingqiao.common.core.constant.SecurityConstants;
 import com.xingqiao.common.core.constant.UserConstants;
 import com.xingqiao.common.core.domain.R;
+import com.xingqiao.common.core.enums.RegistrationStep;
 import com.xingqiao.common.core.exception.ServiceException;
 import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.common.core.utils.StringUtils;
@@ -54,8 +55,10 @@ public class CommonRegisterStrategy implements ReisterStrategy {
         }
 
         //校验redis里面的验证码,或者配置后门
-        boolean checkCode = StringUtils.equals(request.getCode(), redisService.getCacheObject(Constants.CODE_KEY +
-                Constants.REGISTERSTEP + ":" + request.getPhoneNumber()))||StringUtils.equals(request.getCode(),authConfig.getMockCode() );
+        boolean checkCode = StringUtils.equals(request.getSendCode(), redisService.getCacheObject(Constants.CODE_KEY +
+                RegistrationStep.EMAIL_VERIFICATION_CODE.getCode() + ":" + request.getEmail()))||
+                StringUtils.equals(request.getSendCode(), redisService.getCacheObject(Constants.CODE_KEY +
+                        RegistrationStep.PHONE_VERIFICATION_CODE.getCode() + ":" + request.getPhoneNumber()))||StringUtils.equals(request.getCode(),authConfig.getMockCode() );
         if (!checkCode){
             throw new ServiceException("手机验证码不正确！");
         }

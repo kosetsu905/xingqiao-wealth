@@ -1,7 +1,5 @@
 package com.xingqiao.system.controller;
 
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.core.utils.StringUtils;
 import com.xingqiao.common.security.annotation.InnerAuth;

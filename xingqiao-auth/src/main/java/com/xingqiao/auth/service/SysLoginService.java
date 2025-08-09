@@ -1,7 +1,12 @@
 package com.xingqiao.auth.service;
 
 import com.xingqiao.auth.form.CodeReqDTO;
+import com.xingqiao.auth.service.login.PasswordLoginStrategy;
+import com.xingqiao.common.core.enums.RegistrationStep;
 import com.xingqiao.common.core.utils.RandomUtil;
+import com.xingqiao.system.api.RemoteEmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +41,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SysLoginService
 {
+    private static final Logger log = LoggerFactory.getLogger(SysLoginService.class);
+
     @Resource
     private RemoteUserService remoteUserService;
 
@@ -47,6 +54,9 @@ public class SysLoginService
 
     @Autowired
     private RedisService redisService;
+
+    @Resource
+    private RemoteEmailService remoteEmailService;
 
     /**
      * 登录
@@ -171,7 +181,7 @@ public class SysLoginService
         //生成随机的6位数验证码
         String code = RandomUtil.randomNumbers(6);
         //判断验证码类型
-        if (StringUtils.isNotEmpty(codeReqDTO.getPhoneNumber())) {
+        if (RegistrationStep.PHONE_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())) {
             //发送手机验证码
             //发送成功保存到redis中，设置有效时间
             redisService.setCacheObject(Constants.CODE_KEY +
@@ -179,12 +189,16 @@ public class SysLoginService
                     code, Constants.CODE_TTL, TimeUnit.SECONDS);
         }
 
-        if (StringUtils.isNotEmpty(codeReqDTO.getEmail())) {
+        if (RegistrationStep.EMAIL_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())) {
+            log.info("发送邮箱验证码,code={}",code);
             //发送邮箱验证码
+            String text=String.format("【财富管理】您的注册验证码是：%s",code);
+            remoteEmailService.sendSimpleEmail(codeReqDTO.getEmail(),"注册验证码！",text, SecurityConstants.INNER);
             //发送成功保存到redis中，设置有效时间
             redisService.setCacheObject(Constants.CODE_KEY +
                             codeReqDTO.getStep()+":"+codeReqDTO.getEmail(),
                     code, Constants.CODE_TTL, TimeUnit.SECONDS);
+            log.info("发送邮箱验证码成功");
         }
         return Collections.emptyMap();
     }

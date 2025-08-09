@@ -1,24 +1,24 @@
-package com.xingqiao.auth;
+package com.xingqiao.digitalCurrency;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import com.xingqiao.common.security.annotation.EnableCustomConfig;
 import com.xingqiao.common.security.annotation.EnableRyFeignClients;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
- * 认证授权中心
+ * 数字货币模块
  * 
  * @author xingqiao
  */
+@EnableCustomConfig
 @EnableRyFeignClients
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
-public class XingQiaoAuthApplication
+@SpringBootApplication
+public class XingQiaoDigitalCurrencyApplication
 {
     public static void main(String[] args)
     {
-        SpringApplication.run(XingQiaoAuthApplication.class, args);
-        System.out.println("(♥◠‿◠)ﾉﾞ  认证授权中心启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
+        SpringApplication.run(XingQiaoDigitalCurrencyApplication.class, args);
+        System.out.println("(♥◠‿◠)ﾉﾞ  数字货币模块启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
                 " .-------.       ____     __        \n" +
                 " |  _ _   \\      \\   \\   /  /    \n" +
                 " | ( ' )  |       \\  _. /  '       \n" +

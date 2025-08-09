@@ -138,5 +138,4 @@ public class Constants
      */
     public static final String CODE_KEY = "code:";
     public static final Long CODE_TTL = 300L;
-    public static final Integer REGISTERSTEP = 1;
 }

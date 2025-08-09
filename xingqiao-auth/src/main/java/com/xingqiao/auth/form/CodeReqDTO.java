@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class CodeReqDTO {
+
     /**
      * 手机国家区号
      */
     private String countryCode;
-
     /**
      * 手机号
      */
@@ -17,6 +17,10 @@ public class CodeReqDTO {
      * 邮箱
      */
     private String email;
+    /**
+     * 图片验证码
+     */
+    private String imageCode;
 
 
     /**

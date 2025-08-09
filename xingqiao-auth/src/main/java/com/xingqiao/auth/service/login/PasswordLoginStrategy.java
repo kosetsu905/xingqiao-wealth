@@ -30,7 +30,7 @@ import java.util.Map;
 public class PasswordLoginStrategy implements LoginStrategy {
     private static final Logger log = LoggerFactory.getLogger(PasswordLoginStrategy.class);
     @Resource
-    private RemoteTocUserService remoteUserService;
+    private RemoteTocUserService remoteTocUserService;
     @Autowired
     private RedisService redisService;
     @Autowired
@@ -67,7 +67,7 @@ public class PasswordLoginStrategy implements LoginStrategy {
             throw new ServiceException("很遗憾，访问IP已被列入系统黑名单");
         }
         // 查询用户信息
-        R<LoginUser> userResult = remoteUserService.getUserInfo(request.getUserName(),request.getUserType(), SecurityConstants.INNER);
+        R<LoginUser> userResult = remoteTocUserService.getUserInfo(request.getUserName(),request.getUserType(), SecurityConstants.INNER);
 
         if (R.FAIL == userResult.getCode())
         {

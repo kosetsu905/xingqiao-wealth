@@ -15,25 +15,20 @@ import org.springframework.stereotype.Component;
  * @author xingqiao
  */
 @Component
-public class RemoteTocUserFallbackFactory implements FallbackFactory<RemoteTocUserService>
-{
+public class RemoteTocUserFallbackFactory implements FallbackFactory<RemoteTocUserService> {
     private static final Logger log = LoggerFactory.getLogger(RemoteTocUserFallbackFactory.class);
 
     @Override
-    public RemoteTocUserService create(Throwable throwable)
-    {
+    public RemoteTocUserService create(Throwable throwable) {
         log.error("用户服务调用失败:{}", throwable.getMessage());
-        return new RemoteTocUserService()
-        {
+        return new RemoteTocUserService() {
             @Override
-            public R<LoginUser> getUserInfo(String username,String userType, String source)
-            {
+            public R<LoginUser> getUserInfo(String userName, String userType, String source) {
                 return R.fail("获取用户失败:" + throwable.getMessage());
             }
 
             @Override
-            public R<Boolean> registerUserInfo(SysUser cUser, String source)
-            {
+            public R<Boolean> registerUserInfo(SysUser sysUser, String source) {
                 return R.fail("注册用户失败:" + throwable.getMessage());
             }
         };

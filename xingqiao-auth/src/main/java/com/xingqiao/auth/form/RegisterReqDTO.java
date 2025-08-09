@@ -40,6 +40,11 @@ public class RegisterReqDTO {
     private String code;
 
     /**
+     * 验证码
+     */
+    private String sendCode;
+
+    /**
      * 用户类型
      */
     private String userType;
