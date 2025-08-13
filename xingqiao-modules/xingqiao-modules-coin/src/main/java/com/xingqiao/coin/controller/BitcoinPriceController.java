@@ -1,6 +1,6 @@
-package com.xingqiao.digitalCurrency.controller;
+package com.xingqiao.coin.controller;
 
-import com.xingqiao.digitalCurrency.service.CoinMarketCapService;
+import com.xingqiao.coin.service.CoinMarketCapService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

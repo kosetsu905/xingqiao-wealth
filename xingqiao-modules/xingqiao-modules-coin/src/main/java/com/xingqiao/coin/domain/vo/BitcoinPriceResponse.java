@@ -1,4 +1,4 @@
-package com.xingqiao.digitalCurrency.domain.vo;
+package com.xingqiao.coin.domain.vo;
 
 
 

@@ -1,4 +1,4 @@
-package com.xingqiao.digitalCurrency;
+package com.xingqiao.coin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

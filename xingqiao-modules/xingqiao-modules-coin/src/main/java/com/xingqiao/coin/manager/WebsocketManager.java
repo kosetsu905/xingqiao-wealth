@@ -1,6 +1,6 @@
-package com.xingqiao.digitalCurrency.manager;
+package com.xingqiao.coin.manager;
 
-import com.xingqiao.digitalCurrency.service.WebsocketService;
+import com.xingqiao.coin.service.WebsocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

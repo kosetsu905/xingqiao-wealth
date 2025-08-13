@@ -1,4 +1,4 @@
-package com.xingqiao.digitalCurrency.config;
+package com.xingqiao.coin.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.xingqiao.digitalCurrency.service;
+package com.xingqiao.coin.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

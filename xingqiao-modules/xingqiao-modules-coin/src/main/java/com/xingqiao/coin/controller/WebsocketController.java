@@ -1,7 +1,7 @@
-package com.xingqiao.digitalCurrency.controller;
+package com.xingqiao.coin.controller;
 
 import com.xingqiao.common.core.web.domain.AjaxResult;
-import com.xingqiao.digitalCurrency.manager.WebsocketManager;
+import com.xingqiao.coin.manager.WebsocketManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,6 +1,6 @@
-package com.xingqiao.digitalCurrency.service;
+package com.xingqiao.coin.service;
 
-import com.xingqiao.digitalCurrency.domain.vo.BitcoinPriceResponse;
+import com.xingqiao.coin.domain.vo.BitcoinPriceResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
