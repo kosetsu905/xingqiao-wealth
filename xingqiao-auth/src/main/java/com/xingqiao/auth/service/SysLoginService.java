@@ -1,10 +1,9 @@
 package com.xingqiao.auth.service;
 
 import com.xingqiao.auth.form.CodeReqDTO;
-import com.xingqiao.auth.service.login.PasswordLoginStrategy;
+import com.xingqiao.auth.util.TemplateEmailUtil;
 import com.xingqiao.common.core.enums.RegistrationStep;
 import com.xingqiao.common.core.utils.RandomUtil;
-import com.xingqiao.system.api.RemoteEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -56,7 +55,7 @@ public class SysLoginService
     private RedisService redisService;
 
     @Resource
-    private RemoteEmailService remoteEmailService;
+    private TemplateEmailUtil templateEmailUtil;
 
     /**
      * 登录
@@ -177,7 +176,7 @@ public class SysLoginService
         recordLogService.recordLogininfor(username, Constants.REGISTER, "注册成功");
     }
 
-    public Map<String, Object> sendCode(CodeReqDTO codeReqDTO) {
+    public R sendCode(CodeReqDTO codeReqDTO) {
         //生成随机的6位数验证码
         String code = RandomUtil.randomNumbers(6);
         //判断验证码类型
@@ -187,19 +186,26 @@ public class SysLoginService
             redisService.setCacheObject(Constants.CODE_KEY +
                             codeReqDTO.getStep()+":"+codeReqDTO.getPhoneNumber(),
                     code, Constants.CODE_TTL, TimeUnit.SECONDS);
+            return R.ok("发送成功");
         }
 
         if (RegistrationStep.EMAIL_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())) {
             log.info("发送邮箱验证码,code={}",code);
             //发送邮箱验证码
-            String text=String.format("【财富管理】您的注册验证码是：%s",code);
-            remoteEmailService.sendSimpleEmail(codeReqDTO.getEmail(),"注册验证码！",text, SecurityConstants.INNER);
-            //发送成功保存到redis中，设置有效时间
-            redisService.setCacheObject(Constants.CODE_KEY +
-                            codeReqDTO.getStep()+":"+codeReqDTO.getEmail(),
-                    code, Constants.CODE_TTL, TimeUnit.SECONDS);
-            log.info("发送邮箱验证码成功");
+            R sendEmailResult = templateEmailUtil.sendRegisterCodeEmail(codeReqDTO.getEmail(),code);
+            if (R.SUCCESS == sendEmailResult.getCode()){
+                //发送成功保存到redis中，设置有效时间
+                redisService.setCacheObject(Constants.CODE_KEY +
+                                codeReqDTO.getStep()+":"+codeReqDTO.getEmail(),
+                        code, Constants.CODE_TTL, TimeUnit.SECONDS);
+                log.info("发送邮箱验证码成功");
+                return R.ok("发送成功");
+            }else {
+                log.error("发送邮箱验证码失败{}", sendEmailResult.getMsg());
+                return R.fail("发送邮件失败: " + sendEmailResult.getMsg());
+            }
         }
-        return Collections.emptyMap();
+        log.error("找不到发送渠道");
+        return R.fail("找不到发送渠道");
     }
 }

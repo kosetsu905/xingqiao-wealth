@@ -86,6 +86,13 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- 阿里实人认证 -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>cloudauth20190307</artifactId>
+            <version>3.9.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

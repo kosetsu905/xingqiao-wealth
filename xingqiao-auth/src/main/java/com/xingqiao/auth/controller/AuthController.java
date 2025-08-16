@@ -9,6 +9,7 @@ import com.xingqiao.auth.form.RegisterReqDTO;
 import com.xingqiao.auth.service.SysLoginService;
 import com.xingqiao.common.core.domain.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -42,7 +43,7 @@ public class AuthController
      * 发验证码接口
      */
     @PostMapping("/sendCode")
-    public R<?> sendCode(@RequestBody CodeReqDTO codeReqDTO) {
-        return R.ok(sysLoginService.sendCode(codeReqDTO));
+    public R<?> sendCode(@RequestBody @Valid  CodeReqDTO codeReqDTO) {
+        return sysLoginService.sendCode(codeReqDTO);
     }
 }

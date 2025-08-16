@@ -12,4 +12,5 @@ public class AuthConfig {
 
     @Value("${mock.code:'xingqiao'}")
     private String mockCode;
+
 }
