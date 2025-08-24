@@ -43,9 +43,9 @@ public class CommonRegisterStrategy implements ReisterStrategy {
         // 用户名或密码为空 错误
         if (StringUtils.isAnyBlank(request.getEmail(),
                 request.getPhoneNumber(),
-                request.getPassword(), request.getCode()))
+                request.getPassword(), request.getSendCode()))
         {
-            throw new ServiceException("邮箱/手机号/密码/验证吗必须填写");
+            throw new ServiceException("邮箱/手机号/密码/发送验证码必须填写");
         }
 
         if (request.getPassword().length() < UserConstants.PASSWORD_MIN_LENGTH
@@ -54,13 +54,14 @@ public class CommonRegisterStrategy implements ReisterStrategy {
             throw new ServiceException("密码长度必须在5到20个字符之间");
         }
 
-        //校验redis里面的验证码,或者配置后门
-        boolean checkCode = StringUtils.equals(request.getSendCode(), redisService.getCacheObject(Constants.CODE_KEY +
-                RegistrationStep.EMAIL_VERIFICATION_CODE.getCode() + ":" + request.getEmail()))||
-                StringUtils.equals(request.getSendCode(), redisService.getCacheObject(Constants.CODE_KEY +
-                        RegistrationStep.PHONE_VERIFICATION_CODE.getCode() + ":" + request.getPhoneNumber()))||StringUtils.equals(request.getCode(),authConfig.getMockCode() );
-        if (!checkCode){
-            throw new ServiceException("手机验证码不正确！");
+        // 校验redis里面的验证码,或者配置后门
+        // 满足以下任一条件即可通过验证：
+        // 1. 邮箱验证码正确
+        // 2. 手机验证码正确
+        // 3. 后门验证码(mockCode)正确
+        boolean checkCode = validateVerificationCode(request);
+        if (!checkCode) {
+            throw new ServiceException("验证码不正确！");
         }
 
         // 注册用户信息
@@ -81,6 +82,39 @@ public class CommonRegisterStrategy implements ReisterStrategy {
         }
         recordLogService.recordLogininfor(request.getPhoneNumber(), Constants.REGISTER, "注册成功");
         return Collections.emptyMap();
+    }
+
+    /**
+     * 验证注册验证码
+     * 满足以下任一条件即可通过验证：
+     * 1. 邮箱验证码正确
+     * 2. 手机验证码正确
+     * 3. 后门验证码(mockCode)正确
+     *
+     * @param request 注册请求
+     * @return 验证结果
+     */
+    private boolean validateVerificationCode(RegisterReqDTO request) {
+        // 检查邮箱验证码
+        String emailCodeKey = Constants.CODE_KEY + RegistrationStep.EMAIL_VERIFICATION_CODE.getCode() + ":" + request.getEmail();
+        String emailCode = redisService.getCacheObject(emailCodeKey);
+        if (StringUtils.equals(request.getSendCode(), emailCode)) {
+            return true;
+        }
+
+        // 检查手机验证码
+        String phoneCodeKey = Constants.CODE_KEY + RegistrationStep.PHONE_VERIFICATION_CODE.getCode() + ":" + request.getPhoneNumber();
+        String phoneCode = redisService.getCacheObject(phoneCodeKey);
+        if (StringUtils.equals(request.getSendCode(), phoneCode)) {
+            return true;
+        }
+
+        // 检查后门验证码
+        if (StringUtils.isNotEmpty(authConfig.getMockCode())&&StringUtils.equals(request.getSendCode(), authConfig.getMockCode())) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override

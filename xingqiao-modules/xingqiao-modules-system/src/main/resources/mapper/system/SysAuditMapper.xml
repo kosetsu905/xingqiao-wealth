@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.system.mapper.SysAuditMapper">
+
+    <resultMap type="com.xingqiao.system.domain.SysAudit" id="SysAuditResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userType"    column="user_type"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="auditorId"    column="auditor_id"    />
+        <result property="auditorName"    column="auditor_name"    />
+        <result property="auditStatus"    column="audit_status"    />
+        <result property="auditTime"    column="audit_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysAuditVo">
+        select id, user_id, user_type, business_id, business_type, auditor_id, auditor_name, audit_status, audit_time, remark, create_by, create_time, update_by, update_time from sys_audit
+    </sql>
+
+    <select id="selectSysAuditList" parameterType="com.xingqiao.system.domain.SysAudit" resultMap="SysAuditResult">
+        <include refid="selectSysAuditVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="businessId != null "> and business_id = #{businessId}</if>
+            <if test="businessType != null  and businessType != ''"> and business_type = #{businessType}</if>
+            <if test="auditorId != null "> and auditor_id = #{auditorId}</if>
+            <if test="auditorName != null  and auditorName != ''"> and auditor_name like concat('%', #{auditorName}, '%')</if>
+            <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
+            <if test="auditTime != null "> and audit_time = #{auditTime}</if>
+        </where>
+    </select>
+
+    <select id="selectSysAuditById" parameterType="Long" resultMap="SysAuditResult">
+        <include refid="selectSysAuditVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysAudit" parameterType="com.xingqiao.system.domain.SysAudit" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_audit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="businessType != null and businessType != ''">business_type,</if>
+            <if test="auditorId != null">auditor_id,</if>
+            <if test="auditorName != null and auditorName != ''">auditor_name,</if>
+            <if test="auditStatus != null">audit_status,</if>
+            <if test="auditTime != null">audit_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="businessId != null">#{businessId},</if>
+            <if test="businessType != null and businessType != ''">#{businessType},</if>
+            <if test="auditorId != null">#{auditorId},</if>
+            <if test="auditorName != null and auditorName != ''">#{auditorName},</if>
+            <if test="auditStatus != null">#{auditStatus},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysAudit" parameterType="com.xingqiao.system.domain.SysAudit">
+        update sys_audit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userType != null">user_type = #{userType},</if>
+            <if test="businessId != null">business_id = #{businessId},</if>
+            <if test="businessType != null and businessType != ''">business_type = #{businessType},</if>
+            <if test="auditorId != null">auditor_id = #{auditorId},</if>
+            <if test="auditorName != null and auditorName != ''">auditor_name = #{auditorName},</if>
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysAuditById" parameterType="Long">
+        delete from sys_audit where id = #{id}
+    </delete>
+
+    <delete id="deleteSysAuditByIds" parameterType="String">
+        delete from sys_audit where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

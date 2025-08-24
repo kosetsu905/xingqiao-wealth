@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.validation.Validator;
 
+import com.xingqiao.system.api.domain.SystemFile;
 import com.xingqiao.system.api.enums.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -554,6 +555,11 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public int deleteCUserByUserIds(Long[] userIds) {
         return userMapper.deleteCUserByUserIds(userIds);
+    }
+
+    @Override
+    public int uploadAvatar(Long userId, SystemFile systemFile) {
+        return userMapper.updateUserAvatar(userId,systemFile.getUrl());
     }
 
 }

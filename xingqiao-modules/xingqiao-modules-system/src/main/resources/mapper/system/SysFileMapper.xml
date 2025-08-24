@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.system.mapper.SysFileMapper">
+
+    <resultMap type="com.xingqiao.system.domain.SysFile" id="SysFileResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysFileVo">
+        select id, user_id, business_id, business_type, file_type, file_url, sort_order, remark, create_by, create_time, update_by, update_time from sys_file
+    </sql>
+
+    <select id="selectSysFileList" parameterType="com.xingqiao.system.domain.SysFile" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="businessId != null "> and business_id = #{businessId}</if>
+            <if test="businessType != null  and businessType != ''"> and business_type = #{businessType}</if>
+            <if test="fileType != null  and fileType != ''"> and file_type = #{fileType}</if>
+            <if test="fileUrl != null  and fileUrl != ''"> and file_url = #{fileUrl}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+        </where>
+    </select>
+
+    <select id="selectSysFileById" parameterType="Long" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysFile" parameterType="com.xingqiao.system.domain.SysFile" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="businessType != null and businessType != ''">business_type,</if>
+            <if test="fileType != null and fileType != ''">file_type,</if>
+            <if test="fileUrl != null and fileUrl != ''">file_url,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="businessId != null">#{businessId},</if>
+            <if test="businessType != null and businessType != ''">#{businessType},</if>
+            <if test="fileType != null and fileType != ''">#{fileType},</if>
+            <if test="fileUrl != null and fileUrl != ''">#{fileUrl},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysFile" parameterType="com.xingqiao.system.domain.SysFile">
+        update sys_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="businessId != null">business_id = #{businessId},</if>
+            <if test="businessType != null and businessType != ''">business_type = #{businessType},</if>
+            <if test="fileType != null and fileType != ''">file_type = #{fileType},</if>
+            <if test="fileUrl != null and fileUrl != ''">file_url = #{fileUrl},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysFileById" parameterType="Long">
+        delete from sys_file where id = #{id}
+    </delete>
+
+    <delete id="deleteSysFileByIds" parameterType="String">
+        delete from sys_file where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <insert id="batchSysFile">
+        insert into sys_file (user_id, business_id, business_type, file_type, file_url, sort_order, remark, create_by, create_time, update_by, update_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.userId},#{item.businessId},#{item.businessType},#{item.fileType},#{item.fileUrl},#{item.sortOrder},#{item.remark},#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime})
+        </foreach>
+    </insert>
+    
+    <update id="batchUpdateSysFile">
+        <foreach collection="list" item="item" separator=";">
+            update sys_file
+            <set>
+                user_id = #{item.userId},
+                business_id = #{item.businessId},
+                business_type = #{item.businessType},
+                file_type = #{item.fileType},
+                file_url = #{item.fileUrl},
+                sort_order = #{item.sortOrder},
+                remark = #{item.remark},
+                update_by = #{item.updateBy},
+                update_time = #{item.updateTime}
+            </set>
+            <where>
+                id = #{item.id}
+            </where>
+        </foreach>
+    </update>
+</mapper>

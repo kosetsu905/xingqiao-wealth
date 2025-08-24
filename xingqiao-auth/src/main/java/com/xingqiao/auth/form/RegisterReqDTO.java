@@ -35,11 +35,11 @@ public class RegisterReqDTO {
     private String comfirmPassword;
 
     /**
-     * 验证码
+     * 图形验证码
      */
     private String code;
 
-    /**
+        /**
      * 验证码
      */
     private String sendCode;

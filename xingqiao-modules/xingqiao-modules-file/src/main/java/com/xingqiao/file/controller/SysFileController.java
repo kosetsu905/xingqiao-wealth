@@ -11,7 +11,7 @@ import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.core.utils.StringUtils;
 import com.xingqiao.common.core.utils.file.FileUtils;
 import com.xingqiao.file.service.ISysFileService;
-import com.xingqiao.system.api.domain.SysFile;
+import com.xingqiao.system.api.domain.SystemFile;
 
 /**
  * 文件请求处理
@@ -30,13 +30,13 @@ public class SysFileController
      * 文件上传请求
      */
     @PostMapping("upload")
-    public R<SysFile> upload(MultipartFile file)
+    public R<SystemFile> upload(MultipartFile file)
     {
         try
         {
             // 上传并返回访问地址
             String url = sysFileService.uploadFile(file);
-            SysFile sysFile = new SysFile();
+            SystemFile sysFile = new SystemFile();
             sysFile.setName(FileUtils.getName(url));
             sysFile.setUrl(url);
             return R.ok(sysFile);

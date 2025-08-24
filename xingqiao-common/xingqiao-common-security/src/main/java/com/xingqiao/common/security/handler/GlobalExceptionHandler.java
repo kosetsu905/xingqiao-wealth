@@ -14,6 +14,7 @@ import com.xingqiao.common.core.constant.HttpStatus;
 import com.xingqiao.common.core.exception.DemoModeException;
 import com.xingqiao.common.core.exception.InnerAuthException;
 import com.xingqiao.common.core.exception.ServiceException;
+import com.xingqiao.common.core.exception.auth.NotLoginException;
 import com.xingqiao.common.core.exception.auth.NotPermissionException;
 import com.xingqiao.common.core.exception.auth.NotRoleException;
 import com.xingqiao.common.core.text.Convert;
@@ -159,8 +160,21 @@ public class GlobalExceptionHandler
      * 演示模式异常
      */
     @ExceptionHandler(DemoModeException.class)
-    public AjaxResult handleDemoModeException(DemoModeException e)
+    public AjaxResult handleDemoModeException(DemoModeException e, HttpServletRequest request)
     {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}',演示模式，不允许操作 '{}'", requestURI, e.getMessage());
         return AjaxResult.error("演示模式，不允许操作");
+    }
+
+    /**
+     * 认证失败异常
+     */
+    @ExceptionHandler(NotLoginException.class)
+    public AjaxResult handleNotLoginException(NotLoginException e, HttpServletRequest request)
+    {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}',认证失败'{}'", requestURI, e.getMessage());
+        return AjaxResult.error(HttpStatus.UNAUTHORIZED, "认证失败，无法访问系统资源");
     }
 }

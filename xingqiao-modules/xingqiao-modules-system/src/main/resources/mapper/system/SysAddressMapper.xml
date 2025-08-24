@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.system.mapper.SysAddressMapper">
+
+    <resultMap type="com.xingqiao.system.domain.SysAddress" id="SysAddressResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userTempId"    column="user_temp_id"    />
+        <result property="recipientName"    column="recipient_name"    />
+        <result property="recipientPhone"    column="recipient_phone"    />
+        <result property="country"    column="country"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="district"    column="district"    />
+        <result property="detailAddress"    column="detail_address"    />
+        <result property="addressType"    column="address_type"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="zipCode"    column="zip_code"    />
+        <result property="addressLabel"    column="address_label"    />
+        <result property="isDeleted"    column="is_deleted"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysAddressVo">
+        select id, user_id, user_temp_id, recipient_name, recipient_phone, country, province, city, district, detail_address, address_type, is_default, zip_code, address_label, is_deleted, status, remark, create_by, create_time, update_by, update_time from sys_address
+    </sql>
+
+    <select id="selectSysAddressList" parameterType="com.xingqiao.system.domain.SysAddress" resultMap="SysAddressResult">
+        <include refid="selectSysAddressVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userTempId != null  and userTempId != ''"> and user_temp_id = #{userTempId}</if>
+            <if test="recipientName != null  and recipientName != ''"> and recipient_name like concat('%', #{recipientName}, '%')</if>
+            <if test="recipientPhone != null  and recipientPhone != ''"> and recipient_phone = #{recipientPhone}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="province != null  and province != ''"> and province = #{province}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="district != null  and district != ''"> and district = #{district}</if>
+            <if test="detailAddress != null  and detailAddress != ''"> and detail_address = #{detailAddress}</if>
+            <if test="addressType != null "> and address_type = #{addressType}</if>
+            <if test="isDefault != null "> and is_default = #{isDefault}</if>
+            <if test="zipCode != null  and zipCode != ''"> and zip_code = #{zipCode}</if>
+            <if test="addressLabel != null  and addressLabel != ''"> and address_label = #{addressLabel}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectSysAddressById" parameterType="Long" resultMap="SysAddressResult">
+        <include refid="selectSysAddressVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysAddress" parameterType="com.xingqiao.system.domain.SysAddress" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userTempId != null and userTempId != ''">user_temp_id,</if>
+            <if test="recipientName != null and recipientName != ''">recipient_name,</if>
+            <if test="recipientPhone != null and recipientPhone != ''">recipient_phone,</if>
+            <if test="country != null">country,</if>
+            <if test="province != null and province != ''">province,</if>
+            <if test="city != null and city != ''">city,</if>
+            <if test="district != null">district,</if>
+            <if test="detailAddress != null and detailAddress != ''">detail_address,</if>
+            <if test="addressType != null">address_type,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="zipCode != null">zip_code,</if>
+            <if test="addressLabel != null">address_label,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userTempId != null and userTempId != ''">#{userTempId},</if>
+            <if test="recipientName != null and recipientName != ''">#{recipientName},</if>
+            <if test="recipientPhone != null and recipientPhone != ''">#{recipientPhone},</if>
+            <if test="country != null">#{country},</if>
+            <if test="province != null and province != ''">#{province},</if>
+            <if test="city != null and city != ''">#{city},</if>
+            <if test="district != null">#{district},</if>
+            <if test="detailAddress != null and detailAddress != ''">#{detailAddress},</if>
+            <if test="addressType != null">#{addressType},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="zipCode != null">#{zipCode},</if>
+            <if test="addressLabel != null">#{addressLabel},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysAddress" parameterType="com.xingqiao.system.domain.SysAddress">
+        update sys_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userTempId != null and userTempId != ''">user_temp_id = #{userTempId},</if>
+            <if test="recipientName != null and recipientName != ''">recipient_name = #{recipientName},</if>
+            <if test="recipientPhone != null and recipientPhone != ''">recipient_phone = #{recipientPhone},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="district != null">district = #{district},</if>
+            <if test="detailAddress != null and detailAddress != ''">detail_address = #{detailAddress},</if>
+            <if test="addressType != null">address_type = #{addressType},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="zipCode != null">zip_code = #{zipCode},</if>
+            <if test="addressLabel != null">address_label = #{addressLabel},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysAddressById" parameterType="Long">
+        delete from sys_address where id = #{id}
+    </delete>
+
+    <delete id="deleteSysAddressByIds" parameterType="String">
+        delete from sys_address where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

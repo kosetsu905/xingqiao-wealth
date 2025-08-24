@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
@@ -42,6 +43,13 @@ public class GatewayExceptionHandler implements ErrorWebExceptionHandler
         else if (ex instanceof ResponseStatusException)
         {
             ResponseStatusException responseStatusException = (ResponseStatusException) ex;
+            HttpStatus status = responseStatusException.getStatus();
+            // 处理401未授权异常
+            if (status == HttpStatus.UNAUTHORIZED) {
+                msg = "认证失败，无法访问系统资源";
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                return ServletUtils.webFluxResponseWriter(response, msg, HttpStatus.UNAUTHORIZED.value());
+            }
             msg = responseStatusException.getMessage();
         }
         else

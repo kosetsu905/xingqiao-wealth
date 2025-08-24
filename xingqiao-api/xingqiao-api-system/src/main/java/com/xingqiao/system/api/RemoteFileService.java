@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import com.xingqiao.common.core.constant.ServiceNameConstants;
 import com.xingqiao.common.core.domain.R;
-import com.xingqiao.system.api.domain.SysFile;
+import com.xingqiao.system.api.domain.SystemFile;
 import com.xingqiao.system.api.factory.RemoteFileFallbackFactory;
 
 /**
@@ -27,7 +27,7 @@ public interface RemoteFileService
      * @return 结果
      */
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R<SysFile> upload(@RequestPart(value = "file") MultipartFile file);
+    public R<SystemFile> upload(@RequestPart(value = "file") MultipartFile file);
 
     /**
      * 删除文件

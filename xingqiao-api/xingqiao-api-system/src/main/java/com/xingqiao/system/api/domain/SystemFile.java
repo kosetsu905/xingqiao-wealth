@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * 
  * @author xingqiao
  */
-public class SysFile
+public class SystemFile
 {
     /**
      * 文件名称

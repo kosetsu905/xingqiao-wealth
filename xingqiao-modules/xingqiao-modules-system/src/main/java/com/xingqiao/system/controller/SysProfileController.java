@@ -25,7 +25,7 @@ import com.xingqiao.common.log.enums.BusinessType;
 import com.xingqiao.common.security.service.TokenService;
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.system.api.RemoteFileService;
-import com.xingqiao.system.api.domain.SysFile;
+import com.xingqiao.system.api.domain.SystemFile;
 import com.xingqiao.system.api.domain.SysUser;
 import com.xingqiao.system.api.model.LoginUser;
 import com.xingqiao.system.service.ISysUserService;
@@ -143,7 +143,7 @@ public class SysProfileController extends BaseController
             {
                 return error("文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
             }
-            R<SysFile> fileResult = remoteFileService.upload(file);
+            R<SystemFile> fileResult = remoteFileService.upload(file);
             if (StringUtils.isNull(fileResult) || StringUtils.isNull(fileResult.getData()))
             {
                 return error("文件服务异常，请联系管理员");

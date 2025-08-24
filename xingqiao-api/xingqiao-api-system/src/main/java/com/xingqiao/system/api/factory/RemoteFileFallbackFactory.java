@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.system.api.RemoteFileService;
-import com.xingqiao.system.api.domain.SysFile;
+import com.xingqiao.system.api.domain.SystemFile;
 
 /**
  * 文件服务降级处理
@@ -26,7 +26,7 @@ public class RemoteFileFallbackFactory implements FallbackFactory<RemoteFileServ
         return new RemoteFileService()
         {
             @Override
-            public R<SysFile> upload(MultipartFile file)
+            public R<SystemFile> upload(MultipartFile file)
             {
                 return R.fail("上传文件失败:" + throwable.getMessage());
             }

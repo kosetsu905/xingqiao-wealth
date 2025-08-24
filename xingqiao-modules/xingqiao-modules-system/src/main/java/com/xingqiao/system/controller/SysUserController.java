@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.xingqiao.system.api.domain.*;
 import com.xingqiao.system.api.enums.UserType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
@@ -35,9 +36,6 @@ import com.xingqiao.common.security.annotation.InnerAuth;
 import com.xingqiao.common.security.annotation.RequiresPermissions;
 import com.xingqiao.common.security.service.TokenService;
 import com.xingqiao.common.security.utils.SecurityUtils;
-import com.xingqiao.system.api.domain.SysDept;
-import com.xingqiao.system.api.domain.SysRole;
-import com.xingqiao.system.api.domain.SysUser;
 import com.xingqiao.system.api.model.LoginUser;
 import com.xingqiao.system.service.ISysConfigService;
 import com.xingqiao.system.service.ISysDeptService;
@@ -384,5 +382,13 @@ public class  SysUserController extends BaseController
     public AjaxResult deptTree(SysDept dept)
     {
         return success(deptService.selectDeptTreeList(dept));
+    }
+
+
+    //头像url保存
+    @PostMapping("/uploadAvatar")
+    public R<?> uploadAvatar(@RequestBody SystemFile systemFile) {
+        Long userId = SecurityUtils.getUserId();
+        return R.ok(userService.uploadAvatar(userId,systemFile));
     }
 }

@@ -2,6 +2,7 @@ package com.xingqiao.system.service;
 
 import java.util.List;
 import com.xingqiao.system.api.domain.SysUser;
+import com.xingqiao.system.api.domain.SystemFile;
 
 /**
  * 用户 业务层
@@ -205,4 +206,6 @@ public interface ISysUserService
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
 
     int deleteCUserByUserIds(Long[] userIds);
+
+    int uploadAvatar(Long userId, SystemFile systemFile);
 }
