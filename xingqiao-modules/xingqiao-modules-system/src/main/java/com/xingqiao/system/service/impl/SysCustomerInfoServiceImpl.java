@@ -12,6 +12,7 @@ import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.system.api.domain.*;
 import com.xingqiao.system.api.model.CustomerInfoResponse;
+import com.xingqiao.system.api.model.CustomerListInnerResponse;
 import com.xingqiao.system.api.model.CustomerListResponse;
 import com.xingqiao.system.api.model.CustomerSaleListResponse;
 import com.xingqiao.system.domain.SalesOpportunity;
@@ -233,7 +234,7 @@ public class SysCustomerInfoServiceImpl implements ISysCustomerInfoService
     }
 
     @Override
-    public List<CustomerListResponse> getCustomerList(CustomerQueryRequest request) {
+    public List<CustomerListResponse> getList(CustomerQueryRequest request) {
 
         // 查询客户基本信息
         SysCustomerInfo queryCustomerInfo=new SysCustomerInfo();
@@ -356,6 +357,13 @@ public class SysCustomerInfoServiceImpl implements ISysCustomerInfoService
         return 1;
     }
 
+    @Override
+    public List<CustomerListInnerResponse> getCustomerInnerList(CustomerQueryInnerRequest request) {
+       if (CollectionUtils.isEmpty(request.getIdList())) {
+           return Collections.emptyList();
+       }
+       return customerExtMapper.selectSysCustomerInfoByIds(request.getIdList());
+    }
 
 
     @Transactional

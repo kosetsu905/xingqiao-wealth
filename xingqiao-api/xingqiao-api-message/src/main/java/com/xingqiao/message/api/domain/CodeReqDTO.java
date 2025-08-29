@@ -1,6 +1,6 @@
-package com.xingqiao.auth.form;
+package com.xingqiao.message.api.domain;
 
-import com.xingqiao.auth.annotation.PhoneOrEmailRequired;
+import com.xingqiao.message.api.annotation.PhoneOrEmailRequired;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;

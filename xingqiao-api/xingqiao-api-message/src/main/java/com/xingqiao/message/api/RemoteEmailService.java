@@ -1,9 +1,9 @@
-package com.xingqiao.system.api;
+package com.xingqiao.message.api;
 
 import com.xingqiao.common.core.constant.SecurityConstants;
 import com.xingqiao.common.core.constant.ServiceNameConstants;
 import com.xingqiao.common.core.domain.R;
-import com.xingqiao.system.api.factory.RemoteEmailFallbackFactory;
+import com.xingqiao.message.api.factory.RemoteEmailFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  * 
  * @author xingqiao
  */
-@FeignClient(contextId = "remoteEmailService", value = ServiceNameConstants.SYSTEM_SERVICE, fallbackFactory = RemoteEmailFallbackFactory.class)
+@FeignClient(contextId = "remoteEmailService", value = ServiceNameConstants.MESSAGE_SERVICE, fallbackFactory = RemoteEmailFallbackFactory.class)
 public interface RemoteEmailService
 {
 

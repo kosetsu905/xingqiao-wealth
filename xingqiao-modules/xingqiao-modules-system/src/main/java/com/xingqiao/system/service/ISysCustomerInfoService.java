@@ -1,12 +1,13 @@
 package com.xingqiao.system.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
+import com.xingqiao.system.api.domain.CustomerQueryInnerRequest;
 import com.xingqiao.system.api.domain.CustomerQueryRequest;
 import com.xingqiao.system.api.domain.CustomerSaleSaveRequest;
 import com.xingqiao.system.api.domain.CustomerSaveRequest;
 import com.xingqiao.system.api.model.CustomerInfoResponse;
+import com.xingqiao.system.api.model.CustomerListInnerResponse;
 import com.xingqiao.system.api.model.CustomerListResponse;
 import com.xingqiao.system.api.model.CustomerSaleListResponse;
 import com.xingqiao.system.domain.SysCustomerInfo;
@@ -71,7 +72,7 @@ public interface ISysCustomerInfoService
 
     CustomerInfoResponse getCustomerInfo(Long employeeId,Long id);
 
-    List<CustomerListResponse> getCustomerList(CustomerQueryRequest request);
+    List<CustomerListResponse> getList(CustomerQueryRequest request);
 
     List<CustomerSaleListResponse> getCustomerSalesList(CustomerQueryRequest request);
 
@@ -84,4 +85,6 @@ public interface ISysCustomerInfoService
     int updateCustomerIntention(CustomerSaleSaveRequest request);
 
     int deleteCustomerInfo(String userTempId, Long employeeId);
+
+    List<CustomerListInnerResponse> getCustomerInnerList(CustomerQueryInnerRequest request);
 }

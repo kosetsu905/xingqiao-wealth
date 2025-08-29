@@ -21,4 +21,8 @@ public class ServiceNameConstants
      * 文件服务的serviceid
      */
     public static final String FILE_SERVICE = "xingqiao-file";
+
+
+    public static final String MESSAGE_SERVICE = "xingqiao-message";
+
 }

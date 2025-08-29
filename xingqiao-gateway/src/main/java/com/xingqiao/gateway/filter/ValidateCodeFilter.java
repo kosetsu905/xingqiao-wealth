@@ -26,7 +26,7 @@ import reactor.core.publisher.Flux;
 @Component
 public class ValidateCodeFilter extends AbstractGatewayFilterFactory<Object>
 {
-    private final static String[] VALIDATE_URL = new String[] { "/auth/login", "/auth/register",  "/auth/client/sendCode" };
+    private final static String[] VALIDATE_URL = new String[] { "/auth/login", "/auth/register",  "/message/sendCode" };
 
     @Autowired
     private ValidateCodeService validateCodeService;

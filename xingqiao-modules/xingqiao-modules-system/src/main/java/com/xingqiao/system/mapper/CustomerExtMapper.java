@@ -1,9 +1,11 @@
 package com.xingqiao.system.mapper;
 
 
+import com.xingqiao.system.api.model.CustomerListInnerResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * 客户信息Mapper接口
@@ -28,4 +30,6 @@ public interface CustomerExtMapper
     void deleteSalesOpportunityByUserTempId(@Param("userTempId") String userTempId);
 
     void deleteCustomerFinancialByUserId(@Param("userTempId") String userTempId);
+
+    List<CustomerListInnerResponse> selectSysCustomerInfoByIds(@Param("list") List<Long> idList);
 }

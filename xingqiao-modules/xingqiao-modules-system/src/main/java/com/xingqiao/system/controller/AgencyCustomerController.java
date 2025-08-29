@@ -4,18 +4,17 @@ import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.core.web.controller.BaseController;
 import com.xingqiao.common.core.web.page.TableDataInfo;
 import com.xingqiao.common.security.utils.SecurityUtils;
+import com.xingqiao.system.api.domain.CustomerQueryInnerRequest;
 import com.xingqiao.system.api.domain.CustomerQueryRequest;
 import com.xingqiao.system.api.domain.CustomerSaleSaveRequest;
 import com.xingqiao.system.api.domain.CustomerSaveRequest;
 import com.xingqiao.system.api.model.CustomerInfoResponse;
+import com.xingqiao.system.api.model.CustomerListInnerResponse;
 import com.xingqiao.system.api.model.CustomerListResponse;
 import com.xingqiao.system.api.model.CustomerSaleListResponse;
-import com.xingqiao.system.domain.SysNotice;
 import com.xingqiao.system.service.ISysCustomerInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigInteger;
 import java.util.List;
 
 @RestController
@@ -62,11 +61,11 @@ public class AgencyCustomerController extends BaseController {
      * 获取客户信息
      */
     @GetMapping("/list")
-    public TableDataInfo getCustomerList(CustomerQueryRequest request) {
+    public TableDataInfo getList(CustomerQueryRequest request) {
         Long employeeId = SecurityUtils.getUserId();
         request.setEmployeeId(employeeId);
         startPage();
-        List<CustomerListResponse> list = customerService.getCustomerList(request);
+        List<CustomerListResponse> list = customerService.getList(request);
         return getDataTable(list);
 
     }
@@ -144,6 +143,15 @@ public class AgencyCustomerController extends BaseController {
             logger.error("更新客户信息失败：", e);
             return R.fail("失败");
         }
+    }
+
+
+    /**
+     * 获取客户信息
+     */
+    @PostMapping("/customerList")
+    public R<List<CustomerListInnerResponse>> getCustomerInnerList(@RequestBody CustomerQueryInnerRequest request) {
+        return R.ok(customerService.getCustomerInnerList(request));
     }
 
 }

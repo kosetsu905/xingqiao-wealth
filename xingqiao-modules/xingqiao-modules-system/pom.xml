@@ -70,12 +70,6 @@
             <groupId>com.xingqiao</groupId>
             <artifactId>xingqiao-common-swagger</artifactId>
         </dependency>
-        <!-- Spring Boot 邮件启动器（包含 JavaMail 核心库） -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-
         <!-- Thymeleaf 模板引擎（用于邮件模板渲染） -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

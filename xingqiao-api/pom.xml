@@ -10,6 +10,7 @@
 
     <modules>
         <module>xingqiao-api-system</module>
+        <module>xingqiao-api-message</module>
     </modules>
 
     <artifactId>xingqiao-api</artifactId>

@@ -1,4 +1,4 @@
-package com.xingqiao.system.utils;
+package com.xingqiao.message.util.email;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,13 +9,11 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import javax.activation.DataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +26,7 @@ import java.util.Map;
 @Component
 @Slf4j // 自动注入日志
 public class EmailUtils {
+
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;

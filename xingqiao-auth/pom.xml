@@ -63,6 +63,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.xingqiao</groupId>
+            <artifactId>xingqiao-api-message</artifactId>
+            <version>3.6.6</version>
+        </dependency>
+
     </dependencies>
 	
     <build>

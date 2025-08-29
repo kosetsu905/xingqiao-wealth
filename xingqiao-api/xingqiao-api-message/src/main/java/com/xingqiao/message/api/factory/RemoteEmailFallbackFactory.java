@@ -1,7 +1,7 @@
-package com.xingqiao.system.api.factory;
+package com.xingqiao.message.api.factory;
 
 import com.xingqiao.common.core.domain.R;
-import com.xingqiao.system.api.RemoteEmailService;
+import com.xingqiao.message.api.RemoteEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;

@@ -16,5 +16,14 @@
     <delete id="deleteCustomerFinancialByUserId">
         delete from sys_customer_financial where user_temp_id = #{userTempId}
     </delete>
+    <select id="selectSysCustomerInfoByIds"
+            resultType="com.xingqiao.system.api.model.CustomerListInnerResponse">
+        select id, user_temp_id as userTempId, avatar, full_name as fullName, age, gender,
+               phone_number as phoneNumber, email, marital_status as maritalStatus, status, create_time as createTime
+        from sys_customer_info where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

@@ -1,4 +1,4 @@
-package com.xingqiao.auth.annotation;
+package com.xingqiao.message.api.annotation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

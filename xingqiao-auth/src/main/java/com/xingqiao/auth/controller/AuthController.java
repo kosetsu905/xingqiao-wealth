@@ -3,13 +3,11 @@ package com.xingqiao.auth.controller;
 
 import com.xingqiao.auth.common.LoginContext;
 import com.xingqiao.auth.common.RegisterContext;
-import com.xingqiao.auth.form.CodeReqDTO;
 import com.xingqiao.auth.form.LoginReqDTO;
 import com.xingqiao.auth.form.RegisterReqDTO;
 import com.xingqiao.auth.service.SysLoginService;
 import com.xingqiao.common.core.domain.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -39,11 +37,4 @@ public class AuthController
         return R.ok(registerContext.executeRegister(request));
     }
 
-    /**
-     * 发验证码接口
-     */
-    @PostMapping("/sendCode")
-    public R<?> sendCode(@RequestBody @Valid  CodeReqDTO codeReqDTO) {
-        return sysLoginService.sendCode(codeReqDTO);
-    }
 }

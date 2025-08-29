@@ -175,9 +175,9 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public boolean checkUserNameUnique(SysUser user)
     {
-        Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
-        SysUser info = userMapper.checkUserNameUnique(user.getUserName(),UserType.PLATFORM.getCode());
-        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
+        long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
+        SysUser info = userMapper.checkUserNameUnique(user.getUserName(),user.getUserType());
+        if (StringUtils.isNotNull(info) && info.getUserId() != userId)
         {
             return UserConstants.NOT_UNIQUE;
         }
@@ -194,7 +194,7 @@ public class SysUserServiceImpl implements ISysUserService
     public boolean checkPhoneUnique(SysUser user)
     {
         Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
-        SysUser info = userMapper.checkPhoneUnique(user.getPhoneNumber(),UserType.PLATFORM.getCode());
+        SysUser info = userMapper.checkPhoneUnique(user.getPhoneNumber(),user.getUserType());
         if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
         {
             return UserConstants.NOT_UNIQUE;
@@ -211,9 +211,9 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public boolean checkEmailUnique(SysUser user)
     {
-        Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
-        SysUser info = userMapper.checkEmailUnique(user.getEmail(),UserType.PLATFORM.getCode());
-        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
+        long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
+        SysUser info = userMapper.checkEmailUnique(user.getEmail(),user.getUserType());
+        if (StringUtils.isNotNull(info) && info.getUserId() != userId)
         {
             return UserConstants.NOT_UNIQUE;
         }

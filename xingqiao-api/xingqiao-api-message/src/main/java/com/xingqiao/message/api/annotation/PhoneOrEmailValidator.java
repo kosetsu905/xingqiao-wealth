@@ -1,6 +1,6 @@
-package com.xingqiao.auth.annotation;
+package com.xingqiao.message.api.annotation;
 
-import com.xingqiao.auth.form.CodeReqDTO;
+import com.xingqiao.message.api.domain.CodeReqDTO;
 import com.xingqiao.common.core.utils.StringUtils;
 
 import javax.validation.ConstraintValidator;
