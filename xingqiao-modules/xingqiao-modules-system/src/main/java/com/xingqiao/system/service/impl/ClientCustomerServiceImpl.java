@@ -12,47 +12,90 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Map;
 
 @Service
 public class ClientCustomerServiceImpl implements ClientCustomerService {
 
-    private static com.aliyun.credentials.Client credentialClient = new com.aliyun.credentials.Client();
 
     @Override
-    public String getEkycReturnUrl(JSONObject metaInfo) {
+    public String getEkycReturnUrl(JSONObject metaInfo) throws Exception {
 
+        com.aliyun.teaopenapi.Client client = createClient();
+        com.aliyun.teaopenapi.models.Params params = createApiInfo();
+        // query params
+        java.util.Map<String, Object> queries = new java.util.HashMap<>();
+        queries.put("SceneId", 1000014670);
+        queries.put("OuterOrderNo", "2025083117240001");
+        queries.put("ProductCode", "ID_PRO");
+        queries.put("CertType", "IDENTITY_CARD");
+        queries.put("CertName", "覃冠木");
+        queries.put("CertNo", "450802198906072016");
+        queries.put("ReturnUrl", "www.aliyun.com");
+        queries.put("Mobile", "17665319189");
+        queries.put("MetaInfo", metaInfo.toJSONString());
+        queries.put("Ip", null);
+        queries.put("UserId", "1");
+        queries.put("OssBucketName", "cn-shenzhen-aliyun-cloudauth-2025081614336153");
+        queries.put("OssObjectName", "ekyc/8gSMABJACgXEdZM.thumb.1000_0.png");
+        // body params
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("FaceContrastPicture", "/9j/4AAQSkZJRgABAQAASxxxxxxx");
+        // runtime options
+        com.aliyun.teautil.models.RuntimeOptions runtime = new com.aliyun.teautil.models.RuntimeOptions();
+        com.aliyun.teaopenapi.models.OpenApiRequest request = new com.aliyun.teaopenapi.models.OpenApiRequest()
+                .setQuery(com.aliyun.openapiutil.Client.query(queries))
+                .setBody(body);
+        // 复制代码运行请自行打印 API 的返回值
+        // 返回值实际为 Map 类型，可从 Map 中获得三类数据：响应体 body、响应头 headers、HTTP 返回的状态码 statusCode。
+        Object resp = client.callApi(params, request, runtime);
+        com.aliyun.teaconsole.Client.log(com.aliyun.teautil.Common.toJSONString(resp));
 
-//        InitFaceVerifyRequest request = new InitFaceVerifyRequest();
-//        // 场景ID+L。
-//        request.setSceneId(1000014670L);
-//        // 设置商户请求的唯一标识。
-//        request.setOuterOrderNo("2025083017240001");
-//        // 认证方案。
-//        request.setProductCode("ID_PRO");
-//        // 模式。
-//        request.setModel("LIVENESS");
-//        request.setCertType("IDENTITY_CARD");
-//        request.setCertName("覃冠木");
-//        request.setCertNo("450802198906072016");
-//        // MetaInfo环境参数，此参数应由前端js获取并传入。
-//        request.setMetaInfo(metaInfo.toJSONString());
-//        //业务页面回跳的目标地址。
-//        request.setReturnUrl("https://www.aliyundoc.com");
-//
-//        InitFaceVerifyResponse response = initFaceVerifyAutoRoute(request);
-//
-//        response.getBody().getRequestId();
-//        response.getBody().getResultObject().getCertifyId();
-//        System.out.println(response.getBody().getRequestId());
-//        System.out.println(response.getBody().getCode());
-//        System.out.println(response.getBody().getMessage());
-//        System.out.println(response.getBody().getResultObject() == null ? null
-//                : response.getBody().getResultObject().getCertifyId());
-//        return response.getBody().getResultObject().getCertifyUrl();
-
+        // 解析返回结果，提取CertifyUrl
+        if (resp instanceof Map) {
+            Map<String, Object> responseMap = (Map<String, Object>) resp;
+            if (responseMap.containsKey("body")) {
+                Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
+                if (bodyMap.containsKey("ResultObject")) {
+                    Map<String, Object> resultObject = (Map<String, Object>) bodyMap.get("ResultObject");
+                    if (resultObject.containsKey("CertifyUrl")) {
+                        return (String) resultObject.get("CertifyUrl");
+                    }
+                }
+            }
+        }
+        
         return "";
     }
+
+
+    /**
+     * <b>description</b> :
+     * <p>API 相关</p>
+     *
+     * @return OpenApi.Params
+     */
+    public static com.aliyun.teaopenapi.models.Params createApiInfo() throws Exception {
+        com.aliyun.teaopenapi.models.Params params = new com.aliyun.teaopenapi.models.Params()
+                // 接口名称
+                .setAction("InitFaceVerify")
+                // 接口版本
+                .setVersion("2019-03-07")
+                // 接口协议
+                .setProtocol("HTTPS")
+                // 接口 HTTP 方法
+                .setMethod("POST")
+                .setAuthType("AK")
+                .setStyle("RPC")
+                // 接口 PATH
+                .setPathname("/")
+                // 接口请求体内容格式
+                .setReqBodyType("formData")
+                // 接口响应体内容格式
+                .setBodyType("json");
+        return params;
+    }
+
 
     /**
      * <b>description</b> :
@@ -67,7 +110,13 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
         com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config()
                 .setCredential(credential);
         // Endpoint 请参考 https://api.aliyun.com/product/Cloudauth
+                // 您的AccessKey ID
+        config.setAccessKeyId("LTAI5tJZnKc3VN96FeVvDUbw")
+                // 您的AccessKey Secret
+                .setAccessKeySecret("gu4tSpLB9utFEZouYoKRwX4OfqKwQT");
+        // 访问的域名
         config.endpoint = "cloudauth.aliyuncs.com";
+
         return new com.aliyun.cloudauth20190307.Client(config);
     }
 }

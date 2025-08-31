@@ -18,7 +18,7 @@ public class ClientCustomerController extends BaseController {
     private ClientCustomerService clientCustomerService;
 
     @PostMapping("/getEkycReturnUrl")
-    public R getEkycReturnUrl(@RequestBody  JSONObject metaInfo) {
+    public R getEkycReturnUrl(@RequestBody  JSONObject metaInfo) throws Exception {
         return R.ok(clientCustomerService.getEkycReturnUrl(metaInfo));
     }
 
