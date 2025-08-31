@@ -2,6 +2,7 @@ package com.xingqiao.system.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.xingqiao.common.core.web.domain.BaseEntity;
+import com.xingqiao.system.api.model.AuditInfoResp;
 import lombok.Data;
 
 import java.util.Date;
@@ -78,6 +79,9 @@ public class AgencyEkyc extends BaseEntity {
     private Date updateTime;
 
     private Long userId;
+
+    //审核信息
+    private List<AuditInfoResp> auditInfoRespList;
 
 }
 

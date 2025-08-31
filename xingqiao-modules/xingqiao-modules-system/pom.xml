@@ -83,8 +83,13 @@
         <!-- 阿里实人认证 -->
         <dependency>
             <groupId>com.aliyun</groupId>
+            <artifactId>credentials-java</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
             <artifactId>cloudauth20190307</artifactId>
-            <version>3.9.2</version>
+            <version>3.9.4</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

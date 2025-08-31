@@ -8,7 +8,9 @@ import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.common.core.utils.IdCardInfoExtractor;
 import com.xingqiao.system.api.domain.AgencyEkyc;
+import com.xingqiao.system.api.domain.AuthAgencyEkyc;
 import com.xingqiao.system.api.domain.Qualifications;
+import com.xingqiao.system.api.model.AuditInfoResp;
 import com.xingqiao.system.api.model.SysEmployeeInfoResp;
 import com.xingqiao.system.api.domain.SysUser;
 import com.xingqiao.system.api.enums.AuditStatusEnums;
@@ -49,6 +51,8 @@ public class SysEmployeeInfoServiceImpl implements ISysEmployeeInfoService
     private ISysEmployeeQualificationsService sysEmployeeQualificationsService;
     @Autowired
     private ISysUserService userService;
+    @Autowired
+    private ISysAuditService sysAuditService;
     /**
      * 查询员工信息
      *
@@ -176,15 +180,23 @@ public class SysEmployeeInfoServiceImpl implements ISysEmployeeInfoService
         //批量插入
         int insert=iSysFileService.batchSysFile(sysFiles);
         log.info("员工资质文件保存成功 | 员工信息：{}", insert);
-        //更新审核记录
+        //审核记录
         SysAudit sysAudit = new SysAudit();
         sysAudit.setUserId(ekycData.getUserId());
         sysAudit.setBusinessId(businessId);
-        sysAudit.setAuditStatus(AuditStatusEnums.ON.getCode());
+        sysAudit.setBusinessType("agency_ekyc");
+        sysAudit.setAuditStatus(AuditStatusEnums.INIT.getCode());
+        sysAudit.setAuditTime(new Date());
         sysAudit.setUpdateBy(ekycData.getUpdateBy());
+        sysAudit.setCreateBy(ekycData.getUpdateBy());
         sysAudit.setUpdateTime(new Date());
-        int update=iSysAuditService.updateSysAudit(sysAudit);
-        log.info("员工审核记录更新成功 | 员工信息：{}", update);
+        sysAudit.setCreateTime(new Date());
+        sysAudit.setAuditorId(ekycData.getUserId());
+        sysAudit.setRemark("提交审核");
+        sysAudit.setAuditorName(ekycData.getUpdateBy());
+        sysAudit.setUpdateTime(new Date());
+        int update=iSysAuditService.insertSysAudit(sysAudit);
+        log.info("员工审核记录成功 | 员工信息：{}", update);
 
         return R.ok();
     }
@@ -215,7 +227,7 @@ public class SysEmployeeInfoServiceImpl implements ISysEmployeeInfoService
         sysEmployeeQualifications.setCertificateExpiryDate(initQualification.getCertificateExpiryDate());
         sysEmployeeQualifications.setYearsOfPractice(initQualification.getYearsOfPractice());
         sysEmployeeQualifications.setProfessionalConfirmed(initQualification.getProfessionalConfirmed());
-        sysEmployeeQualifications.setStatus("0");
+        sysEmployeeQualifications.setStatus(AuditStatusEnums.INIT.getCode()+"");
         sysEmployeeQualifications.setCreateBy(ekycData.getUpdateBy());
         sysEmployeeQualifications.setCreateTime(new Date());
         sysEmployeeQualifications.setUpdateBy(ekycData.getUpdateBy());
@@ -253,7 +265,7 @@ public class SysEmployeeInfoServiceImpl implements ISysEmployeeInfoService
 //        sysEmployeeInfo.setAvatarUrl(ekycData.getAvatarUrl());
         sysEmployeeInfo.setCountryCode(ekycData.getCountryCode());
         //待审核
-        sysEmployeeInfo.setStatus("1");
+        sysEmployeeInfo.setStatus(AuditStatusEnums.INIT.getCode()+"");
         sysEmployeeInfo.setCreateBy(ekycData.getUpdateBy());
         sysEmployeeInfo.setCreateTime(new Date());
         sysEmployeeInfo.setUpdateBy(ekycData.getUpdateBy());
@@ -304,35 +316,45 @@ public class SysEmployeeInfoServiceImpl implements ISysEmployeeInfoService
             }).collect(Collectors.toList());
             
             agencyEkyc.setQualifications(qualifications);
+
+
+            //查询审核列表 List<AuditInfoResp> auditInfoRespList;
+            SysAudit sysAudit = new SysAudit();
+            sysAudit.setUserId(userId);
+            List<SysAudit> auditList = sysAuditService.selectSysAuditList(sysAudit);
+            //List<SysAudit> auditList转List<AuditInfoResp> auditInfoRespList
+            List<AuditInfoResp> auditInfoRespList = auditList.stream().map(item -> {
+                AuditInfoResp auditInfoResp = new AuditInfoResp();
+                BeanUtils.copyProperties(item, auditInfoResp);
+                return auditInfoResp;
+            }).collect(Collectors.toList());
+            agencyEkyc.setAuditInfoRespList(auditInfoRespList);
             return agencyEkyc;
         }
         return new AgencyEkyc();
     }
 
     @Override
-    public SysEmployeeInfoResp selectSysEmployeeInfo(Long userId) {
+    public SysEmployeeInfoResp selectSysEmployeeInfo(Long userId,Long employeeId) {
         SysEmployeeInfoResp sysEmployeeInfoResp = new SysEmployeeInfoResp();
+        if(employeeId!=null){
+            userId=employeeId;
+        }
         SysUser sysUser = userService.selectUserById(userId);
-        sysEmployeeInfoResp.setAvatar(sysUser.getAvatar());
+        if (sysUser == null){
+            throw new RuntimeException("用户不存在");
+        }
 
         SysEmployeeInfo queryInfo = new SysEmployeeInfo();
         queryInfo.setUserId(userId);
-        List<SysEmployeeInfo> list = sysEmployeeInfoMapper. selectSysEmployeeInfoList(queryInfo);
+        List<SysEmployeeInfo> list = sysEmployeeInfoMapper.selectSysEmployeeInfoList(queryInfo);
         if(CollectionUtils.isNotEmpty(list)) {
             SysEmployeeInfo sysEmployeeInfo = list.get(0);
+            BeanUtils.copyProperties(sysEmployeeInfo, sysEmployeeInfoResp);
+            sysEmployeeInfoResp.setAvatar(sysUser.getAvatar());
             sysEmployeeInfoResp.setUserId(userId);
             sysEmployeeInfoResp.setFullName(sysEmployeeInfo.getFullName());
-            //
             sysEmployeeInfoResp.setPosition("代理商");
-            sysEmployeeInfoResp.setHireDate(sysUser.getCreateTime());
-            //todo 管理的用户
-            sysEmployeeInfoResp.setClientCount(0);
-            //管理的资产
-            sysEmployeeInfoResp.setManagedAssets(new BigDecimal("0"));
-            sysEmployeeInfoResp.setEmail(sysEmployeeInfo.getEmail());
-            sysEmployeeInfoResp.setPhoneNumber(sysEmployeeInfo.getPhoneNumber());
-            sysEmployeeInfoResp.setDeptName("");
-            sysEmployeeInfoResp.setLevel("");
 
             SysEmployeeQualifications sysEmployeeQualifications=new SysEmployeeQualifications();
             sysEmployeeQualifications.setEmployeeInfoId(sysEmployeeInfo.getId());
@@ -367,8 +389,51 @@ public class SysEmployeeInfoServiceImpl implements ISysEmployeeInfoService
             }).collect(Collectors.toList());
 
             sysEmployeeInfoResp.setQualifications(qualifications);
+
+            //查询审核列表 List<AuditInfoResp> auditInfoRespList;
+            SysAudit sysAudit = new SysAudit();
+            sysAudit.setUserId(userId);
+            List<SysAudit> auditList = sysAuditService.selectSysAuditList(sysAudit);
+            //List<SysAudit> auditList转List<AuditInfoResp> auditInfoRespList
+            List<AuditInfoResp> auditInfoRespList = auditList.stream().map(item -> {
+                AuditInfoResp auditInfoResp = new AuditInfoResp();
+                BeanUtils.copyProperties(item, auditInfoResp);
+                return auditInfoResp;
+            }).collect(Collectors.toList());
+            sysEmployeeInfoResp.setAuditInfoRespList(auditInfoRespList);
             return sysEmployeeInfoResp;
         }
         return null;
+    }
+
+    @Override
+    public int submitAuthInfo(AuthAgencyEkyc ekycData) {
+
+        SysEmployeeInfo sysEmployeeInfo=new SysEmployeeInfo();
+        sysEmployeeInfo.setId(ekycData.getId());
+        //审核状态
+        sysEmployeeInfo.setStatus(ekycData.getAuditStatus()+"");
+        sysEmployeeInfo.setUpdateBy(ekycData.getAuditorName());
+        sysEmployeeInfo.setUpdateTime(new Date());
+        sysEmployeeInfoMapper.updateSysEmployeeInfo(sysEmployeeInfo);
+
+        //审核记录
+        SysAudit sysAudit = new SysAudit();
+        sysAudit.setUserId(ekycData.getUserId());
+        sysAudit.setUserType(ekycData.getUserType());
+        sysAudit.setBusinessId(ekycData.getId());
+        sysAudit.setAuditStatus(ekycData.getAuditStatus());
+        sysAudit.setAuditTime(new Date());
+        sysAudit.setUpdateBy(ekycData.getAuditorName());
+        sysAudit.setCreateBy(ekycData.getAuditorName());
+        sysAudit.setAuditorId(ekycData.getAuditorId());
+        sysAudit.setRemark(ekycData.getRemark());
+        sysAudit.setAuditorName(ekycData.getAuditorName());
+        sysAudit.setUpdateTime(new Date());
+        sysAudit.setCreateTime(new Date());
+        sysAudit.setBusinessType("agency_ekyc");
+        int update=iSysAuditService.insertSysAudit(sysAudit);
+        log.info("员工审核记录成功 | 员工信息：{}", update);
+        return update;
     }
 }

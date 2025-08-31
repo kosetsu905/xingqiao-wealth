@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.system.api.domain.AgencyEkyc;
+import com.xingqiao.system.api.domain.AuthAgencyEkyc;
 import com.xingqiao.system.api.model.SysEmployeeInfoResp;
 import com.xingqiao.system.domain.SysEmployeeInfo;
 
@@ -72,6 +73,7 @@ public interface ISysEmployeeInfoService
 
     AgencyEkyc getEkycInfo(Long userId);
 
-    SysEmployeeInfoResp selectSysEmployeeInfo(Long userId);
+    SysEmployeeInfoResp selectSysEmployeeInfo(Long userId,Long employeeId);
 
+    int submitAuthInfo(AuthAgencyEkyc ekycData);
 }

@@ -68,7 +68,6 @@
             <artifactId>xingqiao-api-message</artifactId>
             <version>3.6.6</version>
         </dependency>
-
     </dependencies>
 	
     <build>

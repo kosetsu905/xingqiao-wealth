@@ -4,9 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum AuditStatusEnums {
-    INIT(0, "待审核"),
-    ON(1, "审核通过"),
-    FAIL(2, "审核失败"),
+    NO(0, "未提交审核"),
+    INIT(1, "待审核"),
+    ON(2, "审核通过"),
+    FAIL(-1, "审核失败"),
     ;
 
     // getter 方法

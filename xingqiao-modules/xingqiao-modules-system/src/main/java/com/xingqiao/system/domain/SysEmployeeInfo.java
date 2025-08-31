@@ -1,8 +1,11 @@
 package com.xingqiao.system.domain;
 
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.xingqiao.common.core.web.domain.BaseEntity;
+import com.xingqiao.system.api.model.AuditInfoResp;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.xingqiao.common.core.annotation.Excel;
@@ -107,9 +110,10 @@ public class SysEmployeeInfo extends BaseEntity
     @Excel(name = "出生年月日", width = 30, dateFormat = "yyyy-MM-dd")
     private Date birthday;
 
-    /** 部门状态（0正常 1停用） */
-    @Excel(name = "部门状态", readConverterExp = "0=正常,1=停用")
+    /** 审核状态（0审核中 1审核通过，-1：审核拒绝） */
+    @Excel(name = "审核状态", readConverterExp = "0=正常,1=停用")
     private String status;
+
 
     public void setId(Long id)
     {

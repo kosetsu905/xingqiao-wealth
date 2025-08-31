@@ -25,7 +25,7 @@ public class EkycAuthController extends BaseController {
     public R<?> submitEkycData(@RequestBody AgencyEkyc ekycData) {
         Long userId = SecurityUtils.getUserId();
         ekycData.setUserId(userId);
-        ekycData.setUpdateBy(SecurityUtils.getUsername());
+        ekycData.setUpdateBy(SecurityUtils.getLoginUser().getUsername());
         return R.ok(sysEmployeeInfoService.submitEkycData(ekycData));
     }
 
@@ -39,4 +39,6 @@ public class EkycAuthController extends BaseController {
         Long userId = SecurityUtils.getUserId();
         return R.ok(sysEmployeeInfoService.getEkycInfo(userId));
     }
+
+
 }

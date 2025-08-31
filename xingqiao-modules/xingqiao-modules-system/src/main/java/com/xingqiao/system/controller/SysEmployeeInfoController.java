@@ -1,11 +1,13 @@
 package com.xingqiao.system.controller;
 
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.system.api.domain.AgencyEkyc;
+import com.xingqiao.system.api.domain.AuthAgencyEkyc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +34,7 @@ import com.xingqiao.common.core.web.page.TableDataInfo;
  * @date 2025-08-17
  */
 @RestController
-@RequestMapping("/agency/employ")
+@RequestMapping("/agency/employee")
 public class SysEmployeeInfoController extends BaseController
 {
     @Autowired
@@ -53,11 +55,31 @@ public class SysEmployeeInfoController extends BaseController
     /**
      * 获取员工信息详细信息
      */
+    @GetMapping(value = "/getInfo/{employeeId}")
+    public AjaxResult getInfo(@PathVariable(value = "employeeId", required = false) Long employeeId)
+    {
+        return success(sysEmployeeInfoService.selectSysEmployeeInfo(null,employeeId));
+    }
+
+
+    /**
+     * 获取员工信息详细信息
+     */
     @GetMapping(value = "/getInfo")
     public AjaxResult getInfo()
     {
         Long userId = SecurityUtils.getUserId();
-        return success(sysEmployeeInfoService.selectSysEmployeeInfo(userId));
+        return success(sysEmployeeInfoService.selectSysEmployeeInfo(userId,null));
+    }
+
+
+    @PostMapping("/authInfo")
+    public R<?> authInfo(@RequestBody AuthAgencyEkyc ekycData) {
+        Long userId = SecurityUtils.getUserId();
+        ekycData.setAuditorId(userId);
+        ekycData.setAuditorName(SecurityUtils.getLoginUser().getUsername());
+        ekycData.setAuditTime(new Date());
+        return R.ok(sysEmployeeInfoService.submitAuthInfo(ekycData));
     }
 
 }

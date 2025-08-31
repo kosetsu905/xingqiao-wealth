@@ -18,8 +18,8 @@ public class CoinMarketCapService {
     private final String baseUrl;
 
     // 构造注入（从配置文件读取 API Key 和 Base URL）
-    public CoinMarketCapService(@Value("${cmc.api.key}") String apiKey,
-                                @Value("${cmc.api.base-url}") String baseUrl) {
+    public CoinMarketCapService(@Value("${cmc.api.key:''}") String apiKey,
+                                @Value("${cmc.api.base-url:''}") String baseUrl) {
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
 

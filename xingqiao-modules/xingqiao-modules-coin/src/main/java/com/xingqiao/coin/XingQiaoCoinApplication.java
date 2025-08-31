@@ -13,11 +13,11 @@ import com.xingqiao.common.security.annotation.EnableRyFeignClients;
 @EnableCustomConfig
 @EnableRyFeignClients
 @SpringBootApplication
-public class XingQiaoDigitalCurrencyApplication
+public class XingQiaoCoinApplication
 {
     public static void main(String[] args)
     {
-        SpringApplication.run(XingQiaoDigitalCurrencyApplication.class, args);
+        SpringApplication.run(XingQiaoCoinApplication.class, args);
         System.out.println("(♥◠‿◠)ﾉﾞ  数字货币模块启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
                 " .-------.       ____     __        \n" +
                 " |  _ _   \\      \\   \\   /  /    \n" +
