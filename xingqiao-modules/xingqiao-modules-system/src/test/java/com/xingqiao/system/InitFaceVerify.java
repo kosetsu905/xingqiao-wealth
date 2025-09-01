@@ -8,97 +8,79 @@ import com.aliyun.teautil.models.RuntimeOptions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+/**
+ * 人脸识别结果查询
+ */
 public class InitFaceVerify {
     // 使用单例模式优化性能
     private static com.aliyun.credentials.Client credentialClient = new com.aliyun.credentials.Client();
 
-    public static void main(String[] args) throws Exception {
+    /**
+     * <b>description</b> :
+     * <p>使用凭据初始化账号Client</p>
+     * @return Client
+     *
+     * @throws Exception
+     */
+    public static com.aliyun.cloudauth20190307.Client createClient() throws Exception {
+        // 工程代码建议使用更安全的无AK方式，凭据配置方式请参见：https://help.aliyun.com/document_detail/378657.html。
+        com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config()
+                .setCredential(credentialClient);
+        // Endpoint 请参考 https://api.aliyun.com/product/Cloudauth
+        // 您的AccessKey ID
+        config.setAccessKeyId("LTAI5tJZnKc3VN96FeVvDUbw")
+                // 您的AccessKey Secret
+                .setAccessKeySecret("gu4tSpLB9utFEZouYoKRwX4OfqKwQT");
+        // 访问的域名
+        config.endpoint = "cloudauth.aliyuncs.com";
 
-        InitFaceVerifyRequest request = new InitFaceVerifyRequest();
-        // 场景ID+L。
-        request.setSceneId(1000014670L);
-        // 设置商户请求的唯一标识。
-        request.setOuterOrderNo("2025083017240001");
-        // 认证方案。
-        request.setProductCode("ID_PRO");
-        // 模式。
-        request.setModel("LIVENESS");
-        request.setCertType("IDENTITY_CARD");
-        request.setCertName("覃冠木");
-        request.setCertNo("450802198906072016");
-        // MetaInfo环境参数，此参数应由前端js获取并传入。
-        request.setMetaInfo("{}");
-        //业务页面回跳的目标地址。
-        request.setReturnUrl("https://www.aliyundoc.com");
-
-        InitFaceVerifyResponse response = initFaceVerifyAutoRoute(request);
-
-        response.getBody().getRequestId();
-        response.getBody().getResultObject().getCertifyId();
-        System.out.println(response.getBody().getRequestId());
-        System.out.println(response.getBody().getCode());
-        System.out.println(response.getBody().getMessage());
-        System.out.println(response.getBody().getResultObject() == null ? null
-                : response.getBody().getResultObject().getCertifyId());
+        return new com.aliyun.cloudauth20190307.Client(config);
     }
 
-    private static InitFaceVerifyResponse initFaceVerifyAutoRoute(InitFaceVerifyRequest request) {
-        // 第一个为主区域Endpoint，第二个为备区域Endpoint。
-        List<String> endpoints = Arrays.asList("cloudauth.cn-shanghai.aliyuncs.com", "cloudauth.cn-beijing.aliyuncs.com");
-        InitFaceVerifyResponse lastResponse = null;
-        for (int i=0; i<endpoints.size(); i++) {
-            try {
-                InitFaceVerifyResponse response = initFaceVerify(endpoints.get(i), request);
-                lastResponse = response;
-
-                // 服务端错误，切换到下个区域调用。
-                if(response != null){
-                    if(500 == response.getStatusCode()){
-                        continue;
-                    }
-                    if(response.getBody() != null){
-                        if("500".equals(response.getBody().getCode())){
-                            continue;
-                        }
-                    }
-                }
-
-                // 正常返回
-                return lastResponse;
-            }catch (Exception e) {
-                e.printStackTrace();
-                if(i == endpoints.size()-1){
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
-        return lastResponse;
+    /**
+     * <b>description</b> :
+     * <p>API 相关</p>
+     *
+     * @return OpenApi.Params
+     */
+    public static com.aliyun.teaopenapi.models.Params createApiInfo() throws Exception {
+        com.aliyun.teaopenapi.models.Params params = new com.aliyun.teaopenapi.models.Params()
+                // 接口名称
+                .setAction("DescribeFaceVerify")
+                // 接口版本
+                .setVersion("2019-03-07")
+                // 接口协议
+                .setProtocol("HTTPS")
+                // 接口 HTTP 方法
+                .setMethod("POST")
+                .setAuthType("AK")
+                .setStyle("RPC")
+                // 接口 PATH
+                .setPathname("/")
+                // 接口请求体内容格式
+                .setReqBodyType("json")
+                // 接口响应体内容格式
+                .setBodyType("json");
+        return params;
     }
 
-    private static InitFaceVerifyResponse initFaceVerify(String endpoint, InitFaceVerifyRequest request)
-            throws Exception {
-        // 阿里云账号AccessKey拥有所有API的访问权限，建议您使用RAM用户进行API访问或日常运维。
-        // 强烈建议不要把AccessKey ID和AccessKey Secret保存到工程代码里，否则可能导致AccessKey泄露，威胁您账号下所有资源的安全。
-        // 本示例通过阿里云Credentials工具从环境变量中读取AccessKey，来实现API访问的身份验证。如何配置环境变量，请参见https://help.aliyun.com/document_detail/378657.html。
-        // 建议使用单例模式
-        Config config = new Config();
-        config.setCredential(credentialClient);
-        config.setEndpoint(endpoint);
-        // 设置http代理。
-        //config.setHttpProxy("http://xx.xx.xx.xx:xxxx");
-        // 设置https代理。
-        //config.setHttpsProxy("https://xx.xx.xx.xx:xxxx");
-        // 建议使用单例模式
-        Client client = new Client(config);
+    public static void main(String[] args_) throws Exception {
 
-        // 创建RuntimeObject实例并设置运行参数。
-        RuntimeOptions runtime = new RuntimeOptions();
-        runtime.readTimeout = 10000;
-        runtime.connectTimeout = 10000;
-
-        return client.initFaceVerifyWithOptions(request, runtime);
+        com.aliyun.teaopenapi.Client client = createClient();
+        com.aliyun.teaopenapi.models.Params params = createApiInfo();
+        // query params
+        java.util.Map<String, Object> queries = new java.util.HashMap<>();
+        queries.put("SceneId", 1000014670);
+        queries.put("CertifyId", "shaf38f558df527d6df732a1457b1c96");
+        // runtime options
+        com.aliyun.teautil.models.RuntimeOptions runtime = new com.aliyun.teautil.models.RuntimeOptions();
+        com.aliyun.teaopenapi.models.OpenApiRequest request = new com.aliyun.teaopenapi.models.OpenApiRequest()
+                .setQuery(com.aliyun.openapiutil.Client.query(queries));
+        // 复制代码运行请自行打印 API 的返回值
+        // 返回值实际为 Map 类型，可从 Map 中获得三类数据：响应体 body、响应头 headers、HTTP 返回的状态码 statusCode。
+        Map resp =client.callApi(params, request, runtime);
+        com.aliyun.teaconsole.Client.log(com.aliyun.teautil.Common.toJSONString(resp));
     }
-
 }
