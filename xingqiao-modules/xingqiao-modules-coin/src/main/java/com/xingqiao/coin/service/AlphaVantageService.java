@@ -29,14 +29,44 @@ public class AlphaVantageService {
     /**
      * 获取指定股票的K线数据
      * @param symbol 股票代码（如 AAPL）
-     * @param interval 时间间隔（如 5min, 15min, daily）
+     * @param interval 时间间隔（如 5min, 15min, 60min, daily, weekly, monthly）
      */
     public List<Map<String, Object>> getStockData(String symbol, String interval) {
         try {
+            String function;
+            String key;
+
+            // 根据 interval 判断调用哪个 API function
+            switch (interval) {
+                case "daily":
+                    function = "TIME_SERIES_DAILY";
+                    key = "Time Series (Daily)";
+                    break;
+                case "weekly":
+                    function = "TIME_SERIES_WEEKLY";
+                    key = "Weekly Time Series";
+                    break;
+                case "monthly":
+                    function = "TIME_SERIES_MONTHLY";
+                    key = "Monthly Time Series";
+                    break;
+                default:
+                    // intraday: 5min, 15min, 60min
+                    function = "TIME_SERIES_INTRADAY";
+                    key = "Time Series (" + interval + ")";
+                    break;
+            }
+
+            // 构造请求 URL
             String url = String.format(
-                    "%s?function=TIME_SERIES_INTRADAY&symbol=%s&interval=%s&apikey=%s",
-                    baseUrl, symbol, interval, apiKey
+                    "%s?function=%s&symbol=%s&apikey=%s",
+                    baseUrl, function, symbol, apiKey
             );
+
+            // intraday 需要加 interval 参数
+            if (function.equals("TIME_SERIES_INTRADAY")) {
+                url += "&interval=" + interval;
+            }
 
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
@@ -45,7 +75,6 @@ public class AlphaVantageService {
             }
 
             JsonNode root = objectMapper.readTree(response.getBody());
-            String key = "Time Series (" + interval + ")";
             JsonNode timeSeries = root.get(key);
 
             if (timeSeries == null) {
@@ -74,6 +103,5 @@ public class AlphaVantageService {
         } catch (Exception e) {
             throw new RuntimeException("获取股票数据失败: " + e.getMessage(), e);
         }
-
     }
 }
