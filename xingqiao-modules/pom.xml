@@ -15,6 +15,7 @@
         <module>xingqiao-modules-job</module>
         <module>xingqiao-modules-file</module>
         <module>xingqiao-modules-message</module>
+        <module>xingqiao-modules-order</module>
     </modules>
 
     <artifactId>xingqiao-modules</artifactId>

@@ -2,6 +2,7 @@ package com.xingqiao.file.controller;
 
 
 import com.xingqiao.common.core.domain.R;
+import com.xingqiao.common.core.utils.StringUtils;
 import com.xingqiao.file.service.OssService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +49,12 @@ public class OssController {
             
             // 对URL进行解码，将文件名中的特殊字符转换为中文
             String decodedOssUrl = URLDecoder.decode(ossUrl, StandardCharsets.UTF_8.toString());
-            
             log.info("文件上传成功，文件路径: {}", ossPath);
-            return R.ok(decodedOssUrl, "上传成功");
+            //不返回?后面点链接，只返回照片地址
+            if(!StringUtils.isEmpty(decodedOssUrl)){
+                return R.ok(decodedOssUrl.substring(0,decodedOssUrl.indexOf("?") ), "上传成功");
+            }
+            return R.fail(decodedOssUrl, "上传失败");
         } catch (Exception e) {
             log.error("文件上传失败，文件名: " + file.getOriginalFilename() + 
                       ", 文件大小: " + file.getSize(), e);

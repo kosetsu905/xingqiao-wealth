@@ -1,3 +1,6 @@
+
+-- 代理端
+
 -- ----------------------------
 -- 客户信息表
 -- ----------------------------
@@ -145,3 +148,71 @@ CREATE TABLE sales_opportunity (
                                    INDEX idx_create_time (create_time),
                                    INDEX idx_status (status)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='客户意向记录表';
+
+
+
+
+
+
+
+
+
+-- 客户端
+
+-- auto-generated definition
+create table customer_info
+(
+    id                 bigint auto_increment comment '主键ID'
+        primary key,
+    user_id            bigint                        null comment '客户ID',
+    user_temp_id       varchar(20)                   not null comment '客户临时ID',
+    employee_id        bigint                        not null comment '业务员ID',
+    user_type          varchar(2)       default '00' null comment '用户类型（00系统用户,01:合作商用户,02:客户）',
+    id_type            varchar(20)                   null comment '证件类型（枚举：passport-护照, id_card-身份证, driver_license-驾驶证, other-其他）',
+    id_number          varchar(100)                  null comment '证件号码',
+    issue_date         date                          null comment '证件颁发日期',
+    expiry_date        date                          null comment '证件有效期截止日期',
+    avatar             varchar(500)                  null comment '头像 URL',
+    front_id_file_url  varchar(500)                  null comment '证件正面照URL',
+    back_id_file_url   varchar(500)                  null comment '证件反面照URL',
+    identity_confirmed tinyint(1)       default 0    null comment '身份是否确认（0-未确认，1-已确认）',
+    full_name          varchar(100)                  null comment '全名（真实姓名）',
+    age                varchar(10)                   null comment '年龄（字符串，兼容非数字输入）',
+    phone_number       varchar(20)                   null comment '手机号码',
+    email              varchar(100)                  null comment '电子邮箱',
+    manager            varchar(100)                  null comment '上级经理ID（或账号）',
+    address            varchar(500)                  null comment '联系地址',
+    avatar_url         varchar(500)                  null comment '个人头像URL',
+    country_code       varchar(10)                   null comment '手机区号',
+    gender             char                          null comment '性别（0-未知, 1-男, 2-女）',
+    marital_status     varchar(20)                   null comment '婚姻状况：未婚：SINGLE, 已婚：MARRIED, 离异:DIVORCED, 丧偶:WIDOWED, 其他：OTHER',
+    birth_day          date                          null comment '出生年月日',
+    child_count        tinyint unsigned default '0'  null comment '子女数量',
+    status             char(2)          default '0'  null comment '部门状态（0正常 1停用）',
+    remark             varchar(500)                  null comment '备注',
+    create_by          varchar(64)      default ''   null comment '创建者',
+    create_time        datetime                      null comment '创建时间',
+    update_by          varchar(64)      default ''   null comment '更新者',
+    update_time        datetime                      null comment '更新时间'
+)
+    comment '客户信息表' charset = utf8mb4;
+
+create index idx_customer_info_create_time
+    on sys_customer_info (create_time);
+
+create index idx_customer_info_employee_id
+    on sys_customer_info (employee_id);
+
+create index idx_customer_info_full_name
+    on sys_customer_info (full_name);
+
+create index idx_customer_info_id_number
+    on sys_customer_info (id_number);
+
+create index idx_customer_info_user_id
+    on sys_customer_info (user_id);
+
+create index idx_customer_info_user_temp_id
+    on sys_customer_info (user_temp_id);
+
+
