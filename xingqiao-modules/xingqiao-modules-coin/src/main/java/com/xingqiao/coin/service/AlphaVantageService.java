@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -27,16 +29,39 @@ public class AlphaVantageService {
     }
 
     /**
-     * 获取指定股票的K线数据
-     * @param symbol 股票代码（如 AAPL）
-     * @param interval 时间间隔（如 5min, 15min, 60min, daily, weekly, monthly）
+     * 获取公司名称
      */
-    public List<Map<String, Object>> getStockData(String symbol, String interval) {
+    private String getCompanyName(String symbol) {
+        try {
+            String url = String.format(
+                    "%s?function=SYMBOL_SEARCH&keywords=%s&apikey=%s",
+                    baseUrl, symbol, apiKey
+            );
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            if (!response.getStatusCode().is2xxSuccessful()) return symbol;
+
+            JsonNode root = objectMapper.readTree(response.getBody());
+            JsonNode bestMatches = root.get("bestMatches");
+            if (bestMatches != null && bestMatches.isArray() && bestMatches.size() > 0) {
+                JsonNode match = bestMatches.get(0);
+                String name = match.get("2. name").asText();
+                return (name != null && !name.isEmpty()) ? name : symbol;
+            }
+        } catch (Exception e) {
+            System.err.println("获取公司名称失败: " + e.getMessage());
+        }
+        return symbol;
+    }
+
+    /**
+     * 获取股票数据，包含 pre-market 数据
+     */
+    public Map<String, Object> getStockDataWithCompany(String symbol, String interval) {
         try {
             String function;
             String key;
+            boolean isIntraday = false;
 
-            // 根据 interval 判断调用哪个 API function
             switch (interval) {
                 case "daily":
                     function = "TIME_SERIES_DAILY";
@@ -51,57 +76,77 @@ public class AlphaVantageService {
                     key = "Monthly Time Series";
                     break;
                 default:
-                    // intraday: 5min, 15min, 60min
                     function = "TIME_SERIES_INTRADAY";
                     key = "Time Series (" + interval + ")";
+                    isIntraday = true;
                     break;
             }
 
-            // 构造请求 URL
-            String url = String.format(
-                    "%s?function=%s&symbol=%s&apikey=%s",
-                    baseUrl, function, symbol, apiKey
-            );
-
-            // intraday 需要加 interval 参数
-            if (function.equals("TIME_SERIES_INTRADAY")) {
-                url += "&interval=" + interval;
+            String url = String.format("%s?function=%s&symbol=%s&apikey=%s", baseUrl, function, symbol, apiKey);
+            if (isIntraday) {
+                url += "&interval=" + interval + "&extended_hours=true";
             }
 
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException("请求 Alpha Vantage API 失败: " + response.getStatusCode());
             }
 
             JsonNode root = objectMapper.readTree(response.getBody());
             JsonNode timeSeries = root.get(key);
-
             if (timeSeries == null) {
                 throw new RuntimeException("未找到股票数据: " + root.toString());
             }
 
-            List<Map<String, Object>> result = new ArrayList<>();
-            Iterator<String> fieldNames = timeSeries.fieldNames();
+            List<Map<String, Object>> regularData = new ArrayList<>();
+            List<Map<String, Object>> preMarketData = new ArrayList<>();
 
+            ZoneId et = ZoneId.of("America/New_York");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            Iterator<String> fieldNames = timeSeries.fieldNames();
             while (fieldNames.hasNext()) {
-                String time = fieldNames.next();
-                JsonNode data = timeSeries.get(time);
+                String timeStr = fieldNames.next();
+                JsonNode dataNode = timeSeries.get(timeStr);
 
                 Map<String, Object> point = new HashMap<>();
-                point.put("time", time);
-                point.put("open", data.get("1. open").asDouble());
-                point.put("high", data.get("2. high").asDouble());
-                point.put("low", data.get("3. low").asDouble());
-                point.put("close", data.get("4. close").asDouble());
-                point.put("volume", data.get("5. volume").asLong());
+                point.put("time", timeStr);
+                point.put("open", dataNode.get("1. open").asDouble());
+                point.put("high", dataNode.get("2. high").asDouble());
+                point.put("low", dataNode.get("3. low").asDouble());
+                point.put("close", dataNode.get("4. close").asDouble());
+                point.put("volume", dataNode.get("5. volume").asLong());
 
-                result.add(point);
+                if (isIntraday) {
+                    LocalDateTime dt = LocalDateTime.parse(timeStr, formatter);
+                    int hour = dt.atZone(et).getHour();
+                    int minute = dt.atZone(et).getMinute();
+                    if (hour < 9 || (hour == 9 && minute < 30)) {
+                        preMarketData.add(point);
+                    } else {
+                        regularData.add(point);
+                    }
+                } else {
+                    regularData.add(point);
+                }
             }
 
-            return result;
+            if (isIntraday) {
+                preMarketData.sort(Comparator.comparing(p -> (String)p.get("time")));
+            }
+            regularData.sort(Comparator.comparing(p -> (String)p.get("time")));
+
+            Map<String, Object> res = new HashMap<>();
+            res.put("symbol", symbol);
+            res.put("companyName", getCompanyName(symbol));
+            res.put("data", regularData);
+            if (isIntraday) res.put("preMarketData", preMarketData);
+
+            return res;
+
         } catch (Exception e) {
             throw new RuntimeException("获取股票数据失败: " + e.getMessage(), e);
         }
     }
+
 }
