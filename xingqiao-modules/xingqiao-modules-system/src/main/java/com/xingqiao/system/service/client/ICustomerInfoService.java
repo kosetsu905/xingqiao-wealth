@@ -61,4 +61,5 @@ public interface ICustomerInfoService
      */
     public int deleteCustomerInfoById(Long id);
 
+    public int authCustomerInfo(CustomerInfo customerInfo);
 }

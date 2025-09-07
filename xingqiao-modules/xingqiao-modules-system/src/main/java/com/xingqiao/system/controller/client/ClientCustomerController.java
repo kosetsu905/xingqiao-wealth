@@ -6,7 +6,6 @@ import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.core.web.controller.BaseController;
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.system.api.domain.client.ClientCustomerReq;
-import com.xingqiao.system.api.domain.client.ClientCustomerResp;
 import com.xingqiao.system.api.domain.client.CustomerKycRecordsReq;
 import com.xingqiao.system.service.client.ClientCustomerService;
 import org.springframework.beans.factory.annotation.Autowired;

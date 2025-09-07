@@ -34,7 +34,7 @@ public class CustomerInfo extends BaseEntity
     @Excel(name = "业务员ID")
     private Long employeeId;
 
-    /** 用户类型（00系统用户,01:合作商用户,02:客户） */
+    /** 用户类型（00系统用户,01:代理人,02:客户） */
     @Excel(name = "用户类型", readConverterExp = "0=0系统用户,01:合作商用户,02:客户")
     private String userType;
 

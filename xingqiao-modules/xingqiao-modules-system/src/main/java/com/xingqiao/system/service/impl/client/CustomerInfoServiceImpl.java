@@ -94,4 +94,10 @@ public class CustomerInfoServiceImpl implements ICustomerInfoService
     {
         return customerInfoMapper.deleteCustomerInfoById(id);
     }
+
+    @Override
+    public int authCustomerInfo(CustomerInfo customerInfo) {
+        customerInfo.setUpdateTime(DateUtils.getNowDate());
+        return customerInfoMapper.updateCustomerInfo(customerInfo);
+    }
 }
