@@ -1,8 +1,6 @@
 package com.xingqiao.system.api.model;
 
-import com.xingqiao.system.api.domain.CustomerFinancial;
-import com.xingqiao.system.api.domain.CustomerInfo;
-import com.xingqiao.system.api.domain.CustomerInvestmentPreference;
+import com.xingqiao.system.api.domain.employee.AgencyEkyc;
 import lombok.Data;
 
 import java.util.List;
@@ -10,9 +8,9 @@ import java.util.List;
 @Data
 public class CustomerInfoResponse {
     // 客户信息
-    private CustomerInfo customerInfo;
+    private AgencyEkyc.CustomerExtInfo customerInfo;
     // 客户财务信息
-    private CustomerFinancial customerFinancial;
+    private AgencyEkyc.CustomerFinancial customerFinancial;
     //投资偏好
-    List<CustomerInvestmentPreference> investmentPreferences;
+    List<AgencyEkyc.CustomerInvestmentPreference> investmentPreferences;
 }

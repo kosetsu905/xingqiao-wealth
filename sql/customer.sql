@@ -156,10 +156,10 @@ CREATE TABLE sales_opportunity (
 
 
 
-
--- 客户端
-
 -- auto-generated definition
+
+drop table if exists customer_info;
+
 create table customer_info
 (
     id                 bigint auto_increment comment '主键ID'
@@ -175,7 +175,6 @@ create table customer_info
     avatar             varchar(500)                  null comment '头像 URL',
     front_id_file_url  varchar(500)                  null comment '证件正面照URL',
     back_id_file_url   varchar(500)                  null comment '证件反面照URL',
-    identity_confirmed tinyint(1)       default 0    null comment '身份是否确认（0-未确认，1-已确认）',
     full_name          varchar(100)                  null comment '全名（真实姓名）',
     age                varchar(10)                   null comment '年龄（字符串，兼容非数字输入）',
     phone_number       varchar(20)                   null comment '手机号码',
@@ -188,7 +187,15 @@ create table customer_info
     marital_status     varchar(20)                   null comment '婚姻状况：未婚：SINGLE, 已婚：MARRIED, 离异:DIVORCED, 丧偶:WIDOWED, 其他：OTHER',
     birth_day          date                          null comment '出生年月日',
     child_count        tinyint unsigned default '0'  null comment '子女数量',
-    status             char(2)          default '0'  null comment '部门状态（0正常 1停用）',
+    certify_id         varchar(200)           null comment '三方id',
+    face_verify_status tinyint          default 0    null comment '人脸验证状态:0-未验证,1-验证中,2-验证成功,3-验证失败',
+    face_verify_time   datetime                      null comment '人脸验证时间',
+    face_verify_score  decimal(5, 2)                 null comment '人脸比对分数',
+    face_image_url     varchar(255)                  null comment '人脸照片URL',
+    status             char(2)          default '0'  null comment '审核状态:0-待审核,1-审核通过,2-审核拒绝',
+    review_time        datetime                      null comment '审核时间',
+    review_operator    varchar(64)                   null comment '审核操作员',
+    review_comment     varchar(500)                  null comment '审核意见',
     remark             varchar(500)                  null comment '备注',
     create_by          varchar(64)      default ''   null comment '创建者',
     create_time        datetime                      null comment '创建时间',
@@ -198,21 +205,58 @@ create table customer_info
     comment '客户信息表' charset = utf8mb4;
 
 create index idx_customer_info_create_time
-    on sys_customer_info (create_time);
+    on customer_info (create_time);
 
 create index idx_customer_info_employee_id
-    on sys_customer_info (employee_id);
+    on customer_info (employee_id);
 
 create index idx_customer_info_full_name
-    on sys_customer_info (full_name);
+    on customer_info (full_name);
 
 create index idx_customer_info_id_number
-    on sys_customer_info (id_number);
+    on customer_info (id_number);
 
 create index idx_customer_info_user_id
-    on sys_customer_info (user_id);
+    on customer_info (user_id);
 
 create index idx_customer_info_user_temp_id
-    on sys_customer_info (user_temp_id);
+    on customer_info (user_temp_id);
 
 
+
+
+
+drop table if exists customer_kyc_records;
+
+CREATE TABLE customer_kyc_records (
+                                      id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+                                      user_id            bigint                        null comment '客户ID',
+                                      certify_id VARCHAR(200)  COMMENT '三方id',
+                                      id_type            varchar(20)                   null comment '证件类型（枚举：passport-护照, id_card-身份证, driver_license-驾驶证, other-其他）',
+                                      id_number          varchar(100)                  null comment '证件号码',
+                                      full_name          varchar(100)                  null comment '全名（真实姓名）',
+                                      phone_number       varchar(20)                   null comment '手机号码',
+                                      issue_date         date                          null comment '证件颁发日期',
+                                      expiry_date        date                          null comment '证件有效期截止日期',
+                                      front_id_file_url  varchar(500)                  null comment '证件正面照URL',
+                                      back_id_file_url   varchar(500)                  null comment '证件反面照URL',
+                                      face_verify_status TINYINT DEFAULT 0 COMMENT '人脸验证状态:0-未验证,1-验证中,2-验证成功,3-验证失败',
+                                      face_verify_time DATETIME COMMENT '人脸验证时间',
+                                      face_verify_score DECIMAL(5,2) COMMENT '人脸比对分数',
+                                      face_image_url VARCHAR(255) COMMENT '人脸照片URL',
+                                      review_status TINYINT DEFAULT 0 COMMENT '审核状态:0-待审核,1-审核通过,2-审核拒绝',
+                                      review_time DATETIME COMMENT '审核时间',
+                                      review_operator VARCHAR(64) COMMENT '审核操作员',
+                                      review_comment VARCHAR(500) COMMENT '审核意见',
+                                      device_info VARCHAR(255) COMMENT '设备信息',
+                                      ip_address VARCHAR(50) COMMENT 'IP地址',
+                                      remark             varchar(500)                  null comment '备注',
+                                      create_by          varchar(64)      default ''   null comment '创建者',
+                                      create_time        datetime                      null comment '创建时间',
+                                      update_by          varchar(64)      default ''   null comment '更新者',
+                                      update_time        datetime                      null comment '更新时间',
+                                      INDEX idx_user_id (user_id),
+                                      INDEX idx_id_number (id_number),
+                                      INDEX idx_review_status (review_status),
+                                      INDEX idx_create_time (create_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户KYC认证记录表';

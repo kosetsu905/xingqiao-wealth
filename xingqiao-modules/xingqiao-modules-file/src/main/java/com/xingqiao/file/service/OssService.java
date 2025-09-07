@@ -50,8 +50,9 @@ public class OssService {
             // 设置文件元信息（如 MIME 类型）
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getSize());
             putRequest.setMetadata(metadata);
-            ossClient.putObject(putRequest);
+            PutObjectResult result = ossClient.putObject(putRequest);
             // 生成公共读 URL（若 Bucket 权限为私有，需生成签名 URL）
             return generatePublicUrl(ossPath);
         } finally {
@@ -65,13 +66,8 @@ public class OssService {
     public String generatePublicUrl(String ossPath) {
         OSS ossClient = getOssClient();
         try {
-            Date expiration = new Date(System.currentTimeMillis() + 365 * 24 * 3600 * 1000L); // 1 年有效期
-            URL url = ossClient.generatePresignedUrl(
-                    ossConfig.getBucketName(),
-                    ossPath,
-                    expiration
-            );
-            return url.toString();
+            // 生成URL不使用过期时间，直接使用bucket域名+object名称
+            return "https://" + ossConfig.getBucketName() + "." + ossConfig.getEndpoint() + "/" + ossPath;
         } finally {
             ossClient.shutdown();
         }
@@ -83,10 +79,7 @@ public class OssService {
     public void deleteFile(String ossPath) {
         OSS ossClient = getOssClient();
         try {
-            DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(
-                    ossConfig.getBucketName()
-            );
-            ossClient.deleteObject(deleteRequest);
+            ossClient.deleteObject(ossConfig.getBucketName(), ossPath);
         } finally {
             ossClient.shutdown();
         }

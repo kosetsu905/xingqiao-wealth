@@ -1,8 +1,7 @@
 package com.xingqiao.system.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.xingqiao.common.core.annotation.Excel;
-import com.xingqiao.system.api.domain.Qualifications;
+import com.xingqiao.system.api.domain.employee.AgencyEkyc;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -87,7 +86,7 @@ public class SysEmployeeInfoResp {
     /** 备注 */
     private String remark;
     /** 资质证书 */
-    private List<Qualifications> qualifications;
+    private List<AgencyEkyc.Qualifications> qualifications;
 
     //审核信息
     private List<AuditInfoResp> auditInfoRespList;

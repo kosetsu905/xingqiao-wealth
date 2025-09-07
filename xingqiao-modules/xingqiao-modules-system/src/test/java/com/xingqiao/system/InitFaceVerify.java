@@ -73,7 +73,7 @@ public class InitFaceVerify {
         // query params
         java.util.Map<String, Object> queries = new java.util.HashMap<>();
         queries.put("SceneId", 1000014670);
-        queries.put("CertifyId", "shaf38f558df527d6df732a1457b1c96");
+        queries.put("CertifyId", "sha1fe12951fa73e5da1d1bcde0df8b3");
         // runtime options
         com.aliyun.teautil.models.RuntimeOptions runtime = new com.aliyun.teautil.models.RuntimeOptions();
         com.aliyun.teaopenapi.models.OpenApiRequest request = new com.aliyun.teaopenapi.models.OpenApiRequest()

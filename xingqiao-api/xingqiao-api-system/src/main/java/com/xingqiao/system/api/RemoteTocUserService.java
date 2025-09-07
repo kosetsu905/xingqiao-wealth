@@ -3,8 +3,8 @@ package com.xingqiao.system.api;
 import com.xingqiao.common.core.constant.SecurityConstants;
 import com.xingqiao.common.core.constant.ServiceNameConstants;
 import com.xingqiao.common.core.domain.R;
-import com.xingqiao.system.api.domain.CustomerQueryInnerRequest;
 import com.xingqiao.system.api.domain.SysUser;
+import com.xingqiao.system.api.domain.employee.AgencyEkyc;
 import com.xingqiao.system.api.factory.RemoteTocUserFallbackFactory;
 import com.xingqiao.system.api.model.CustomerListInnerResponse;
 import com.xingqiao.system.api.model.LoginUser;
@@ -43,6 +43,6 @@ public interface RemoteTocUserService
 
 
     @PostMapping("/agency/customer/customerList")
-    R<List<CustomerListInnerResponse>> getCustomerInnerList(@RequestBody  CustomerQueryInnerRequest request);
+    R<List<CustomerListInnerResponse>> getCustomerInnerList(@RequestBody AgencyEkyc.CustomerQueryInnerRequest request);
 
 }

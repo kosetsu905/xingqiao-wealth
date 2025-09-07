@@ -1,7 +1,7 @@
 package com.xingqiao.system.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.xingqiao.system.api.domain.CustomerInvestmentPreference;
+import com.xingqiao.system.api.domain.employee.AgencyEkyc;
 import lombok.Data;
 
 import java.util.Date;
@@ -22,9 +22,9 @@ public class CustomerListResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     //已经购买产品
-    List<CustomerInvestmentPreference> buyedInvestmentList;
+    List<AgencyEkyc.CustomerInvestmentPreference> buyedInvestmentList;
     //感兴趣的产品
-    List<CustomerInvestmentPreference> investmentPreferences;
+    List<AgencyEkyc.CustomerInvestmentPreference> investmentPreferences;
 
 
 }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.system.mapper.employee.SysEmployeeQualificationsMapper">
+
+    <resultMap type="com.xingqiao.system.domain.employee.SysEmployeeQualifications" id="SysEmployeeQualificationsResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userType"    column="user_type"    />
+        <result property="employeeInfoId"    column="employee_info_id"    />
+        <result property="qualificationType"    column="qualification_type"    />
+        <result property="certificateNumber"    column="certificate_number"    />
+        <result property="issuingAuthority"    column="issuing_authority"    />
+        <result property="certificateIssueDate"    column="certificate_issue_date"    />
+        <result property="certificateExpiryDate"    column="certificate_expiry_date"    />
+        <result property="yearsOfPractice"    column="years_of_practice"    />
+        <result property="professionalConfirmed"    column="professional_confirmed"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysEmployeeQualificationsVo">
+        select id, user_id, user_type, employee_info_id, qualification_type, certificate_number, issuing_authority, certificate_issue_date, certificate_expiry_date, years_of_practice, professional_confirmed, status, remark, create_by, create_time, update_by, update_time from sys_employee_qualifications
+    </sql>
+
+    <select id="selectSysEmployeeQualificationsList" parameterType="com.xingqiao.system.domain.employee.SysEmployeeQualifications" resultMap="SysEmployeeQualificationsResult">
+        <include refid="selectSysEmployeeQualificationsVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="employeeInfoId != null "> and employee_info_id = #{employeeInfoId}</if>
+            <if test="qualificationType != null  and qualificationType != ''"> and qualification_type = #{qualificationType}</if>
+            <if test="certificateNumber != null  and certificateNumber != ''"> and certificate_number = #{certificateNumber}</if>
+            <if test="issuingAuthority != null  and issuingAuthority != ''"> and issuing_authority = #{issuingAuthority}</if>
+            <if test="certificateIssueDate != null "> and certificate_issue_date = #{certificateIssueDate}</if>
+            <if test="certificateExpiryDate != null "> and certificate_expiry_date = #{certificateExpiryDate}</if>
+            <if test="yearsOfPractice != null  and yearsOfPractice != ''"> and years_of_practice = #{yearsOfPractice}</if>
+            <if test="professionalConfirmed != null "> and professional_confirmed = #{professionalConfirmed}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectSysEmployeeQualificationsById" parameterType="Long" resultMap="SysEmployeeQualificationsResult">
+        <include refid="selectSysEmployeeQualificationsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysEmployeeQualifications" parameterType="com.xingqiao.system.domain.employee.SysEmployeeQualifications" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_employee_qualifications
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="employeeInfoId != null">employee_info_id,</if>
+            <if test="qualificationType != null">qualification_type,</if>
+            <if test="certificateNumber != null">certificate_number,</if>
+            <if test="issuingAuthority != null">issuing_authority,</if>
+            <if test="certificateIssueDate != null">certificate_issue_date,</if>
+            <if test="certificateExpiryDate != null">certificate_expiry_date,</if>
+            <if test="yearsOfPractice != null">years_of_practice,</if>
+            <if test="professionalConfirmed != null">professional_confirmed,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="employeeInfoId != null">#{employeeInfoId},</if>
+            <if test="qualificationType != null">#{qualificationType},</if>
+            <if test="certificateNumber != null">#{certificateNumber},</if>
+            <if test="issuingAuthority != null">#{issuingAuthority},</if>
+            <if test="certificateIssueDate != null">#{certificateIssueDate},</if>
+            <if test="certificateExpiryDate != null">#{certificateExpiryDate},</if>
+            <if test="yearsOfPractice != null">#{yearsOfPractice},</if>
+            <if test="professionalConfirmed != null">#{professionalConfirmed},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysEmployeeQualifications" parameterType="com.xingqiao.system.domain.employee.SysEmployeeQualifications">
+        update sys_employee_qualifications
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userType != null">user_type = #{userType},</if>
+            <if test="employeeInfoId != null">employee_info_id = #{employeeInfoId},</if>
+            <if test="qualificationType != null">qualification_type = #{qualificationType},</if>
+            <if test="certificateNumber != null">certificate_number = #{certificateNumber},</if>
+            <if test="issuingAuthority != null">issuing_authority = #{issuingAuthority},</if>
+            <if test="certificateIssueDate != null">certificate_issue_date = #{certificateIssueDate},</if>
+            <if test="certificateExpiryDate != null">certificate_expiry_date = #{certificateExpiryDate},</if>
+            <if test="yearsOfPractice != null">years_of_practice = #{yearsOfPractice},</if>
+            <if test="professionalConfirmed != null">professional_confirmed = #{professionalConfirmed},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysEmployeeQualificationsById" parameterType="Long">
+        delete from sys_employee_qualifications where id = #{id}
+    </delete>
+
+    <delete id="deleteSysEmployeeQualificationsByIds" parameterType="String">
+        delete from sys_employee_qualifications where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

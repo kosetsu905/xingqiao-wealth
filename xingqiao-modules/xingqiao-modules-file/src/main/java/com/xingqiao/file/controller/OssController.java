@@ -1,6 +1,8 @@
 package com.xingqiao.file.controller;
 
 
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.core.utils.StringUtils;
 import com.xingqiao.file.service.OssService;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/oss")
@@ -39,10 +43,17 @@ public class OssController {
             log.info("开始上传文件，文件名: {}, 文件大小: {}, Content-Type: {}", 
                     file.getOriginalFilename(), file.getSize(), file.getContentType());
             
-            // 使用原始文件名
+            // 使用新的文件名
             String originalFilename = file.getOriginalFilename();
-            // 拼接 OSS 存储路径（如 "common/原始文件名"）
-            String ossPath = dir + "/" + originalFilename;
+            String fileExtension = "";
+            if (originalFilename != null && originalFilename.lastIndexOf(".") != -1) {
+                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            Snowflake snowflake = IdUtil.getSnowflake(1,2);
+            long id = snowflake.nextId();
+            String newFileName = id + fileExtension;
+            // 拼接 OSS 存储路径（如 "common/新文件名"）
+            String ossPath = dir + "/" + newFileName;
 
             // 调用 OSS 服务上传
             String ossUrl = ossService.uploadFile(file, ossPath);
@@ -50,14 +61,10 @@ public class OssController {
             // 对URL进行解码，将文件名中的特殊字符转换为中文
             String decodedOssUrl = URLDecoder.decode(ossUrl, StandardCharsets.UTF_8.toString());
             log.info("文件上传成功，文件路径: {}", ossPath);
-            //不返回?后面点链接，只返回照片地址
-            if(!StringUtils.isEmpty(decodedOssUrl)){
-                return R.ok(decodedOssUrl.substring(0,decodedOssUrl.indexOf("?") ), "上传成功");
-            }
-            return R.fail(decodedOssUrl, "上传失败");
+            return R.ok(decodedOssUrl, "上传成功");
+
         } catch (Exception e) {
-            log.error("文件上传失败，文件名: " + file.getOriginalFilename() + 
-                      ", 文件大小: " + file.getSize(), e);
+            log.error("文件上传失败，文件名: {}, 文件大小: {}", file.getOriginalFilename(), file.getSize(), e);
             return R.fail("上传失败：" + e.getMessage());
         }
     }

@@ -2,8 +2,8 @@ package com.xingqiao.system.api.factory;
 
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.system.api.RemoteTocUserService;
-import com.xingqiao.system.api.domain.CustomerQueryInnerRequest;
 import com.xingqiao.system.api.domain.SysUser;
+import com.xingqiao.system.api.domain.employee.AgencyEkyc;
 import com.xingqiao.system.api.model.CustomerListInnerResponse;
 import com.xingqiao.system.api.model.LoginUser;
 import org.slf4j.Logger;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class RemoteTocUserFallbackFactory implements FallbackFactory<RemoteTocUs
             }
 
             @Override
-            public R<List<CustomerListInnerResponse>> getCustomerInnerList(CustomerQueryInnerRequest request) {
+            public R<List<CustomerListInnerResponse>> getCustomerInnerList(AgencyEkyc.CustomerQueryInnerRequest request) {
                 log.info("getCustomerInnerList 调用失败:{}", throwable.getMessage());
                 return R.fail("获取客户列表失败:" + throwable.getMessage());
             }

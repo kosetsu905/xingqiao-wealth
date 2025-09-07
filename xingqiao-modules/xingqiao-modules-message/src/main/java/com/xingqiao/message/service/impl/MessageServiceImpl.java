@@ -13,7 +13,7 @@ import com.xingqiao.message.service.MessageService;
 import com.xingqiao.message.util.email.EmailUtils;
 import com.xingqiao.message.util.sms.AliyunSmsUtil;
 import com.xingqiao.system.api.RemoteTocUserService;
-import com.xingqiao.system.api.domain.CustomerQueryInnerRequest;
+import com.xingqiao.system.api.domain.employee.AgencyEkyc;
 import com.xingqiao.system.api.model.CustomerListInnerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -137,7 +137,7 @@ public class MessageServiceImpl implements MessageService {
     public R<?> sendInviteMessageBatch(InviteReqDTO inviteReqDTO) {
         List<Long> idList = inviteReqDTO.getIdList();
 
-        CustomerQueryInnerRequest request=new CustomerQueryInnerRequest();
+        AgencyEkyc.CustomerQueryInnerRequest request=new AgencyEkyc.CustomerQueryInnerRequest();
         request.setIdList(idList);
         R<List<CustomerListInnerResponse>> result = remoteTocUserService.getCustomerInnerList(request);
         if (result.getCode()!=200) {

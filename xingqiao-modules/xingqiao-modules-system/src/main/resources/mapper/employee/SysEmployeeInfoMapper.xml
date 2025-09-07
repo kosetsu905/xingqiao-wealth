@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.system.mapper.employee.SysEmployeeInfoMapper">
+
+    <resultMap type="com.xingqiao.system.domain.employee.SysEmployeeInfo" id="SysEmployeeInfoResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userType"    column="user_type"    />
+        <result property="idType"    column="id_type"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="issueDate"    column="issue_date"    />
+        <result property="expiryDate"    column="expiry_date"    />
+        <result property="frontIdFileUrl"    column="front_id_file_url"    />
+        <result property="backIdFileUrl"    column="back_id_file_url"    />
+        <result property="identityConfirmed"    column="identity_confirmed"    />
+        <result property="professionalExperience"    column="professional_experience"    />
+        <result property="accountName"    column="account_name"    />
+        <result property="fullName"    column="full_name"    />
+        <result property="age"    column="age"    />
+        <result property="phoneNumber"    column="phone_number"    />
+        <result property="email"    column="email"    />
+        <result property="manager"    column="manager"    />
+        <result property="address"    column="address"    />
+        <result property="avatarUrl"    column="avatar_url"    />
+        <result property="countryCode"    column="country_code"    />
+        <result property="gender"    column="gender"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysEmployeeInfoVo">
+        select id, user_id, user_type, id_type, id_number, issue_date, expiry_date, front_id_file_url, back_id_file_url, identity_confirmed, professional_experience, account_name, full_name, age, phone_number, email, manager, address, avatar_url, country_code, gender, birthday, status, remark, create_by, create_time, update_by, update_time from sys_employee_info
+    </sql>
+
+    <select id="selectSysEmployeeInfoList" parameterType="com.xingqiao.system.domain.employee.SysEmployeeInfo" resultMap="SysEmployeeInfoResult">
+        <include refid="selectSysEmployeeInfoVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="idType != null  and idType != ''"> and id_type = #{idType}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="issueDate != null "> and issue_date = #{issueDate}</if>
+            <if test="expiryDate != null "> and expiry_date = #{expiryDate}</if>
+            <if test="frontIdFileUrl != null  and frontIdFileUrl != ''"> and front_id_file_url = #{frontIdFileUrl}</if>
+            <if test="backIdFileUrl != null  and backIdFileUrl != ''"> and back_id_file_url = #{backIdFileUrl}</if>
+            <if test="identityConfirmed != null "> and identity_confirmed = #{identityConfirmed}</if>
+            <if test="professionalExperience != null  and professionalExperience != ''"> and professional_experience = #{professionalExperience}</if>
+            <if test="accountName != null  and accountName != ''"> and account_name like concat('%', #{accountName}, '%')</if>
+            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
+            <if test="age != null  and age != ''"> and age = #{age}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="manager != null  and manager != ''"> and manager = #{manager}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="avatarUrl != null  and avatarUrl != ''"> and avatar_url = #{avatarUrl}</if>
+            <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="birthday != null "> and birthday = #{birthday}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectSysEmployeeInfoById" parameterType="Long" resultMap="SysEmployeeInfoResult">
+        <include refid="selectSysEmployeeInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysEmployeeInfo" parameterType="com.xingqiao.system.domain.employee.SysEmployeeInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_employee_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="idType != null and idType != ''">id_type,</if>
+            <if test="idNumber != null and idNumber != ''">id_number,</if>
+            <if test="issueDate != null">issue_date,</if>
+            <if test="expiryDate != null">expiry_date,</if>
+            <if test="frontIdFileUrl != null">front_id_file_url,</if>
+            <if test="backIdFileUrl != null">back_id_file_url,</if>
+            <if test="identityConfirmed != null">identity_confirmed,</if>
+            <if test="professionalExperience != null">professional_experience,</if>
+            <if test="accountName != null">account_name,</if>
+            <if test="fullName != null and fullName != ''">full_name,</if>
+            <if test="age != null">age,</if>
+            <if test="phoneNumber != null">phone_number,</if>
+            <if test="email != null">email,</if>
+            <if test="manager != null">manager,</if>
+            <if test="address != null">address,</if>
+            <if test="avatarUrl != null">avatar_url,</if>
+            <if test="countryCode != null">country_code,</if>
+            <if test="gender != null">gender,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="idType != null and idType != ''">#{idType},</if>
+            <if test="idNumber != null and idNumber != ''">#{idNumber},</if>
+            <if test="issueDate != null">#{issueDate},</if>
+            <if test="expiryDate != null">#{expiryDate},</if>
+            <if test="frontIdFileUrl != null">#{frontIdFileUrl},</if>
+            <if test="backIdFileUrl != null">#{backIdFileUrl},</if>
+            <if test="identityConfirmed != null">#{identityConfirmed},</if>
+            <if test="professionalExperience != null">#{professionalExperience},</if>
+            <if test="accountName != null">#{accountName},</if>
+            <if test="fullName != null and fullName != ''">#{fullName},</if>
+            <if test="age != null">#{age},</if>
+            <if test="phoneNumber != null">#{phoneNumber},</if>
+            <if test="email != null">#{email},</if>
+            <if test="manager != null">#{manager},</if>
+            <if test="address != null">#{address},</if>
+            <if test="avatarUrl != null">#{avatarUrl},</if>
+            <if test="countryCode != null">#{countryCode},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysEmployeeInfo" parameterType="com.xingqiao.system.domain.employee.SysEmployeeInfo">
+        update sys_employee_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userType != null">user_type = #{userType},</if>
+            <if test="idType != null and idType != ''">id_type = #{idType},</if>
+            <if test="idNumber != null and idNumber != ''">id_number = #{idNumber},</if>
+            <if test="issueDate != null">issue_date = #{issueDate},</if>
+            <if test="expiryDate != null">expiry_date = #{expiryDate},</if>
+            <if test="frontIdFileUrl != null">front_id_file_url = #{frontIdFileUrl},</if>
+            <if test="backIdFileUrl != null">back_id_file_url = #{backIdFileUrl},</if>
+            <if test="identityConfirmed != null">identity_confirmed = #{identityConfirmed},</if>
+            <if test="professionalExperience != null">professional_experience = #{professionalExperience},</if>
+            <if test="accountName != null">account_name = #{accountName},</if>
+            <if test="fullName != null and fullName != ''">full_name = #{fullName},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="phoneNumber != null">phone_number = #{phoneNumber},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="manager != null">manager = #{manager},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
+            <if test="countryCode != null">country_code = #{countryCode},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysEmployeeInfoById" parameterType="Long">
+        delete from sys_employee_info where id = #{id}
+    </delete>
+
+    <delete id="deleteSysEmployeeInfoByIds" parameterType="String">
+        delete from sys_employee_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
