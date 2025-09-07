@@ -285,6 +285,10 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
             if (StringUtils.isEmpty(records.getCertifyId())){
                 return R.fail("请先获取认证信息");
             }
+            if (2L==records.getFaceVerifyStatus()){
+                return R.ok("T");
+            }
+
             com.aliyun.teaopenapi.Client client = createClient();
             Params params = createApiInfo("DescribeFaceVerify","json");
             // query params
@@ -337,8 +341,10 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
             updateRecords.setFaceVerifyTime(new Date());
             updateRecords.setFaceVerifyStatus("T".equals(passed)?2L:3L);
             updateRecords.setUpdateBy("system");
+            updateRecords.setUpdateTime(new Date());
             updateRecords.setRemark(msg);
-            iCustomerInfoService.updateCustomerInfo(updateRecords);
+            int updateCount=iCustomerInfoService.updateCustomerInfo(updateRecords);
+            log.info("更新客户信息成功："+updateCount);
             return R.ok(passed);
         }catch (Exception e){
             log.error("获取客户信息失败：",e);

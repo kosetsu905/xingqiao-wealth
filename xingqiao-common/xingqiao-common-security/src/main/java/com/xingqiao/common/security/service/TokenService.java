@@ -69,6 +69,7 @@ public class TokenService
         rspMap.put("avatar", loginUser.getUser().getAvatar());
         rspMap.put("userName", loginUser.getUser().getUserName());
         rspMap.put("phoneNumber", loginUser.getUser().getPhoneNumber());
+        rspMap.put("email", loginUser.getUser().getEmail());
         return rspMap;
     }
 
