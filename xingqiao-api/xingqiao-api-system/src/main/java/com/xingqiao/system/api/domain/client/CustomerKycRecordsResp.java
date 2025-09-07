@@ -55,6 +55,9 @@ public class CustomerKycRecordsResp extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "证件有效期截止日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date expiryDate;
+    /** 电子邮箱 */
+    @Excel(name = "电子邮箱")
+    private String email;
 
     /** 出生年月日 */
     @JsonFormat(pattern = "yyyy-MM-dd")

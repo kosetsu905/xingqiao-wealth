@@ -9,8 +9,11 @@ import com.aliyun.teaopenapi.models.Params;
 import com.aliyun.teautil.Common;
 import com.aliyun.teautil.models.RuntimeOptions;
 import com.xingqiao.common.core.domain.R;
+import com.xingqiao.common.core.utils.IdCardAgeCalculator;
 import com.xingqiao.common.core.utils.StringUtils;
 import com.xingqiao.common.core.utils.bean.BeanUtils;
+import com.xingqiao.system.api.domain.client.ClientCustomerReq;
+import com.xingqiao.system.api.domain.client.ClientCustomerResp;
 import com.xingqiao.system.api.domain.client.CustomerKycRecordsReq;
 import com.xingqiao.system.config.ClientKycConfig;
 import com.xingqiao.system.domain.client.CustomerInfo;
@@ -18,7 +21,6 @@ import com.xingqiao.system.service.client.ClientCustomerService;
 import com.xingqiao.system.service.client.ICustomerInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,57 +40,7 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
     private  ClientKycConfig clientKycConfig;
 
     // 使用单例模式优化性能
-    private static com.aliyun.credentials.Client credentialClient = new com.aliyun.credentials.Client();
-
-    @Override
-    public String getEkycReturnUrlDemo(JSONObject metaInfo) throws Exception {
-
-        com.aliyun.cloudauth20190307.Client client = createClient();
-        Params params = createApiInfo("InitFaceVerify","formData");
-        // query params
-        Map<String, Object> queries = new HashMap<>();
-        queries.put("SceneId", 1000014670);
-        queries.put("OuterOrderNo", "2025083117240001");
-        queries.put("ProductCode", "PV_FV");
-        queries.put("Model", "MOVE_ACTION");
-        queries.put("CertType", "IDENTITY_CARD");
-        queries.put("CertName", "覃冠木");
-        queries.put("CertNo", "450802198906072016");
-        queries.put("ReturnUrl", "http://www.baidu.com");
-        queries.put("Mobile", "17665319189");
-        queries.put("MetaInfo", metaInfo.toJSONString());
-        queries.put("Ip", null);
-        queries.put("UserId", "1");
-        queries.put("OssBucketName", "cn-shenzhen-aliyun-cloudauth-2025081614336153");
-        queries.put("OssObjectName", "ekyc/微信图片_2025-08-31_202051_864.jpg");
-        // body params
-        Map<String, Object> body = new HashMap<>();
-        // runtime options
-        RuntimeOptions runtime = new RuntimeOptions();
-        OpenApiRequest request = new OpenApiRequest()
-                .setQuery(com.aliyun.openapiutil.Client.query(queries))
-                .setBody(body);
-        // 复制代码运行请自行打印 API 的返回值
-        // 返回值实际为 Map 类型，可从 Map 中获得三类数据：响应体 body、响应头 headers、HTTP 返回的状态码 statusCode。
-        Object resp = client.callApi(params, request, runtime);
-        com.aliyun.teaconsole.Client.log(com.aliyun.teautil.Common.toJSONString(resp));
-
-        // 解析返回结果，提取CertifyUrl
-        if (resp != null) {
-            Map<String, Object> responseMap = (Map<String, Object>) resp;
-            if (responseMap.containsKey("body")) {
-                Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
-                if (bodyMap.containsKey("ResultObject")) {
-                    Map<String, Object> resultObject = (Map<String, Object>) bodyMap.get("ResultObject");
-                    if (resultObject.containsKey("CertifyUrl")) {
-                        return (String) resultObject.get("CertifyUrl");
-                    }
-                }
-            }
-        }
-        
-        return "";
-    }
+    private static final com.aliyun.credentials.Client credentialClient = new com.aliyun.credentials.Client();
 
     /**
      * <b>description</b> :
@@ -156,8 +108,17 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
 
         CustomerInfo records=new CustomerInfo();
         BeanUtils.copyProperties(req,records);
+        //根据身份证号码计算年龄
+        int age=IdCardAgeCalculator.calculateAge(records.getIdNumber());
+        records.setAge(String.valueOf(age));
         if(CollectionUtils.isNotEmpty(list)){
             records.setId(list.get(0).getId());
+            if(StringUtils.isNotEmpty(list.get(0).getCertifyId())){
+                R ret=getEkycResult(list.get(0).getUserId());
+                if (ret.getCode() == R.SUCCESS&& "T".equals(ret.getData())){
+                    return  R.fail("认证成功不能编辑。");
+                }
+            }
             //更新
             iCustomerInfoService.updateCustomerInfo(records);
         }else{
@@ -187,10 +148,19 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
             recordsReq.setUserId(userId);
             List<CustomerInfo> list= iCustomerInfoService.selectCustomerInfoList(recordsReq);
             if (CollectionUtils.isEmpty(list)){
-                R.fail("用户身份信息为空。");
+               return  R.fail("用户身份信息为空。");
             }
 
             CustomerInfo records=list.get(0);
+            if (2L==records.getFaceVerifyStatus()){
+                return  R.fail("已经认证成功。");
+            }
+            if(StringUtils.isNotEmpty(records.getCertifyId())){
+                R ret=getEkycResult(userId);
+                if (ret.getCode() == R.SUCCESS&& "T".equals(ret.getData())){
+                    return  R.fail("已经认证成功。");
+                }
+            }
 
             com.aliyun.cloudauth20190307.Client client = createClient();
             Params params = createApiInfo("InitFaceVerify","formData");
@@ -278,7 +248,7 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
             recordsReq.setUserId(userId);
             List<CustomerInfo> list= iCustomerInfoService.selectCustomerInfoList(recordsReq);
             if (CollectionUtils.isEmpty(list)){
-                R.fail("用户身份信息为空。");
+               return R.fail("用户身份信息为空。");
             }
 
             CustomerInfo records=list.get(0);
@@ -353,6 +323,7 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
 
     }
 
+
     private static String getFrontIdFilrUrl(CustomerInfo records) {
         String frontIdFileUrl = records.getFrontIdFileUrl();
         String path = "";
@@ -370,6 +341,42 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
             }
         }
         return path;
+    }
+
+
+    @Override
+    public R getClientCustomerInfo(Long userId) {
+        CustomerInfo recordsReq=new CustomerInfo();
+        recordsReq.setUserId(userId);
+        List<CustomerInfo> list= iCustomerInfoService.selectCustomerInfoList(recordsReq);
+        if (list.isEmpty()){
+            return R.fail("尚未KYC认证！");
+        }
+        CustomerInfo records=list.get(0);
+        ClientCustomerResp resp=new ClientCustomerResp();
+        BeanUtils.copyBeanProp(resp,records);
+        return R.ok(resp);
+    }
+
+    @Override
+    public R saveClientCustomerInfo(ClientCustomerReq req) {
+        log.info("保存客户信息开始");
+        CustomerInfo recordsReq=new CustomerInfo();
+        recordsReq.setUserId(req.getUserId());
+        List<CustomerInfo> list= iCustomerInfoService.selectCustomerInfoList(recordsReq);
+        if(CollectionUtils.isEmpty(list)){
+            return R.fail("请先进行KYC认证");
+        }
+        CustomerInfo exitCustomerInfo=list.get(0);
+        CustomerInfo records=new CustomerInfo();
+        BeanUtils.copyProperties(req,records);
+        //根据身份证号码计算年龄
+        int age=IdCardAgeCalculator.calculateAge(records.getIdNumber());
+        records.setAge(String.valueOf(age));
+        records.setId(exitCustomerInfo.getId());
+        //更新
+        iCustomerInfoService.updateCustomerInfo(records);
+        return R.ok();
     }
 
 

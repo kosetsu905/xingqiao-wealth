@@ -224,39 +224,3 @@ create index idx_customer_info_user_temp_id
 
 
 
-
-
-drop table if exists customer_kyc_records;
-
-CREATE TABLE customer_kyc_records (
-                                      id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
-                                      user_id            bigint                        null comment '客户ID',
-                                      certify_id VARCHAR(200)  COMMENT '三方id',
-                                      id_type            varchar(20)                   null comment '证件类型（枚举：passport-护照, id_card-身份证, driver_license-驾驶证, other-其他）',
-                                      id_number          varchar(100)                  null comment '证件号码',
-                                      full_name          varchar(100)                  null comment '全名（真实姓名）',
-                                      phone_number       varchar(20)                   null comment '手机号码',
-                                      issue_date         date                          null comment '证件颁发日期',
-                                      expiry_date        date                          null comment '证件有效期截止日期',
-                                      front_id_file_url  varchar(500)                  null comment '证件正面照URL',
-                                      back_id_file_url   varchar(500)                  null comment '证件反面照URL',
-                                      face_verify_status TINYINT DEFAULT 0 COMMENT '人脸验证状态:0-未验证,1-验证中,2-验证成功,3-验证失败',
-                                      face_verify_time DATETIME COMMENT '人脸验证时间',
-                                      face_verify_score DECIMAL(5,2) COMMENT '人脸比对分数',
-                                      face_image_url VARCHAR(255) COMMENT '人脸照片URL',
-                                      review_status TINYINT DEFAULT 0 COMMENT '审核状态:0-待审核,1-审核通过,2-审核拒绝',
-                                      review_time DATETIME COMMENT '审核时间',
-                                      review_operator VARCHAR(64) COMMENT '审核操作员',
-                                      review_comment VARCHAR(500) COMMENT '审核意见',
-                                      device_info VARCHAR(255) COMMENT '设备信息',
-                                      ip_address VARCHAR(50) COMMENT 'IP地址',
-                                      remark             varchar(500)                  null comment '备注',
-                                      create_by          varchar(64)      default ''   null comment '创建者',
-                                      create_time        datetime                      null comment '创建时间',
-                                      update_by          varchar(64)      default ''   null comment '更新者',
-                                      update_time        datetime                      null comment '更新时间',
-                                      INDEX idx_user_id (user_id),
-                                      INDEX idx_id_number (id_number),
-                                      INDEX idx_review_status (review_status),
-                                      INDEX idx_create_time (create_time)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户KYC认证记录表';

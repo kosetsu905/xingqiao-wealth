@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.core.web.controller.BaseController;
 import com.xingqiao.common.security.utils.SecurityUtils;
+import com.xingqiao.system.api.domain.client.ClientCustomerReq;
+import com.xingqiao.system.api.domain.client.ClientCustomerResp;
 import com.xingqiao.system.api.domain.client.CustomerKycRecordsReq;
 import com.xingqiao.system.service.client.ClientCustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,6 @@ public class ClientCustomerController extends BaseController {
     @Autowired
     private ClientCustomerService clientCustomerService;
 
-    @PostMapping("/getEkycReturnUrlDemo")
-    public R getEkycReturnUrlDemo(@RequestBody  JSONObject metaInfo) throws Exception {
-        return R.ok(clientCustomerService.getEkycReturnUrlDemo(metaInfo));
-    }
-
 
     @PostMapping("/saveKycInfo")
     public R saveKycInfo(@RequestBody CustomerKycRecordsReq req) {
@@ -30,6 +27,8 @@ public class ClientCustomerController extends BaseController {
         req.setUserId(userId);
         return clientCustomerService.saveKycInfo(req);
     }
+
+
 
 
     /**
@@ -60,4 +59,27 @@ public class ClientCustomerController extends BaseController {
         return  clientCustomerService.getEkycResult(userId);
     }
 
+
+
+
+    /**
+     * 获取客户信息
+     */
+    @GetMapping("/getClientCustomerInfo")
+    public R getClientCustomerInfo() {
+        try {
+            Long userId = SecurityUtils.getUserId();
+            return clientCustomerService.getClientCustomerInfo(userId);
+        } catch (Exception e) {
+            logger.error("获取客户信息失败：", e);
+            return R.fail("失败");
+        }
+    }
+
+    @PostMapping("/saveClientCustomerInfo")
+    public R saveClientCustomerInfo(@RequestBody ClientCustomerReq req) {
+        Long userId = SecurityUtils.getUserId();
+        req.setUserId(userId);
+        return clientCustomerService.saveClientCustomerInfo(req);
+    }
 }

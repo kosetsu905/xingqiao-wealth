@@ -77,6 +77,9 @@ public class CustomerKycRecordsReq extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "人脸验证时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date faceVerifyTime;
+    /** 电子邮箱 */
+    @Excel(name = "电子邮箱")
+    private String email;
 
     /** 人脸比对分数 */
     @Excel(name = "人脸比对分数")
@@ -99,6 +102,9 @@ public class CustomerKycRecordsReq extends BaseEntity
     @Excel(name = "审核操作员")
     private String reviewOperator;
 
+    /** 三方id */
+    @Excel(name = "三方id")
+    private String certifyId;
     /** 审核意见 */
     @Excel(name = "审核意见")
     private String reviewComment;
@@ -115,5 +121,7 @@ public class CustomerKycRecordsReq extends BaseEntity
      * 步骤
      * */
     private Integer step;
+
+
 
 }

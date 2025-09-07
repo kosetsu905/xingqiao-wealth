@@ -25,7 +25,10 @@
         <result property="address"    column="address"    />
         <result property="avatarUrl"    column="avatar_url"    />
         <result property="countryCode"    column="country_code"    />
+        <result property="primaryIncomeSource"    column="primary_income_source"    />
         <result property="gender"    column="gender"    />
+        <result property="hasMortgage"    column="has_mortgage"    />
+        <result property="requiresSupport"    column="requires_support"    />
         <result property="maritalStatus"    column="marital_status"    />
         <result property="birthDay"    column="birth_day"    />
         <result property="childCount"    column="child_count"    />
@@ -38,6 +41,9 @@
         <result property="reviewTime"    column="review_time"    />
         <result property="reviewOperator"    column="review_operator"    />
         <result property="reviewComment"    column="review_comment"    />
+        <result property="monthlyMortgagePayment"    column="monthly_mortgage_payment"    />
+        <result property="childrenEducationExpense"    column="children_education_expense"    />
+        <result property="familyCount"    column="family_count"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -46,7 +52,7 @@
     </resultMap>
 
     <sql id="selectCustomerInfoVo">
-        select id, user_id, user_temp_id, employee_id, user_type, id_type, id_number, issue_date, expiry_date, avatar, front_id_file_url, back_id_file_url, full_name, age, phone_number, email, manager, address, avatar_url, country_code, gender, marital_status, birth_day, child_count, certify_id, face_verify_status, face_verify_time, face_verify_score, face_image_url, status, review_time, review_operator, review_comment, remark, create_by, create_time, update_by, update_time from customer_info
+        select id, user_id, user_temp_id, employee_id, user_type, id_type, id_number, issue_date, expiry_date, avatar, front_id_file_url, back_id_file_url, full_name, age, phone_number, email, manager, address, avatar_url, country_code, primary_income_source, gender, has_mortgage, requires_support, marital_status, birth_day, child_count, certify_id, face_verify_status, face_verify_time, face_verify_score, face_image_url, status, review_time, review_operator, review_comment, monthly_mortgage_payment, children_education_expense, family_count, remark, create_by, create_time, update_by, update_time from customer_info
     </sql>
 
     <select id="selectCustomerInfoList" parameterType="com.xingqiao.system.domain.client.CustomerInfo" resultMap="CustomerInfoResult">
@@ -71,7 +77,10 @@
             <if test="address != null  and address != ''"> and address = #{address}</if>
             <if test="avatarUrl != null  and avatarUrl != ''"> and avatar_url = #{avatarUrl}</if>
             <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
+            <if test="primaryIncomeSource != null  and primaryIncomeSource != ''"> and primary_income_source = #{primaryIncomeSource}</if>
             <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="hasMortgage != null  and hasMortgage != ''"> and has_mortgage = #{hasMortgage}</if>
+            <if test="requiresSupport != null  and requiresSupport != ''"> and requires_support = #{requiresSupport}</if>
             <if test="maritalStatus != null  and maritalStatus != ''"> and marital_status = #{maritalStatus}</if>
             <if test="birthDay != null "> and birth_day = #{birthDay}</if>
             <if test="childCount != null  and childCount != ''"> and child_count = #{childCount}</if>
@@ -84,6 +93,9 @@
             <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
             <if test="reviewOperator != null  and reviewOperator != ''"> and review_operator = #{reviewOperator}</if>
             <if test="reviewComment != null  and reviewComment != ''"> and review_comment = #{reviewComment}</if>
+            <if test="monthlyMortgagePayment != null "> and monthly_mortgage_payment = #{monthlyMortgagePayment}</if>
+            <if test="childrenEducationExpense != null "> and children_education_expense = #{childrenEducationExpense}</if>
+            <if test="familyCount != null "> and family_count = #{familyCount}</if>
         </where>
     </select>
 
@@ -114,7 +126,10 @@
             <if test="address != null">address,</if>
             <if test="avatarUrl != null">avatar_url,</if>
             <if test="countryCode != null">country_code,</if>
+            <if test="primaryIncomeSource != null">primary_income_source,</if>
             <if test="gender != null">gender,</if>
+            <if test="hasMortgage != null">has_mortgage,</if>
+            <if test="requiresSupport != null">requires_support,</if>
             <if test="maritalStatus != null">marital_status,</if>
             <if test="birthDay != null">birth_day,</if>
             <if test="childCount != null">child_count,</if>
@@ -127,6 +142,9 @@
             <if test="reviewTime != null">review_time,</if>
             <if test="reviewOperator != null">review_operator,</if>
             <if test="reviewComment != null">review_comment,</if>
+            <if test="monthlyMortgagePayment != null">monthly_mortgage_payment,</if>
+            <if test="childrenEducationExpense != null">children_education_expense,</if>
+            <if test="familyCount != null">family_count,</if>
             <if test="remark != null">remark,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -153,7 +171,10 @@
             <if test="address != null">#{address},</if>
             <if test="avatarUrl != null">#{avatarUrl},</if>
             <if test="countryCode != null">#{countryCode},</if>
+            <if test="primaryIncomeSource != null">#{primaryIncomeSource},</if>
             <if test="gender != null">#{gender},</if>
+            <if test="hasMortgage != null">#{hasMortgage},</if>
+            <if test="requiresSupport != null">#{requiresSupport},</if>
             <if test="maritalStatus != null">#{maritalStatus},</if>
             <if test="birthDay != null">#{birthDay},</if>
             <if test="childCount != null">#{childCount},</if>
@@ -166,6 +187,9 @@
             <if test="reviewTime != null">#{reviewTime},</if>
             <if test="reviewOperator != null">#{reviewOperator},</if>
             <if test="reviewComment != null">#{reviewComment},</if>
+            <if test="monthlyMortgagePayment != null">#{monthlyMortgagePayment},</if>
+            <if test="childrenEducationExpense != null">#{childrenEducationExpense},</if>
+            <if test="familyCount != null">#{familyCount},</if>
             <if test="remark != null">#{remark},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -196,7 +220,10 @@
             <if test="address != null">address = #{address},</if>
             <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
             <if test="countryCode != null">country_code = #{countryCode},</if>
+            <if test="primaryIncomeSource != null">primary_income_source = #{primaryIncomeSource},</if>
             <if test="gender != null">gender = #{gender},</if>
+            <if test="hasMortgage != null">has_mortgage = #{hasMortgage},</if>
+            <if test="requiresSupport != null">requires_support = #{requiresSupport},</if>
             <if test="maritalStatus != null">marital_status = #{maritalStatus},</if>
             <if test="birthDay != null">birth_day = #{birthDay},</if>
             <if test="childCount != null">child_count = #{childCount},</if>
@@ -209,6 +236,9 @@
             <if test="reviewTime != null">review_time = #{reviewTime},</if>
             <if test="reviewOperator != null">review_operator = #{reviewOperator},</if>
             <if test="reviewComment != null">review_comment = #{reviewComment},</if>
+            <if test="monthlyMortgagePayment != null">monthly_mortgage_payment = #{monthlyMortgagePayment},</if>
+            <if test="childrenEducationExpense != null">children_education_expense = #{childrenEducationExpense},</if>
+            <if test="familyCount != null">family_count = #{familyCount},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

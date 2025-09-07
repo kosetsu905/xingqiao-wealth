@@ -100,9 +100,21 @@ public class CustomerInfo extends BaseEntity
     @Excel(name = "手机区号")
     private String countryCode;
 
+    /** 家庭主要经济来源 */
+    @Excel(name = "家庭主要经济来源")
+    private String primaryIncomeSource;
+
     /** 性别（0-未知, 1-男, 2-女） */
     @Excel(name = "性别", readConverterExp = "0=-未知,,1=-男,,2=-女")
     private String gender;
+
+    /** 是否有房贷（0-未知, 1-是, 2-否） */
+    @Excel(name = "是否有房贷", readConverterExp = "0=-未知,,1=-是,,2=-否")
+    private String hasMortgage;
+
+    /** 是否需要赡养（0-未知, 1-是, 2-否） */
+    @Excel(name = "是否需要赡养", readConverterExp = "0=-未知,,1=-是,,2=-否")
+    private String requiresSupport;
 
     /** 婚姻状况：未婚：SINGLE, 已婚：MARRIED, 离异:DIVORCED, 丧偶:WIDOWED, 其他：OTHER */
     @Excel(name = "婚姻状况：未婚：SINGLE, 已婚：MARRIED, 离异:DIVORCED, 丧偶:WIDOWED, 其他：OTHER")
@@ -154,6 +166,18 @@ public class CustomerInfo extends BaseEntity
     /** 审核意见 */
     @Excel(name = "审核意见")
     private String reviewComment;
+
+    /** 房贷月供 */
+    @Excel(name = "房贷月供")
+    private BigDecimal monthlyMortgagePayment;
+
+    /** 子女教育支出 */
+    @Excel(name = "子女教育支出")
+    private BigDecimal childrenEducationExpense;
+
+    /** 家庭人数 */
+    @Excel(name = "家庭人数")
+    private Long familyCount;
 
     public void setId(Long id)
     {
@@ -355,6 +379,16 @@ public class CustomerInfo extends BaseEntity
         return countryCode;
     }
 
+    public void setPrimaryIncomeSource(String primaryIncomeSource)
+    {
+        this.primaryIncomeSource = primaryIncomeSource;
+    }
+
+    public String getPrimaryIncomeSource()
+    {
+        return primaryIncomeSource;
+    }
+
     public void setGender(String gender)
     {
         this.gender = gender;
@@ -363,6 +397,26 @@ public class CustomerInfo extends BaseEntity
     public String getGender()
     {
         return gender;
+    }
+
+    public void setHasMortgage(String hasMortgage)
+    {
+        this.hasMortgage = hasMortgage;
+    }
+
+    public String getHasMortgage()
+    {
+        return hasMortgage;
+    }
+
+    public void setRequiresSupport(String requiresSupport)
+    {
+        this.requiresSupport = requiresSupport;
+    }
+
+    public String getRequiresSupport()
+    {
+        return requiresSupport;
     }
 
     public void setMaritalStatus(String maritalStatus)
@@ -485,6 +539,36 @@ public class CustomerInfo extends BaseEntity
         return reviewComment;
     }
 
+    public void setMonthlyMortgagePayment(BigDecimal monthlyMortgagePayment)
+    {
+        this.monthlyMortgagePayment = monthlyMortgagePayment;
+    }
+
+    public BigDecimal getMonthlyMortgagePayment()
+    {
+        return monthlyMortgagePayment;
+    }
+
+    public void setChildrenEducationExpense(BigDecimal childrenEducationExpense)
+    {
+        this.childrenEducationExpense = childrenEducationExpense;
+    }
+
+    public BigDecimal getChildrenEducationExpense()
+    {
+        return childrenEducationExpense;
+    }
+
+    public void setFamilyCount(Long familyCount)
+    {
+        this.familyCount = familyCount;
+    }
+
+    public Long getFamilyCount()
+    {
+        return familyCount;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -508,7 +592,10 @@ public class CustomerInfo extends BaseEntity
                 .append("address", getAddress())
                 .append("avatarUrl", getAvatarUrl())
                 .append("countryCode", getCountryCode())
+                .append("primaryIncomeSource", getPrimaryIncomeSource())
                 .append("gender", getGender())
+                .append("hasMortgage", getHasMortgage())
+                .append("requiresSupport", getRequiresSupport())
                 .append("maritalStatus", getMaritalStatus())
                 .append("birthDay", getBirthDay())
                 .append("childCount", getChildCount())
@@ -521,6 +608,9 @@ public class CustomerInfo extends BaseEntity
                 .append("reviewTime", getReviewTime())
                 .append("reviewOperator", getReviewOperator())
                 .append("reviewComment", getReviewComment())
+                .append("monthlyMortgagePayment", getMonthlyMortgagePayment())
+                .append("childrenEducationExpense", getChildrenEducationExpense())
+                .append("familyCount", getFamilyCount())
                 .append("remark", getRemark())
                 .append("createBy", getCreateBy())
                 .append("createTime", getCreateTime())
