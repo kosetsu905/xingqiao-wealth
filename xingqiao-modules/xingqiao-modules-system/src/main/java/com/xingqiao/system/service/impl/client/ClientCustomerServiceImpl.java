@@ -229,7 +229,7 @@ public class ClientCustomerServiceImpl implements ClientCustomerService {
                 //认证失败
                 updateRecords.setFaceVerifyStatus(3L);
                 iCustomerInfoService.updateCustomerInfo(updateRecords);
-                return R.fail("获取客户信息失败");
+                return R.fail(msg);
             }else{
                 iCustomerInfoService.updateCustomerInfo(updateRecords);
             }

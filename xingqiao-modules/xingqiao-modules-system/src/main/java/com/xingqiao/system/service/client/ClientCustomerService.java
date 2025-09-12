@@ -3,7 +3,6 @@ package com.xingqiao.system.service.client;
 import com.alibaba.fastjson.JSONObject;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.system.api.domain.client.ClientCustomerReq;
-import com.xingqiao.system.api.domain.client.ClientCustomerResp;
 import com.xingqiao.system.api.domain.client.CustomerKycRecordsReq;
 
 public interface ClientCustomerService {

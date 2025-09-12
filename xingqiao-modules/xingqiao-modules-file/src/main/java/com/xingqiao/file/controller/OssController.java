@@ -4,7 +4,6 @@ package com.xingqiao.file.controller;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import com.xingqiao.common.core.domain.R;
-import com.xingqiao.common.core.utils.StringUtils;
 import com.xingqiao.file.service.OssService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/oss")
