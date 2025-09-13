@@ -46,7 +46,8 @@ public class MessageServiceImpl implements MessageService {
         //生成随机的6位数验证码
         String code = RandomUtil.randomNumbers(6);
         //判断验证码类型
-        if (RegistrationStep.PHONE_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())) {
+        if (RegistrationStep.PHONE_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())||
+                RegistrationStep.PHONE_LOGIN_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())) {
             //发送手机验证码
             aliyunSmsUtil.sendSmsCode(codeReqDTO.getPhoneNumber(),code);
             //发送成功保存到redis中，设置有效时间
@@ -56,7 +57,8 @@ public class MessageServiceImpl implements MessageService {
             return R.ok("发送成功");
         }
 
-        if (RegistrationStep.EMAIL_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())) {
+        if (RegistrationStep.EMAIL_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())||
+                RegistrationStep.EMAIL_LOGIN_VERIFICATION_CODE.getCode().equals(codeReqDTO.getStep())) {
             log.info("发送邮箱验证码,code={}",code);
             //发送邮箱验证码
             R sendEmailResult = this.sendRegisterCodeEmail(codeReqDTO.getEmail(),code);

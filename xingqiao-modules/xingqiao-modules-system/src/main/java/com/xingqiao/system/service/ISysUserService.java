@@ -42,6 +42,8 @@ public interface ISysUserService
      * @return 用户对象信息
      */
     public SysUser selectUserByUserName(String userName,String userType);
+    public SysUser selectUserByEmail(String email,String userType);
+    public SysUser selectUserByPhone(String phone,String userType);
 
     /**
      * 通过用户ID查询用户

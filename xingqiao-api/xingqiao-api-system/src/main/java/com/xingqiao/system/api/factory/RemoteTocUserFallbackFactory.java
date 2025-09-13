@@ -32,6 +32,16 @@ public class RemoteTocUserFallbackFactory implements FallbackFactory<RemoteTocUs
             }
 
             @Override
+            public R<LoginUser> getUserInfoByEmail(String email, String userType, String source) {
+                return R.fail("获取用户失败:" + throwable.getMessage());
+            }
+
+            @Override
+            public R<LoginUser> getUserInfoByPhone(String phone, String userType, String source) {
+                return R.fail("获取用户失败:" + throwable.getMessage());
+            }
+
+            @Override
             public R<Boolean> registerUserInfo(SysUser sysUser, String source) {
                 return R.fail("注册用户失败:" + throwable.getMessage());
             }

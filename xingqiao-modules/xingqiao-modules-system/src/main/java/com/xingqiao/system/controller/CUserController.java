@@ -119,4 +119,42 @@ public class CUserController extends BaseController
 
 
 
+    /**
+     * 获取当前用户信息
+     */
+    @InnerAuth
+    @GetMapping("/infoByEmail/{email}/{userType}")
+    public R<LoginUser> infoByEmail(@PathVariable("email") String email
+            ,@PathVariable("userType") String userType)
+    {
+        SysUser commonUser = userService.selectUserByEmail(email,userType);
+        if (StringUtils.isNull(commonUser))
+        {
+            return R.fail("用户不存在！");
+        }
+        LoginUser sysUserVo = new LoginUser();
+        sysUserVo.setUser(commonUser);
+        return R.ok(sysUserVo);
+    }
+
+    /**
+     * 获取当前用户信息
+     */
+    @InnerAuth
+    @GetMapping("/infoByPhone/{phone}/{userType}")
+    public R<LoginUser> infoByPhone(@PathVariable("phone") String phone
+            ,@PathVariable("userType") String userType)
+    {
+        SysUser commonUser = userService.selectUserByPhone(phone,userType);
+        if (StringUtils.isNull(commonUser))
+        {
+            return R.fail("用户不存在！");
+        }
+        LoginUser sysUserVo = new LoginUser();
+        sysUserVo.setUser(commonUser);
+        return R.ok(sysUserVo);
+    }
+
+
+
 }

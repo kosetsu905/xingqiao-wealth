@@ -31,6 +31,32 @@ public interface RemoteTocUserService
     @GetMapping("/client/user/info/{userName}/{userType}")
     public R<LoginUser> getUserInfo(@PathVariable("userName") String userName,@PathVariable("userType") String userType, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
 
+
+    /**
+     * 通过邮箱查询用户信息
+     *
+     * @param email 登录账号
+     * @param source 请求来源
+     * @return 结果
+     */
+    @GetMapping("/client/user/infoByEmail/{email}/{userType}")
+    public R<LoginUser> getUserInfoByEmail(@PathVariable("email") String email,@PathVariable("userType") String userType, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
+
+    /**
+     * 通过手机号查询用户信息
+     *
+     * @param phone 登录账号
+     * @param source 请求来源
+     * @return 结果
+     */
+    @GetMapping("/client/user/infoByPhone/{phone}/{userType}")
+    public R<LoginUser> getUserInfoByPhone(@PathVariable("phone") String phone,
+                                           @PathVariable("userType") String userType,
+                                           @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
+
+
+
+
     /**
      * 注册用户信息
      *

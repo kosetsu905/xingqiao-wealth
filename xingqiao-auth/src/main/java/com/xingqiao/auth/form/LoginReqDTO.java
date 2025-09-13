@@ -28,6 +28,11 @@ public class LoginReqDTO {
     private String authCode;
 
     /**
+     * 验证码
+     */
+    private String code;
+
+    /**
      * 登录方式
      */
     private LoginType loginType;
