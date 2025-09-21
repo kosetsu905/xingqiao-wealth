@@ -1,6 +1,5 @@
 package com.xingqiao.common.rocketmq.autoconfigure;
 
-import com.xingqiao.common.rocketmq.config.RocketMQACLConfig;
 import com.xingqiao.common.rocketmq.config.RocketMQConfig;
 import com.xingqiao.common.rocketmq.config.RocketMQProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @EnableConfigurationProperties(RocketMQProperties.class)
-@Import({RocketMQConfig.class, RocketMQACLConfig.class})
+@Import({RocketMQConfig.class})
 public class RocketMQAutoConfiguration {
     
     // 自动配置类，主要通过@Import导入其他配置类
