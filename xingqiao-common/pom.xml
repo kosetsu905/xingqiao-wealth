@@ -18,6 +18,7 @@
         <module>xingqiao-common-sensitive</module>
         <module>xingqiao-common-datascope</module>
         <module>xingqiao-common-datasource</module>
+        <module>xingqiao-common-rocketmq</module>
     </modules>
 
     <artifactId>xingqiao-common</artifactId>

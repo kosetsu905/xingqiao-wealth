@@ -121,6 +121,13 @@
             <optional>true</optional>
         </dependency>
         
+        <!-- xingqiao Common RocketMQ -->
+        <dependency>
+            <groupId>com.xingqiao</groupId>
+            <artifactId>xingqiao-common-rocketmq</artifactId>
+            <version>3.6.6</version>
+        </dependency>
+        
         <!-- Spring Boot Test 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
