@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.order.mapper.SecuritiesMapper">
+
+    <resultMap type="com.xingqiao.order.domain.Securities" id="SecuritiesResult">
+        <result property="id"    column="id"    />
+        <result property="securityCode"    column="security_code"    />
+        <result property="securityName"    column="security_name"    />
+        <result property="exchangeCode"    column="exchange_code"    />
+        <result property="securityType"    column="security_type"    />
+        <result property="currency"    column="currency"    />
+        <result property="lotSize"    column="lot_size"    />
+        <result property="tickSize"    column="tick_size"    />
+        <result property="priceLimit"    column="price_limit"    />
+        <result property="isMargin"    column="is_margin"    />
+        <result property="status"    column="status"    />
+        <result property="listedDate"    column="listed_date"    />
+        <result property="delistedDate"    column="delisted_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSecuritiesVo">
+        select id, security_code, security_name, exchange_code, security_type, currency, lot_size, tick_size, price_limit, is_margin, status, listed_date, delisted_date, remark, create_by, create_time, update_by, update_time from securities
+    </sql>
+
+    <select id="selectSecuritiesList" parameterType="com.xingqiao.order.domain.Securities" resultMap="SecuritiesResult">
+        <include refid="selectSecuritiesVo"/>
+        <where>
+            <if test="securityCode != null  and securityCode != ''"> and security_code = #{securityCode}</if>
+            <if test="securityName != null  and securityName != ''"> and security_name like concat('%', #{securityName}, '%')</if>
+            <if test="exchangeCode != null  and exchangeCode != ''"> and exchange_code = #{exchangeCode}</if>
+            <if test="securityType != null "> and security_type = #{securityType}</if>
+            <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
+            <if test="lotSize != null "> and lot_size = #{lotSize}</if>
+            <if test="tickSize != null "> and tick_size = #{tickSize}</if>
+            <if test="priceLimit != null "> and price_limit = #{priceLimit}</if>
+            <if test="isMargin != null "> and is_margin = #{isMargin}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="listedDate != null "> and listed_date = #{listedDate}</if>
+            <if test="delistedDate != null "> and delisted_date = #{delistedDate}</if>
+        </where>
+    </select>
+
+    <select id="selectSecuritiesById" parameterType="String" resultMap="SecuritiesResult">
+        <include refid="selectSecuritiesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSecurities" parameterType="com.xingqiao.order.domain.Securities" useGeneratedKeys="true" keyProperty="id">
+        insert into securities
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="securityCode != null and securityCode != ''">security_code,</if>
+            <if test="securityName != null and securityName != ''">security_name,</if>
+            <if test="exchangeCode != null and exchangeCode != ''">exchange_code,</if>
+            <if test="securityType != null">security_type,</if>
+            <if test="currency != null and currency != ''">currency,</if>
+            <if test="lotSize != null">lot_size,</if>
+            <if test="tickSize != null">tick_size,</if>
+            <if test="priceLimit != null">price_limit,</if>
+            <if test="isMargin != null">is_margin,</if>
+            <if test="status != null">status,</if>
+            <if test="listedDate != null">listed_date,</if>
+            <if test="delistedDate != null">delisted_date,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="securityCode != null and securityCode != ''">#{securityCode},</if>
+            <if test="securityName != null and securityName != ''">#{securityName},</if>
+            <if test="exchangeCode != null and exchangeCode != ''">#{exchangeCode},</if>
+            <if test="securityType != null">#{securityType},</if>
+            <if test="currency != null and currency != ''">#{currency},</if>
+            <if test="lotSize != null">#{lotSize},</if>
+            <if test="tickSize != null">#{tickSize},</if>
+            <if test="priceLimit != null">#{priceLimit},</if>
+            <if test="isMargin != null">#{isMargin},</if>
+            <if test="status != null">#{status},</if>
+            <if test="listedDate != null">#{listedDate},</if>
+            <if test="delistedDate != null">#{delistedDate},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSecurities" parameterType="com.xingqiao.order.domain.Securities">
+        update securities
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="securityCode != null and securityCode != ''">security_code = #{securityCode},</if>
+            <if test="securityName != null and securityName != ''">security_name = #{securityName},</if>
+            <if test="exchangeCode != null and exchangeCode != ''">exchange_code = #{exchangeCode},</if>
+            <if test="securityType != null">security_type = #{securityType},</if>
+            <if test="currency != null and currency != ''">currency = #{currency},</if>
+            <if test="lotSize != null">lot_size = #{lotSize},</if>
+            <if test="tickSize != null">tick_size = #{tickSize},</if>
+            <if test="priceLimit != null">price_limit = #{priceLimit},</if>
+            <if test="isMargin != null">is_margin = #{isMargin},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="listedDate != null">listed_date = #{listedDate},</if>
+            <if test="delistedDate != null">delisted_date = #{delistedDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSecuritiesById" parameterType="String">
+        delete from securities where id = #{id}
+    </delete>
+
+    <delete id="deleteSecuritiesByIds" parameterType="String">
+        delete from securities where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

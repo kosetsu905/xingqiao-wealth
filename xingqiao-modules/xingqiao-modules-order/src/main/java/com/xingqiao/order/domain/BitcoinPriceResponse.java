@@ -1,18 +1,13 @@
 package com.xingqiao.order.domain;
 
 
+import lombok.Getter;
+import lombok.Setter;
 
-
+@Setter
+@Getter
 public class BitcoinPriceResponse {
     private Data data;
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
-    }
 
     public static class Data {
         private String id;

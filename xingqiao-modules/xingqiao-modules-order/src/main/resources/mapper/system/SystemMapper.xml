@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.order.mapper.system.SystemMapper">
+
+    <sql id="selectCustomerInfoVo">
+        select id, user_id, user_temp_id, employee_id, user_type, id_type, id_number, issue_date, expiry_date, avatar, front_id_file_url, back_id_file_url, full_name, age, phone_number, email, manager, address, avatar_url, country_code, primary_income_source, gender, has_mortgage, requires_support, marital_status, birth_day, child_count, certify_id, face_verify_status, face_verify_time, face_verify_score, face_image_url, status, review_time, review_operator, review_comment, monthly_mortgage_payment, children_education_expense, family_count, remark, create_by, create_time, update_by, update_time from customer_info
+    </sql>
+
+    <select id="selectCustomerInfoList" parameterType="com.xingqiao.order.domain.system.CustomerInfoExt"
+            resultType="com.xingqiao.order.domain.system.CustomerInfoExt">
+        <include refid="selectCustomerInfoVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userTempId != null  and userTempId != ''"> and user_temp_id = #{userTempId}</if>
+            <if test="employeeId != null "> and employee_id = #{employeeId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="idType != null  and idType != ''"> and id_type = #{idType}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="issueDate != null "> and issue_date = #{issueDate}</if>
+            <if test="expiryDate != null "> and expiry_date = #{expiryDate}</if>
+            <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
+            <if test="frontIdFileUrl != null  and frontIdFileUrl != ''"> and front_id_file_url = #{frontIdFileUrl}</if>
+            <if test="backIdFileUrl != null  and backIdFileUrl != ''"> and back_id_file_url = #{backIdFileUrl}</if>
+            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
+            <if test="age != null  and age != ''"> and age = #{age}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="manager != null  and manager != ''"> and manager = #{manager}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="avatarUrl != null  and avatarUrl != ''"> and avatar_url = #{avatarUrl}</if>
+            <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
+            <if test="primaryIncomeSource != null  and primaryIncomeSource != ''"> and primary_income_source = #{primaryIncomeSource}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="hasMortgage != null  and hasMortgage != ''"> and has_mortgage = #{hasMortgage}</if>
+            <if test="requiresSupport != null  and requiresSupport != ''"> and requires_support = #{requiresSupport}</if>
+            <if test="maritalStatus != null  and maritalStatus != ''"> and marital_status = #{maritalStatus}</if>
+            <if test="birthDay != null "> and birth_day = #{birthDay}</if>
+            <if test="childCount != null  and childCount != ''"> and child_count = #{childCount}</if>
+            <if test="certifyId != null  and certifyId != ''"> and certify_id = #{certifyId}</if>
+            <if test="faceVerifyStatus != null "> and face_verify_status = #{faceVerifyStatus}</if>
+            <if test="faceVerifyTime != null "> and face_verify_time = #{faceVerifyTime}</if>
+            <if test="faceVerifyScore != null "> and face_verify_score = #{faceVerifyScore}</if>
+            <if test="faceImageUrl != null  and faceImageUrl != ''"> and face_image_url = #{faceImageUrl}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+            <if test="reviewOperator != null  and reviewOperator != ''"> and review_operator = #{reviewOperator}</if>
+            <if test="reviewComment != null  and reviewComment != ''"> and review_comment = #{reviewComment}</if>
+            <if test="monthlyMortgagePayment != null "> and monthly_mortgage_payment = #{monthlyMortgagePayment}</if>
+            <if test="childrenEducationExpense != null "> and children_education_expense = #{childrenEducationExpense}</if>
+            <if test="familyCount != null "> and family_count = #{familyCount}</if>
+        </where>
+    </select>
+
+
+</mapper>

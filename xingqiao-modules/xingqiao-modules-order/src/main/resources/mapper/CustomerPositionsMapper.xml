@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingqiao.order.mapper.CustomerPositionsMapper">
+
+    <resultMap type="com.xingqiao.order.domain.CustomerPositions" id="CustomerPositionsResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="accountId"    column="account_id"    />
+        <result property="securityId"    column="security_id"    />
+        <result property="positionType"    column="position_type"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="availableQuantity"    column="available_quantity"    />
+        <result property="frozenQuantity"    column="frozen_quantity"    />
+        <result property="avgCostPrice"    column="avg_cost_price"    />
+        <result property="marketValue"    column="market_value"    />
+        <result property="floatingPl"    column="floating_pl"    />
+        <result property="floatingPlRatio"    column="floating_pl_ratio"    />
+        <result property="version"    column="version"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCustomerPositionsVo">
+        select id, user_id, account_id, security_id, position_type, quantity, available_quantity, frozen_quantity, avg_cost_price, market_value, floating_pl, floating_pl_ratio, version, remark, create_by, create_time, update_by, update_time from customer_positions
+    </sql>
+
+    <select id="selectCustomerPositionsList" parameterType="com.xingqiao.order.domain.CustomerPositions" resultMap="CustomerPositionsResult">
+        <include refid="selectCustomerPositionsVo"/>
+        <where>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="accountId != null  and accountId != ''"> and account_id = #{accountId}</if>
+            <if test="securityId != null  and securityId != ''"> and security_id = #{securityId}</if>
+            <if test="positionType != null "> and position_type = #{positionType}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="availableQuantity != null "> and available_quantity = #{availableQuantity}</if>
+            <if test="frozenQuantity != null "> and frozen_quantity = #{frozenQuantity}</if>
+            <if test="avgCostPrice != null "> and avg_cost_price = #{avgCostPrice}</if>
+            <if test="marketValue != null "> and market_value = #{marketValue}</if>
+            <if test="floatingPl != null "> and floating_pl = #{floatingPl}</if>
+            <if test="floatingPlRatio != null "> and floating_pl_ratio = #{floatingPlRatio}</if>
+            <if test="version != null "> and version = #{version}</if>
+        </where>
+    </select>
+
+    <select id="selectCustomerPositionsById" parameterType="String" resultMap="CustomerPositionsResult">
+        <include refid="selectCustomerPositionsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCustomerPositions" parameterType="com.xingqiao.order.domain.CustomerPositions" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_positions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="accountId != null and accountId != ''">account_id,</if>
+            <if test="securityId != null and securityId != ''">security_id,</if>
+            <if test="positionType != null">position_type,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="availableQuantity != null">available_quantity,</if>
+            <if test="frozenQuantity != null">frozen_quantity,</if>
+            <if test="avgCostPrice != null">avg_cost_price,</if>
+            <if test="marketValue != null">market_value,</if>
+            <if test="floatingPl != null">floating_pl,</if>
+            <if test="floatingPlRatio != null">floating_pl_ratio,</if>
+            <if test="version != null">version,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="accountId != null and accountId != ''">#{accountId},</if>
+            <if test="securityId != null and securityId != ''">#{securityId},</if>
+            <if test="positionType != null">#{positionType},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="availableQuantity != null">#{availableQuantity},</if>
+            <if test="frozenQuantity != null">#{frozenQuantity},</if>
+            <if test="avgCostPrice != null">#{avgCostPrice},</if>
+            <if test="marketValue != null">#{marketValue},</if>
+            <if test="floatingPl != null">#{floatingPl},</if>
+            <if test="floatingPlRatio != null">#{floatingPlRatio},</if>
+            <if test="version != null">#{version},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCustomerPositions" parameterType="com.xingqiao.order.domain.CustomerPositions">
+        update customer_positions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="accountId != null and accountId != ''">account_id = #{accountId},</if>
+            <if test="securityId != null and securityId != ''">security_id = #{securityId},</if>
+            <if test="positionType != null">position_type = #{positionType},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="availableQuantity != null">available_quantity = #{availableQuantity},</if>
+            <if test="frozenQuantity != null">frozen_quantity = #{frozenQuantity},</if>
+            <if test="avgCostPrice != null">avg_cost_price = #{avgCostPrice},</if>
+            <if test="marketValue != null">market_value = #{marketValue},</if>
+            <if test="floatingPl != null">floating_pl = #{floatingPl},</if>
+            <if test="floatingPlRatio != null">floating_pl_ratio = #{floatingPlRatio},</if>
+            <if test="version != null">version = #{version},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomerPositionsById" parameterType="String">
+        delete from customer_positions where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerPositionsByIds" parameterType="String">
+        delete from customer_positions where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -3,8 +3,7 @@
 DROP DATABASE IF EXISTS `xingqiao-trade`;
 CREATE DATABASE  `xingqiao-trade` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-use `xingqiao-trade`;
--- 客户资金账户表
+use `xingqiao-system`;-- 客户资金账户表
 DROP TABLE IF EXISTS customer_accounts;
 CREATE TABLE customer_accounts (
     id    bigint auto_increment comment '主键ID' primary key,
