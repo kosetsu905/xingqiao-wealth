@@ -1,7 +1,6 @@
 package com.xingqiao.order.mapper.system;
 
 import com.xingqiao.order.domain.CustomerAccounts;
-import com.xingqiao.order.domain.system.CustomerInfoExt;
 import com.xingqiao.order.mapper.CustomerAccountsMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
