@@ -47,4 +47,14 @@ public class StockDataController {
         }
     }
 
+    @GetMapping("/global")
+    public AjaxResult getGlobalMarkets() {
+        try {
+            List<Map<String, Object>> markets = alphaVantageService.getGlobalMarkets();
+            return AjaxResult.success(markets);
+        } catch (Exception e) {
+            return AjaxResult.error("获取全球市场失败: " + e.getMessage());
+        }
+    }
+
 }
