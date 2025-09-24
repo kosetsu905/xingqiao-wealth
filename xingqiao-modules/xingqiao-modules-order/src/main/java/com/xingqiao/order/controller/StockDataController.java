@@ -1,6 +1,6 @@
-package com.xingqiao.coin.controller;
+package com.xingqiao.order.controller;
 
-import com.xingqiao.coin.service.AlphaVantageService;
+import com.xingqiao.order.service.AlphaVantageService;
 import com.xingqiao.common.core.web.domain.AjaxResult;
 import org.springframework.web.bind.annotation.*;
 
