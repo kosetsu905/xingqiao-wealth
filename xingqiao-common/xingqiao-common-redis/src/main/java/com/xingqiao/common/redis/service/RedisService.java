@@ -12,13 +12,13 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+import com.xingqiao.common.core.utils.StringUtils;
 
 /**
  * spring redis 工具类
  * 
  * @author xingqiao
  **/
-@SuppressWarnings(value = { "unchecked", "rawtypes" })
 @Component
 public class RedisService
 {
@@ -183,6 +183,30 @@ public class RedisService
     }
 
     /**
+     * 从缓存Set中移除指定元素
+     *
+     * @param key 缓存键
+     * @param stockCode 要移除的股票代码
+     */
+    public void removeCacheSet(final String key, String value) {
+        if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
+            redisTemplate.opsForSet().remove(key, value);
+        }
+    }
+
+    /**
+     * 向缓存Set中添加元素
+     *
+     * @param key 缓存键
+     * @param stockCode 要添加的股票代码
+     */
+    public void addCacheSet(String key, String value) {
+        if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
+            redisTemplate.opsForSet().add(key, value);
+        }
+    }
+
+    /**
      * 缓存Map
      *
      * @param key
@@ -265,4 +289,6 @@ public class RedisService
     {
         return redisTemplate.keys(pattern);
     }
+
+
 }

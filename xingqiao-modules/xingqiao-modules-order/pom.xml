@@ -99,6 +99,13 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.68</version>
         </dependency>
+        
+        <!-- Alibaba FastJSON -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -128,6 +135,13 @@
             <version>3.6.6</version>
         </dependency>
         
+        <!-- xingqiao API Trade -->
+        <dependency>
+            <groupId>com.xingqiao</groupId>
+            <artifactId>xingqiao-api-trade</artifactId>
+            <version>3.6.6</version>
+        </dependency>
+        
         <!-- Spring Boot Test 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -149,7 +163,24 @@
             <artifactId>junit-platform-launcher</artifactId>
             <scope>test</scope>
         </dependency>
-
+        
+        <!-- Spring Boot Redis Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        
+        <!-- Commons Pool2 用于Redis连接池 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        
+        <!-- 用于Redis序列化 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

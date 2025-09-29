@@ -28,6 +28,17 @@ spring:
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+    gateway:
+      # 启用WebSocket支持
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      # 配置请求头保留，确保WebSocket升级请求正确传递
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin, RETAIN_UNIQUE
     sentinel:
       # 取消控制台懒加载
       eager: true

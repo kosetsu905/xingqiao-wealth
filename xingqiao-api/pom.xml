@@ -11,6 +11,7 @@
     <modules>
         <module>xingqiao-api-system</module>
         <module>xingqiao-api-message</module>
+        <module>xingqiao-api-trade</module>
     </modules>
 
     <artifactId>xingqiao-api</artifactId>

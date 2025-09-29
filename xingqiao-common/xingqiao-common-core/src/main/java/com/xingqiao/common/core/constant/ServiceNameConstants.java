@@ -25,4 +25,6 @@ public class ServiceNameConstants
 
     public static final String MESSAGE_SERVICE = "xingqiao-message";
 
+    public static final String TRADE_SERVICE = "xingqiao-trade";
+
 }

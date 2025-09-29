@@ -68,6 +68,7 @@ public class TokenService
         rspMap.put("expires_in", TOKEN_EXPIRE_TIME);
         rspMap.put("avatar", loginUser.getUser().getAvatar());
         rspMap.put("userName", loginUser.getUser().getUserName());
+        rspMap.put("userId", loginUser.getUser().getUserId());
         rspMap.put("phoneNumber", loginUser.getUser().getPhoneNumber());
         rspMap.put("email", loginUser.getUser().getEmail());
         return rspMap;

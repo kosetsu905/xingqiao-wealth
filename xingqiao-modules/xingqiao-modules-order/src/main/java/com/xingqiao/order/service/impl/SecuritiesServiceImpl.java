@@ -9,6 +9,8 @@ import com.xingqiao.order.mapper.SecuritiesMapper;
 import com.xingqiao.order.domain.Securities;
 import com.xingqiao.order.service.ISecuritiesService;
 
+import javax.annotation.Resource;
+
 /**
  * 证券信息Service业务层处理
  *
@@ -18,7 +20,7 @@ import com.xingqiao.order.service.ISecuritiesService;
 @Service
 public class SecuritiesServiceImpl implements ISecuritiesService
 {
-    @Autowired
+    @Resource
     private SecuritiesMapper securitiesMapper;
 
     /**

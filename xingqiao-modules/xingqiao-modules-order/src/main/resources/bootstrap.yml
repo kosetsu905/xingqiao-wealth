@@ -1,6 +1,6 @@
 # Tomcat
 server:
-  port: 9205
+  port: 9208
 
 # Spring
 spring: 
@@ -25,6 +25,13 @@ spring:
         password: Zding2025!
         # 配置文件格式
         file-extension: yml
-        # 共享配置
+        # 配置的Group，默认为DEFAULT_GROUP
+        group: DEFAULT_GROUP
+        # 命名空间，用于隔离不同环境的配置
+        namespace: public
+        # 配置的自动刷新
+        refresh-enabled: true
+        # 共享配置，用于加载应用通用配置和MSN相关配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          - application-msn-${spring.profiles.active}.yml

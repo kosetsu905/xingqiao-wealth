@@ -1,0 +1,32 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.xingqiao</groupId>
+        <artifactId>xingqiao-api</artifactId>
+        <version>3.6.6</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <artifactId>xingqiao-api-trade</artifactId>
+
+    <description>
+        xingqiao-api-trade交易系统接口模块
+    </description>
+
+    <dependencies>
+        
+        <!-- xingqiao Common Core-->
+        <dependency>
+            <groupId>com.xingqiao</groupId>
+            <artifactId>xingqiao-common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

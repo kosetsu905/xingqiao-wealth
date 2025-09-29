@@ -28,6 +28,14 @@ public class SecurityConstants
      */
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
+    public static final String XCLIENTTYPE =   "X-Client-Type";
+
+
+    /**
+     * websocket授权信息字段
+     */
+    public static final String SEC_WEBSOCKET_PROTOCOL = "Sec-websocket-protocol";
+
     /**
      * 请求来源
      */
