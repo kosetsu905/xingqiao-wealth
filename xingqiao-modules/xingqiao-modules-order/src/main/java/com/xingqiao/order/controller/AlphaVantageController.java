@@ -9,12 +9,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/stock")
-public class StockDataController {
+public class AlphaVantageController {
 
     private final AlphaVantageService alphaVantageService;
 
     // 构造函数注入
-    public StockDataController(AlphaVantageService alphaVantageService) {
+    public AlphaVantageController(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
     }
 
