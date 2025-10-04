@@ -3,7 +3,6 @@ package com.xingqiao.order.service.impl;
 
 import java.util.List;
 import com.xingqiao.common.core.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.xingqiao.order.mapper.SecuritiesMapper;
 import com.xingqiao.order.domain.Securities;
