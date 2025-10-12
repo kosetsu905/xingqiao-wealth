@@ -1,6 +1,5 @@
 package com.xingqiao.order.service;
 
-import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
@@ -24,7 +23,7 @@ public interface QuoteApiService {
     /**
      * 获取历史行情数据
      */
-    R<List<StockQuote>> getStockQuoteHistory(QueryStockQuote queryStockQuote);
+    R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> list);
 
 
 }

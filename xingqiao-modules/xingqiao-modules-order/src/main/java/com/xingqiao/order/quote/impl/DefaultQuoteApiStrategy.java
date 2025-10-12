@@ -1,5 +1,6 @@
 package com.xingqiao.order.quote.impl;
 
+import com.xingqiao.api.trade.domain.StockChartQuote;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static com.xingqiao.order.config.TradeConstants.getRedisCharKey;
 import static com.xingqiao.order.config.TradeConstants.getRedisKey;
 
 /**
@@ -62,8 +64,30 @@ public class DefaultQuoteApiStrategy implements QuoteApiStrategy {
     }
 
     @Override
-    public R<List<StockQuote>> getStockQuoteHistory(QueryStockQuote queryStockQuote) {
-        return R.fail("默认策略不支持获取单只股票行情");
+    public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> list) {
+        log.info("批量获取股票行情，数量：{}", list != null ? list.size() : 0);
+        List<StockQuote> resultList = new ArrayList<>();
+
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (QueryStockQuote queryStockQuote : list) {
+                if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
+                    continue;
+                }
+                // 构建缓存键
+                String redisKey = getRedisKey(queryStockQuote);
+                // 尝试从缓存获取
+                StockQuote cachedQuote = redisService.getCacheObject(redisKey);
+                if (!Objects.isNull(cachedQuote)) {
+                    String redisChartKey = getRedisCharKey(queryStockQuote);
+                    // 尝试从缓存获取
+                    StockChartQuote cachedChartQuote = redisService.getCacheObject(redisChartKey);
+                    cachedQuote.setStockChartQuote(cachedChartQuote);
+                    resultList.add(cachedQuote);
+                }
+            }
+        }
+        log.info("批量获取股票行情，数量：{}，缓存命中数量：{}", list==null? 0:list.size(), resultList.size());
+        return R.ok(resultList);
     }
 
     /**

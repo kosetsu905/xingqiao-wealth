@@ -6,6 +6,8 @@ public class TradeConstants {
 
     // 首页全球指数订阅信息
     public static final String STOCK_GLOBAL_INDICES_INFO_PREFIX = "stock:global_indices:info:";
+    // 首页热门股票订阅信息
+    public static final String STOCK_HOT_INFO_PREFIX = "stock:hot:info:";
     // 过期时间（30分钟）
     public static final long EXPIRE_TIME = 1800L;
     // 用户websocket登录信息
@@ -20,5 +22,15 @@ public class TradeConstants {
                 queryStockQuote.getMarketCode(),
                 queryStockQuote.getStockCode());
     }
+
+
+    public static String getRedisCharKey(QueryStockQuote queryStockQuote) {
+        return String.format("data:stock:%s:%s:%s:%s",
+                queryStockQuote.getProductCode(),
+                queryStockQuote.getMarketCode(),
+                queryStockQuote.getStockCode(),
+                queryStockQuote.getType());
+    }
+
 
 }

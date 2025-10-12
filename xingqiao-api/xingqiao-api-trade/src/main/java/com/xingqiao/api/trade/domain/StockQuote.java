@@ -148,6 +148,18 @@ public class StockQuote extends BaseStockQuote  {
      */
     private Long askVolume1;
 
+    private String initial;
+
+    private String bgColor;
+
+    private String textColor;
+
+    /**
+     * 股票行情图表数据
+     */
+    private StockChartQuote stockChartQuote;
+
+
     /**
      * 数据源
      */

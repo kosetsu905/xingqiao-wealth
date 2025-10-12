@@ -45,16 +45,12 @@ public class QuoteApiServiceImpl  implements QuoteApiService {
     }
 
     /**
-     * 获取历史行情数据
-     * @return 历史行情列表
+     * 获取区间行情数据
      */
     @Override
-    public R<List<StockQuote>> getStockQuoteHistory(QueryStockQuote queryStockQuote) {
+    public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> list) {
         try {
-            // 根据市场代码选择合适的行情API策略
-            String quoteType = getQuoteType(queryStockQuote);
-            QuoteApiStrategy strategy = quoteApiStrategyFactory.getStrategy(quoteType);
-            return strategy.getStockQuoteHistory(queryStockQuote);
+            return quoteApiStrategyFactory.getStockQuoteChartList(list);
         } catch (Exception e) {
             return R.fail("获取历史行情数据失败：" + e.getMessage());
         }

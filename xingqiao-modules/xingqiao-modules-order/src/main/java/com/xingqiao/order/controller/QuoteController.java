@@ -51,17 +51,16 @@ public class QuoteController extends BaseController {
     }
 
     /**
-     * 获取历史行情数据
-     * @return 历史行情列表
+     * 批量获取区间行情数据
      */
-    @PostMapping("/getStockQuoteHistory")
-    public R<List<StockQuote>> getStockQuoteHistory(@RequestBody QueryStockQuote queryStockQuote) {
+    @PostMapping("/getStockQuoteChartList")
+    public R<List<StockQuote>> getStockQuoteChartList(@RequestBody List<QueryStockQuote> list) {
         try {
-            log.info("获取历史行情数据: request={}", queryStockQuote);
-            return quoteApiService.getStockQuoteHistory(queryStockQuote);
+            log.info("批量获取区间行情数据: size={}", list != null ? list.size() : 0);
+            return quoteApiService.getStockQuoteChartList(list);
         } catch (Exception e) {
-            log.error("获取历史行情失败: {}", e.getMessage(), e);
-            return R.fail("获取历史行情失败: " + e.getMessage());
+            log.error("批量获取区间行情数据失败: {}", e.getMessage(), e);
+            return R.fail("批量获取区间行情数据失败: " + e.getMessage());
         }
     }
 
