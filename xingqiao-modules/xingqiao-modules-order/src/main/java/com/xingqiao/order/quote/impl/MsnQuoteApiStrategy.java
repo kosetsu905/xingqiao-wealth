@@ -516,7 +516,6 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
                     log.error("缓存中没有该股票行情数据：{}", redisKey);
                     continue;
                 }
-
                 // 构建缓存键
                 String redisChartKey = getRedisCharKey(queryStockQuote);
                 // 尝试从缓存获取
@@ -587,8 +586,7 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
                     }
 
                     // 构建批量请求URL
-                    String url = String.format(stockCodeMappingConfig.getUrl(), stockCodeMappingConfig.getKey(), stockCodeMappingConfig.getId(), thirdPartyCodesBuilder, "Charts");
-                    url = url + "&type=" + type;
+                    String url = String.format(stockCodeMappingConfig.getQuoteSummaryUrl(), stockCodeMappingConfig.getKey(), stockCodeMappingConfig.getId(), thirdPartyCodesBuilder, "Charts",type);
                     // 创建HTTP头
                     HttpHeaders headers = new HttpHeaders();
                     headers.set("Accept", "application/json");
@@ -663,7 +661,6 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
             // 从chart节点提取数据
             JsonNode chartData = chartNode.get("chart");
             if (chartData != null) {
-
                 // 从series节点提取图表数据
                 JsonNode series = chartData.get("series");
                 if (series != null) {

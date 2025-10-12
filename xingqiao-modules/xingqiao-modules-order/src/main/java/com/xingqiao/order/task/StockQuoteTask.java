@@ -60,24 +60,12 @@ public class StockQuoteTask {
             for (String sessionId : sessionIds) {
                 //全球指数行情查询
                 globalIndices(sessionId);
-                //首页热门股票
-                hotStocks(sessionId);
             }
         } catch (Exception e) {
             log.error("执行定时行情推送任务失败", e);
         }
     }
 
-    private void hotStocks(String sessionId) {
-        Long userId=webSocketService.getUserBySessionId(sessionId);
-        QuoteMessage quoteMessage = new QuoteMessage();
-        quoteMessage.setUserId(userId);
-        quoteMessage.setDataType("hot_stocks");
-        quoteMessage.setSessionId(sessionId);
-        quoteMessage.setRemark("触发热门股票行情查询");
-        quoteMessage.setCreateTime(new Date());
-        subscribeStrategyFactory.processQuoteQuery(quoteMessage);
-    }
 
     private void globalIndices(String sessionId) {
         Long userId=webSocketService.getUserBySessionId(sessionId);
