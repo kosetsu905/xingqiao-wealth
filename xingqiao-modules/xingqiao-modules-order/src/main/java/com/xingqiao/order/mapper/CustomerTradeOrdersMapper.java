@@ -59,4 +59,14 @@ public interface CustomerTradeOrdersMapper
      * @return 结果
      */
     public int deleteCustomerTradeOrdersByIds(String[] ids);
+    
+    /**
+     * 根据用户ID和日期范围查询交易订单
+     *
+     * @param userId 用户ID
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @return 交易订单集合
+     */
+    public List<CustomerTradeOrders> selectCustomerTradeOrdersByUserIdAndDateRange(String userId, String startDate, String endDate);
 }

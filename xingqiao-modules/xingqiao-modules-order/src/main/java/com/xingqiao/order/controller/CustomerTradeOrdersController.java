@@ -2,6 +2,8 @@ package com.xingqiao.order.controller;
 
 import java.util.List;
 import java.io.IOException;
+import java.math.BigDecimal;
+
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xingqiao.common.log.annotation.Log;
 import com.xingqiao.common.log.enums.BusinessType;
 import com.xingqiao.common.security.annotation.RequiresPermissions;
+import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.order.domain.CustomerTradeOrders;
 import com.xingqiao.order.service.ICustomerTradeOrdersService;
 import com.xingqiao.common.core.web.controller.BaseController;
 import com.xingqiao.common.core.web.domain.AjaxResult;
 import com.xingqiao.common.core.utils.poi.ExcelUtil;
 import com.xingqiao.common.core.web.page.TableDataInfo;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 交易订单Controller
@@ -28,6 +32,7 @@ import com.xingqiao.common.core.web.page.TableDataInfo;
  * @author xingqiao
  * @date 2025-09-21
  */
+@Slf4j
 @RestController
 @RequestMapping("/order/trade")
 public class CustomerTradeOrdersController extends BaseController
@@ -121,5 +126,45 @@ public class CustomerTradeOrdersController extends BaseController
     {
         List<CustomerTradeOrders> list = customerTradeOrdersService.selectCustomerTradeOrdersByAccountId(accountId);
         return getDataTable(list);
+    }
+
+    /**
+     * 获取用户今日盈亏
+     * 
+     * @return 今日盈亏金额
+     */
+    @GetMapping("/today-profit-loss")
+    public AjaxResult getTodayProfitLossByToken()
+    {
+        try {
+            // 从token中获取当前登录用户ID
+            Long userId = SecurityUtils.getUserId();
+            if (userId == null || userId == 0) {
+                return AjaxResult.error("用户未登录");
+            }
+            
+            BigDecimal profitLoss = customerTradeOrdersService.getTodayProfitLossByUserId(userId.toString());
+            return AjaxResult.success(profitLoss);
+        } catch (Exception e) {
+            log.error("获取今日盈亏异常", e);
+            return AjaxResult.error("获取今日盈亏失败：" + e.getMessage());
+        }
+    }
+    
+    /**
+     * 获取用户今日盈亏（保留原有接口，向后兼容）
+     * 
+     * @param userId 用户ID
+     * @return 今日盈亏金额
+     */
+    @GetMapping("/today-profit-loss/{userId}")
+    public AjaxResult getTodayProfitLossByUserId(@PathVariable("userId") String userId)
+    {
+        try {
+            BigDecimal profitLoss = customerTradeOrdersService.getTodayProfitLossByUserId(userId);
+            return AjaxResult.success(profitLoss);
+        } catch (Exception e) {
+            return AjaxResult.error("获取今日盈亏失败：" + e.getMessage());
+        }
     }
 }
