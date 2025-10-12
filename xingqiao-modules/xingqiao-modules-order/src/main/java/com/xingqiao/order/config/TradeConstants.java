@@ -1,5 +1,7 @@
 package com.xingqiao.order.config;
 
+import com.xingqiao.api.trade.domain.QueryStockQuote;
+
 public class TradeConstants {
 
     // 用于存储股票的详细订阅信息
@@ -12,6 +14,11 @@ public class TradeConstants {
     //会话ID关联用户ID
     public static final String SESSION_KEY_PREFIX = "websocket:session";
 
-
+    public static String getRedisKey(QueryStockQuote queryStockQuote) {
+        return String.format("data:stock:%s:%s:%s",
+                queryStockQuote.getProductCode(),
+                queryStockQuote.getMarketCode(),
+                queryStockQuote.getStockCode());
+    }
 
 }

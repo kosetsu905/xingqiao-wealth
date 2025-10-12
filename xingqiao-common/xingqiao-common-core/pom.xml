@@ -65,6 +65,12 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <!-- Jackson对Java 8时间的支持 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <!-- Alibaba Fastjson -->
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>

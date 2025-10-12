@@ -1,7 +1,6 @@
 
 package com.xingqiao.order.quote.impl;
 
-import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
@@ -25,11 +24,11 @@ import java.util.*;
 public class ItickQuoteApiStrategy implements QuoteApiStrategy {
 
     private static final Logger log = LoggerFactory.getLogger(ItickQuoteApiStrategy.class);
-    
+
     // Redis键前缀
     private static final String STOCK_SUBSCRIPTION_PREFIX = "stock:subscription:";
     private static final String MARKET_STOCKS_PREFIX = "market:stocks:";
-    
+
     private final Random random = new Random();
 
     @Autowired
@@ -51,15 +50,6 @@ public class ItickQuoteApiStrategy implements QuoteApiStrategy {
         return R.fail("不支持获取单只股票行情");
     }
 
-    @Override
-    public R subscribeStockQuote(QueryStockQuoteList queryStockQuoteList) {
-        return R.fail("不支持获取单只股票行情");
-    }
-
-    @Override
-    public R unsubscribeStockQuote(QueryStockQuoteList queryStockQuoteList) {
-        return R.fail("不支持获取单只股票行情");
-    }
 
     /**
      * 获取策略名称

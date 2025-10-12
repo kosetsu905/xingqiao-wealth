@@ -5,7 +5,6 @@ import com.xingqiao.order.rocketmq.service.OrderMessageService;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;

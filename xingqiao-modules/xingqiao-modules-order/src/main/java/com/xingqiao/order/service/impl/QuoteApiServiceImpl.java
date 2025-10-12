@@ -1,6 +1,5 @@
 package com.xingqiao.order.service.impl;
 
-import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
@@ -25,7 +24,6 @@ public class QuoteApiServiceImpl  implements QuoteApiService {
     @Override
     public R<StockQuote> getStockQuote(QueryStockQuote queryStockQuote) {
         try {
-
             return quoteApiStrategyFactory.getStockQuote(queryStockQuote);
         } catch (Exception e) {
             return R.fail("获取股票行情失败：" + e.getMessage());
@@ -59,34 +57,6 @@ public class QuoteApiServiceImpl  implements QuoteApiService {
             return strategy.getStockQuoteHistory(queryStockQuote);
         } catch (Exception e) {
             return R.fail("获取历史行情数据失败：" + e.getMessage());
-        }
-    }
-
-    /**
-     * 订阅股票行情
-     * @return 订阅结果
-     */
-    @Override
-    public R subscribeStockQuote(QueryStockQuoteList queryStockQuoteList) {
-        try {
-            QuoteApiStrategy strategy = quoteApiStrategyFactory.getStrategy("default");
-            return strategy.subscribeStockQuote(queryStockQuoteList);
-        } catch (Exception e) {
-            return R.fail("订阅股票行情失败：" + e.getMessage());
-        }
-    }
-
-    /**
-     * 取消订阅股票行情
-     * @return 取消订阅结果
-     */
-    @Override
-    public R unsubscribeStockQuote(QueryStockQuoteList queryStockQuoteList) {
-        try {
-            QuoteApiStrategy strategy = quoteApiStrategyFactory.getStrategy("default");
-            return strategy.unsubscribeStockQuote(queryStockQuoteList);
-        } catch (Exception e) {
-            return R.fail("取消订阅股票行情失败：" + e.getMessage());
         }
     }
 

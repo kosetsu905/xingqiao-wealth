@@ -26,15 +26,5 @@ public interface QuoteApiService {
      */
     R<List<StockQuote>> getStockQuoteHistory(QueryStockQuote queryStockQuote);
 
-    /**
-     * 订阅单个股票行情
-     * @return 订阅结果
-     */
-    R subscribeStockQuote(QueryStockQuoteList queryStockQuoteList);
 
-    /**
-     * 取消订阅单个股票行情
-     * @return 取消订阅结果
-     */
-    R unsubscribeStockQuote(QueryStockQuoteList queryStockQuoteList);
 }

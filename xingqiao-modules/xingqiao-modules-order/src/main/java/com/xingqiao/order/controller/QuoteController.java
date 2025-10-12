@@ -1,6 +1,5 @@
 package com.xingqiao.order.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.StockQuote;
@@ -15,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/quote")
+@RequestMapping("/quote")
 @Slf4j
 public class QuoteController extends BaseController {
 
@@ -25,7 +24,7 @@ public class QuoteController extends BaseController {
      * 获取单只股票行情
      * @return 股票行情信息
      */
-    @PostMapping("/get")
+    @PostMapping("/getStockQuote")
     public R<StockQuote> getStockQuote(@RequestBody QueryStockQuote queryStockQuote) {
         try {
             log.info("获取单只股票行情: request={}", queryStockQuote);
@@ -40,7 +39,7 @@ public class QuoteController extends BaseController {
      * 批量获取股票行情
      * @return 股票行情列表
      */
-    @PostMapping("/list")
+    @PostMapping("/getStockQuoteList")
     public R<List<StockQuote>> getStockQuoteList(@RequestBody List<QueryStockQuote> list) {
         try {
             log.info("批量获取股票行情: size={}", list != null ? list.size() : 0);
@@ -55,7 +54,7 @@ public class QuoteController extends BaseController {
      * 获取历史行情数据
      * @return 历史行情列表
      */
-    @PostMapping("/history")
+    @PostMapping("/getStockQuoteHistory")
     public R<List<StockQuote>> getStockQuoteHistory(@RequestBody QueryStockQuote queryStockQuote) {
         try {
             log.info("获取历史行情数据: request={}", queryStockQuote);
@@ -66,37 +65,4 @@ public class QuoteController extends BaseController {
         }
     }
 
-    /**
-     * 订阅股票行情
-     * @return 订阅结果
-     */
-    @PostMapping("/subscribe")
-    public R subscribeStockQuote(@RequestBody QueryStockQuoteList queryStockQuoteList) {
-        try {
-            log.info("订阅股票行情: request={}", queryStockQuoteList.toString());
-            Long userId = SecurityUtils.getUserId();
-            queryStockQuoteList.setUserId(userId);
-            return quoteApiService.subscribeStockQuote(queryStockQuoteList);
-        } catch (Exception e) {
-            log.error("订阅股票行情失败: {}", e.getMessage(), e);
-            return R.fail("订阅股票行情失败: " + e.getMessage());
-        }
-    }
-
-    /**
-     * 取消订阅股票行情
-     * @return 取消订阅结果
-     */
-    @PostMapping("/unsubscribe")
-    public R unsubscribeStockQuote(@RequestBody QueryStockQuoteList queryStockQuoteList) {
-        try {
-            log.info("取消订阅股票行情: request={}", queryStockQuoteList.toString());
-            Long userId = SecurityUtils.getUserId();
-            queryStockQuoteList.setUserId(userId);
-            return quoteApiService.unsubscribeStockQuote(queryStockQuoteList);
-        } catch (Exception e) {
-            log.error("取消订阅股票行情失败: {}", e.getMessage(), e);
-            return R.fail("取消订阅股票行情失败: " + e.getMessage());
-        }
-    }
 }
