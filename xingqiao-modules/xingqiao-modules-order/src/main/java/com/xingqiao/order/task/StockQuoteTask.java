@@ -4,16 +4,14 @@ package com.xingqiao.order.task;
 import com.xingqiao.common.redis.service.RedisService;
 import com.xingqiao.order.config.StockCodeMappingConfig;
 import com.xingqiao.order.config.TradeConstants;
+import com.xingqiao.order.quote.SubscribeStrategyFactory;
 import com.xingqiao.order.rocketmq.domain.QuoteMessage;
-import com.xingqiao.order.rocketmq.service.QuoteMessageService;
 import com.xingqiao.order.service.WebSocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.util.*;
 
 /**
@@ -33,10 +31,10 @@ public class StockQuoteTask {
     @Autowired
     private RedisService redisService;
     @Autowired
-    private QuoteMessageService quoteMessageService;
-    @Autowired
     private StockCodeMappingConfig stockCodeMappingConfig;
-    
+    @Autowired
+    private SubscribeStrategyFactory subscribeStrategyFactory;
+
 
 
     /**
@@ -60,17 +58,23 @@ public class StockQuoteTask {
         try {
             // 遍历所有订阅的会话和股票
             for (String sessionId : sessionIds) {
-                Long userId=webSocketService.getUserBySessionId(sessionId);
-                QuoteMessage quoteMessage = new QuoteMessage();
-                quoteMessage.setUserId(userId);
-                quoteMessage.setSessionId(sessionId);
-                quoteMessage.setRemark("触发订阅股票查询");
-                quoteMessage.setCreateTime(new Date());
-                quoteMessageService.sendQuoteQueryMessage(quoteMessage);
+                //全球指数行情查询
+                globalIndices(sessionId);
             }
         } catch (Exception e) {
             log.error("执行定时行情推送任务失败", e);
         }
+    }
+
+    private void globalIndices(String sessionId) {
+        Long userId=webSocketService.getUserBySessionId(sessionId);
+        QuoteMessage quoteMessage = new QuoteMessage();
+        quoteMessage.setUserId(userId);
+        quoteMessage.setDataType("global_indices");
+        quoteMessage.setSessionId(sessionId);
+        quoteMessage.setRemark("触发全球指数行情查询");
+        quoteMessage.setCreateTime(new Date());
+        subscribeStrategyFactory.processQuoteQuery(quoteMessage);
     }
 
 }

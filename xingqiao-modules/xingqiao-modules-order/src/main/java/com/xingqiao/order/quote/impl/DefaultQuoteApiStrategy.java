@@ -5,7 +5,6 @@ import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.redis.service.RedisService;
 import com.xingqiao.order.quote.QuoteApiStrategy;
-import com.xingqiao.order.rocketmq.service.QuoteMessageService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +30,7 @@ public class DefaultQuoteApiStrategy implements QuoteApiStrategy {
 
     @Autowired
     private RedisService redisService;
-    @Autowired
-    private QuoteMessageService quoteMessageService;
+
 
 
     @Override
@@ -59,7 +57,7 @@ public class DefaultQuoteApiStrategy implements QuoteApiStrategy {
                 }
             }
         }
-        log.info("批量获取股票行情，数量：{}，缓存命中数量：{}", list.size(), resultList.size());
+        log.info("批量获取股票行情，数量：{}，缓存命中数量：{}", list==null? 0:list.size(), resultList.size());
         return R.ok(resultList);
     }
 

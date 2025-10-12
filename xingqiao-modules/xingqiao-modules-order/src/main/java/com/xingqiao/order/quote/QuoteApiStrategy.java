@@ -1,10 +1,8 @@
 package com.xingqiao.order.quote;
 
-import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
-
 import java.util.List;
 
 /**

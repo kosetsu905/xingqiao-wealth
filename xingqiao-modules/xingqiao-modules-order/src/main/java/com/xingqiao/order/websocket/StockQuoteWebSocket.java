@@ -1,19 +1,14 @@
 package com.xingqiao.order.websocket;
 
 import com.alibaba.fastjson2.JSONObject;
-
 import java.util.List;
-
-import com.xingqiao.api.trade.domain.QueryStockQuote;
-import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.SubscribeRequest;
+import com.xingqiao.order.quote.SubscribeStrategyFactory;
 import com.xingqiao.order.service.WebSocketService;
-import com.xingqiao.order.service.WebSocketSubscribeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -35,7 +30,7 @@ public class StockQuoteWebSocket {
 
     // 由于WebSocket是多线程的，这里使用静态变量并通过Spring上下文获取Bean
     private static WebSocketService webSocketService;
-    private static WebSocketSubscribeService webSocketSubscribeService;
+    private static SubscribeStrategyFactory subscribeStrategyFactory;
 
 
     // 当前会话
@@ -49,10 +44,10 @@ public class StockQuoteWebSocket {
      * 由于WebSocket是多线程的，需要使用静态方法注入
      */
     @Autowired
-    public void setWebSocketService(WebSocketService webSocketService
-            , WebSocketSubscribeService webSocketSubscribeService) {
+    public void setWebSocketService(WebSocketService webSocketService,
+                                    SubscribeStrategyFactory subscribeStrategyFactory) {
         StockQuoteWebSocket.webSocketService = webSocketService;
-        StockQuoteWebSocket.webSocketSubscribeService = webSocketSubscribeService;
+        StockQuoteWebSocket.subscribeStrategyFactory = subscribeStrategyFactory;
         log.info("WebSocketService已注入到StockQuoteWebSocket");
     }
 
@@ -134,25 +129,11 @@ public class StockQuoteWebSocket {
             switch (action) {
                 case "subscribe":
                     // 处理订阅请求，新格式：{"dataType","","action":"subscribe", "params":[{"stockCode":"","marketCode":""},...]}
-                    webSocketSubscribeService.subscribe(subscribeRequest);
-                    // 发送订阅成功消息
-                    JSONObject response = new JSONObject();
-                    response.put("type", msgObj.getString("dataType"));
-                    response.put("action", "subscribe_success");
-                    response.put("message", "订阅股票行情成功");
-                    sendMessage(response.toJSONString());
-                    log.info("用户 {} 订阅成功", userId);
+                    subscribeStrategyFactory.subscribe(subscribeRequest);
                     break;
                 case "unsubscribe":
                     // 处理取消订阅请求，支持相同的params格式
-                    webSocketSubscribeService.unsubscribe(subscribeRequest);
-                    // 发送取消订阅成功消息
-                    JSONObject response1 = new JSONObject();
-                    response1.put("type", msgObj.getString("dataType"));
-                    response1.put("action", "unsubscribe_success");
-                    response1.put("message", "取消订阅股票行情成功");
-                    sendMessage(response1.toJSONString());
-                    log.info("用户 {} 取消订阅成功", userId);
+                    subscribeStrategyFactory.unsubscribe(subscribeRequest);
                     break;
                 default:
                     log.error("未知消息类型：{}", action);
@@ -163,6 +144,8 @@ public class StockQuoteWebSocket {
             sendErrorMessage("处理消息异常：" + e.getMessage());
         }
     }
+
+
 
     /**
      * 发生错误时调用

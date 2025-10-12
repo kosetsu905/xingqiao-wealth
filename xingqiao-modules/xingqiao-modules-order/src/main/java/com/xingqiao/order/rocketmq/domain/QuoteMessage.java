@@ -25,6 +25,8 @@ public class QuoteMessage implements Serializable {
     private Long userId;
 
     private String sessionId;
+
+    private String dataType;
     /**
      * 创建时间
      */

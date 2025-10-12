@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * WebSocket服务类
  * 管理WebSocket连接和消息发送
- * 
+ *
  * @author xingqiao
  * @date 2025-09-24
  */
@@ -71,7 +71,7 @@ public class WebSocketService {
             //删除会话id
             redisService.removeCacheSet(TradeConstants.SESSION_KEY_PREFIX , sessionId);
             // 从会话-股票映射中移除
-            redisService.deleteObject(TradeConstants.STOCK_INFO_PREFIX + sessionId);
+            redisService.deleteObject(TradeConstants.STOCK_GLOBAL_INDICES_INFO_PREFIX + sessionId);
             log.info("WebSocket连接已关闭，会话ID：{}，当前在线人数：{}", sessionId, sessions.size());
         }catch (Exception e){
             log.error("处理用户 {} 断开连接异常：{}", session.getId(), e.getMessage());
@@ -90,7 +90,7 @@ public class WebSocketService {
         // 存储反向映射，方便通过会话ID查找用户ID
         redisService.setCacheObject(TradeConstants.SESSION_USER_KEY_PREFIX + session.getId(), userId, TradeConstants.EXPIRE_TIME, TimeUnit.SECONDS);
     }
-    
+
     /**
      * 根据会话ID获取用户ID
      * @param sessionId 会话ID
@@ -124,7 +124,7 @@ public class WebSocketService {
      * @param userId 用户ID
      * @param message 消息内容
      */
-    public void sendMessageToUser(String userId, String message) {
+    public void sendMessageToUser(Long userId, String message) {
         // 从Redis获取用户对应的会话ID
         String sessionId = redisService.getCacheObject(TradeConstants.USER_SESSION_KEY_PREFIX + userId);
         if (sessionId != null) {
