@@ -3,7 +3,6 @@ package com.xingqiao.order.quote.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.StockChartQuote;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
@@ -522,7 +521,9 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
                 StockChartQuote  cachedChartQuote = redisService.getCacheObject(redisChartKey);
 
                 //如果没有图表数据需要查询
-                if (Objects.isNull(cachedChartQuote)) {
+                if (Objects.isNull(cachedChartQuote)||
+                        Objects.isNull(cachedChartQuote.getPrices())||
+                        cachedChartQuote.getPrices().length==0) {
                     needQueryList.add(queryStockQuote);
                 } else {
                     // 判断是否在开市时间
@@ -671,8 +672,8 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
                     stockChartQuote.setPricesLow(parseBigDecimalArray(series.get("pricesLow")));
                     stockChartQuote.setVolumes(parseBigDecimalArray(series.get("volumes")));
 
-                    // 提取时间戳数组
-                    stockChartQuote.setTimeStamps(parseStringArray(series.get("timeStamps")));
+                    // 时间戳
+                    stockChartQuote.setTimeStamps(null);
 
                     // 提取最高价和最低价
                     stockChartQuote.setPriceHigh(getBigDecimalFromNode(series, "priceHigh"));
