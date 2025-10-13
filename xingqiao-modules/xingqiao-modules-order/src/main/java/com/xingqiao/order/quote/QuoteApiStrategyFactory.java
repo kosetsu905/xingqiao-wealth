@@ -53,61 +53,43 @@ public class QuoteApiStrategyFactory {
     }
 
     /**
-     * 获取历史行情数据
-     * 遍历执行所有策略，若返回R为200且有值则中断执行并返回数据，若所有执行完毕仍无200
-     * 如果最后一个返回201或者200，直接返回，201代表返回的是缓存数据
      *
-     * @param queryStockQuote 股票查询条件
+     * 获取实际范围的股票数据
+     *
+     * @param queryStockQuoteList 股票查询条件
      * @return 历史行情列表结果
      */
-    public R<List<StockQuote>> getStockQuoteHistory(QueryStockQuote queryStockQuote) {
-        log.info("开始获取历史行情数据: {}", queryStockQuote);
+    public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> queryStockQuoteList) {
+        log.info("开始批量获取时间范围股票行情，请求数量: {}", queryStockQuoteList != null ? queryStockQuoteList.size() : 0);
 
         // 参数验证
-        if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
-            log.warn("股票代码不能为空");
-            return R.fail("股票代码不能为空");
+        if (queryStockQuoteList == null || queryStockQuoteList.isEmpty()) {
+            log.warn("股票代码列表不能为空");
+            return R.fail("股票代码列表不能为空");
         }
 
-        // 遍历所有策略
+        // 遍历所有策略,请求获取行情数据保存到redis，最后在默认策略获取缓存数据返回
         for (QuoteApiStrategy strategy : quoteApiStrategies) {
             try {
-                log.debug("尝试使用策略: {} 获取历史行情数据", strategy.getStrategyName());
-                R<List<StockQuote>> result = strategy.getStockQuoteHistory(queryStockQuote);
-
-                // 判断返回结果是否符合要求：状态码为200且有值
-                if (result != null
-                        && result.getCode() == 200
-                        && result.getData() != null
-                        && !result.getData().isEmpty()) {
-                    log.info("策略: {} 获取历史行情数据成功，返回结果", strategy.getStrategyName());
-                    return result; // 中断执行并返回数据
-                }
-                log.debug("策略: {} 返回结果不符合要求或为空，继续尝试其他策略", strategy.getStrategyName());
+                log.debug("尝试使用策略: {} 获取行情数据", strategy.getStrategyName());
+                strategy.getStockQuoteChartList(queryStockQuoteList);
             } catch (Exception e) {
-                log.error("使用策略: {} 获取历史行情数据时发生异常", strategy.getStrategyName(), e);
+                log.error("使用策略: {} 获取行情数据时发生异常", strategy.getStrategyName(), e);
             }
         }
-
-        // 所有策略都执行完毕且没有返回状态码为200的结果
-        // 使用默认策略获取数据
-        log.warn("所有策略均未成功获取历史行情数据，尝试使用默认策略获取数据");
+        log.warn("从缓存获取历史数据");
         try {
-            if (defaultStrategy != null) {
-                R<List<StockQuote>> defaultResult = defaultStrategy.getStockQuoteHistory(queryStockQuote);
-                if (defaultResult != null) {
-                    log.info("从默认策略获取历史行情数据成功");
-                    return defaultResult;
-                }
-            } else {
-                log.error("默认策略未初始化，无法获取历史行情数据");
+            R<List<StockQuote>> defaultResult = defaultStrategy.getStockQuoteChartList(queryStockQuoteList);
+            if (defaultResult != null && defaultResult.getData() != null) {
+                log.info("从默认策略获取历史缓存数据成功");
+                return defaultResult;
             }
         } catch (Exception e) {
-            log.error("尝试从默认策略获取历史行情数据时发生异常", e);
+            log.error("尝试从默认策略获取历史数据时发生异常", e);
         }
 
         // 如果连默认策略都失败，则返回空结果
-        log.error("无法获取任何历史行情数据，返回空结果");
+        log.error("无法获取任何行情数据，返回空结果");
         return R.ok(Collections.emptyList());
     }
 

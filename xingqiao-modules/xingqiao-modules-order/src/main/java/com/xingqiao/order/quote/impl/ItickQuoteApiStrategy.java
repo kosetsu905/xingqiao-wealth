@@ -46,10 +46,9 @@ public class ItickQuoteApiStrategy implements QuoteApiStrategy {
     }
 
     @Override
-    public R<List<StockQuote>> getStockQuoteHistory(QueryStockQuote queryStockQuote) {
-        return R.fail("不支持获取单只股票行情");
+    public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> list) {
+        return null;
     }
-
 
     /**
      * 获取策略名称

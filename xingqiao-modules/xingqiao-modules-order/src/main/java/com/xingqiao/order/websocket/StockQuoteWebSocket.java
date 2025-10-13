@@ -38,6 +38,9 @@ public class StockQuoteWebSocket {
 
     // 用户ID
     private Long userId;
+    
+    // 最后活动时间
+    private long lastActivityTime;
 
     /**
      * 注入WebSocketService
@@ -63,11 +66,14 @@ public class StockQuoteWebSocket {
 
         this.session = session;
         this.userId = userId;
+        this.lastActivityTime = System.currentTimeMillis();
 
         try {
             // 添加会话到服务管理
             webSocketService.addSession(session);
             webSocketService.bindUserSession(userId, session);
+            // 存储会话最后活动时间
+            webSocketService.updateLastActivityTime(session.getId(), this.lastActivityTime);
             log.info("用户 {} 连接WebSocket成功，会话ID：{}，当前在线人数：{}", userId, session.getId(), webSocketService.getOnlineCount());
             // 发送连接成功消息
             JSONObject response = new JSONObject();
@@ -98,6 +104,10 @@ public class StockQuoteWebSocket {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
+        // 更新最后活动时间
+        this.lastActivityTime = System.currentTimeMillis();
+        webSocketService.updateLastActivityTime(session.getId(), this.lastActivityTime);
+        
         log.debug("收到用户 {} 的消息：{}", userId, message);
         try {
             // 解析消息内容
@@ -112,7 +122,7 @@ public class StockQuoteWebSocket {
                 pongResponse.put("type", "pong");
                 pongResponse.put("timestamp", System.currentTimeMillis());
                 sendMessage(pongResponse.toJSONString());
-                log.debug("用户 {} 的心跳消息已响应", userId);
+                log.debug("用户 {} 的心跳消息已响应，最后活动时间：{}", userId, this.lastActivityTime);
                 return;
             }
 
@@ -170,6 +180,10 @@ public class StockQuoteWebSocket {
      */
     private void sendMessage(String message) {
         if (session != null && session.isOpen()) {
+            // 更新最后活动时间（发送消息也算活动）
+            this.lastActivityTime = System.currentTimeMillis();
+            webSocketService.updateLastActivityTime(session.getId(), this.lastActivityTime);
+            
             webSocketService.sendMessage(session, message);
         } else {
             log.warn("会话已关闭，无法发送消息");

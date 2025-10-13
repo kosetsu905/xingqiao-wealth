@@ -66,6 +66,7 @@ public class StockQuoteTask {
         }
     }
 
+
     private void globalIndices(String sessionId) {
         Long userId=webSocketService.getUserBySessionId(sessionId);
         QuoteMessage quoteMessage = new QuoteMessage();

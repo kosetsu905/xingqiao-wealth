@@ -1,3 +1,4 @@
+
 package com.xingqiao.order.quote.impl;
 
 import com.alibaba.fastjson2.JSONObject;
@@ -25,11 +26,11 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * 首页全球指数订阅
+ * 首页热门股票订阅
  */
 @Service
-public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
-    private static final Logger log = LoggerFactory.getLogger(GlobalIndicesSubscribeStrategy.class);
+public class HotStocksSubscribeStrategy implements SubscribeStrategy {
+    private static final Logger log = LoggerFactory.getLogger(HotStocksSubscribeStrategy.class);
 
     @Autowired
     private RedisService redisService;
@@ -38,7 +39,7 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
     @Autowired
     private QuoteApiStrategyFactory quoteApiStrategyFactory;
 
-    private static final String TAG = "首页全球指数";
+    private static final String TAG = "首页热门股票";
 
     @Override
     public void subscribe(SubscribeRequest request) {
@@ -71,12 +72,12 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
                     String productCode = queryStockQuote.getProductCode() != null ? queryStockQuote.getProductCode() : "stock";
                     String stockCode = queryStockQuote.getStockCode();
                     String marketCode = queryStockQuote.getMarketCode();
+                    String type = queryStockQuote.getType() != null ? queryStockQuote.getType() : "1D1M";
 
                     // 1. 构建股票唯一标识符：product:market:code
-                    String stockIdentifier = productCode + ":" + marketCode + ":" + stockCode;
-
-                    redisService.addCacheSet(TradeConstants.STOCK_GLOBAL_INDICES_INFO_PREFIX + sessionId, stockIdentifier);
-                    redisService.expire(TradeConstants.STOCK_GLOBAL_INDICES_INFO_PREFIX + sessionId, TradeConstants.EXPIRE_TIME, TimeUnit.SECONDS);
+                    String stockIdentifier = productCode + ":" + marketCode + ":" + stockCode + ":" + type;
+                    redisService.addCacheSet(TradeConstants.STOCK_HOT_INFO_PREFIX + sessionId, stockIdentifier);
+                    redisService.expire(TradeConstants.STOCK_HOT_INFO_PREFIX + sessionId, TradeConstants.EXPIRE_TIME, TimeUnit.SECONDS);
 
                     log.info("{}订阅成功：{}", TAG, stockIdentifier);
                     successCount++;
@@ -94,7 +95,7 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
             QuoteMessage quoteMessage = new QuoteMessage();
             quoteMessage.setUserId(request.getUserId());
             quoteMessage.setSessionId(sessionId);
-            quoteMessage.setRemark("触发全球指数行情查询");
+            quoteMessage.setRemark("触发热门股票查询");
             quoteMessage.setCreateTime(new Date());
             processQuoteQuery(quoteMessage);
 
@@ -102,7 +103,7 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
             JSONObject response = new JSONObject();
             response.put("dataType", msgObj.getString("dataType"));
             response.put("action", "subscribe_success");
-            response.put("message", "订阅股票行情成功");
+            response.put("message", "订阅热门股票成功");
             webSocketService.sendMessageToUser(request.getUserId(), response.toJSONString());
             log.info("用户 {} 订阅成功", request.getUserId());
 
@@ -116,11 +117,11 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
     public void unsubscribe(SubscribeRequest request) {
         JSONObject msgObj = request.getMsgObj();
         List<QueryStockQuote> list = msgObj.getList("params", QueryStockQuote.class);
-        log.info("取消首页全球指数行情开始，批量数量：{}", list != null ? list.size() : 0);
+        log.info("取消首页热门股票开始，批量数量：{}", list != null ? list.size() : 0);
         try {
             // 参数验证
             if (list != null && list.isEmpty()) {
-                log.warn("取消首页全球指数行情失败：股票列表为空");
+                log.warn("取消首页热门股票失败：股票列表为空");
                 return;
             }
             // 记录成功取消订阅的数量
@@ -131,12 +132,12 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
                     try {
                         // 单个股票参数验证
                         if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
-                            log.warn("取消首页全球指数行情失败：股票代码不能为空");
+                            log.warn("取消首页热门股票行情失败：股票代码不能为空");
                             continue;
                         }
 
                         if (queryStockQuote.getMarketCode() == null) {
-                            log.warn("取消首页全球指数行情失败：市场代码不能为空，股票代码：{}", queryStockQuote.getStockCode());
+                            log.warn("取消首页热门股票行情失败：市场代码不能为空，股票代码：{}", queryStockQuote.getStockCode());
                             continue;
                         }
                         String sessionId = request.getSessionId();
@@ -144,19 +145,20 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
                         String productCode = queryStockQuote.getProductCode() != null ? queryStockQuote.getProductCode() : "stock";
                         String stockCode = queryStockQuote.getStockCode();
                         String marketCode = queryStockQuote.getMarketCode();
+                        String type = queryStockQuote.getType();
                         // 1. 构建股票唯一标识符：product:market:code
-                        String stockIdentifier = productCode + ":" + marketCode + ":" + stockCode;
-                        redisService.removeCacheSet(TradeConstants.STOCK_GLOBAL_INDICES_INFO_PREFIX + sessionId, stockIdentifier);
-                        log.info("取消首页全球指数行情成功：{}", stockIdentifier);
+                        String stockIdentifier = productCode + ":" + marketCode + ":" + stockCode + ":" + type;
+                        redisService.removeCacheSet(TradeConstants.STOCK_HOT_INFO_PREFIX + sessionId, stockIdentifier);
+                        log.info("取消首页热门股票行情成功：{}", stockIdentifier);
                         successCount++;
                     } catch (Exception e) {
                         String stockCode = queryStockQuote != null ? queryStockQuote.getStockCode() : "未知";
-                        log.error("取消首页全球指数行情异常，股票代码：{}", stockCode, e);
+                        log.error("取消首页热门股票行情异常，股票代码：{}", stockCode, e);
                     }
                 }
             }
             if (successCount == 0) {
-                log.error("取消首页全球指数行情失败：全部取消订阅失败");
+                log.error("取消首页股票行情失败：全部取消订阅失败");
             } else {
                 // 发送取消订阅成功消息
                 JSONObject response = new JSONObject();
@@ -177,11 +179,11 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
             // 1. 获取所有订阅的股票信息
             List<QueryStockQuote> subscribedStocks = getAllSubscribedStocks(quoteMessage);
             if (subscribedStocks.isEmpty()) {
-                log.warn("当前没有订阅的股票");
+                log.warn("当前没有订阅的热门股票");
                 return;
             }
             // 2. 获取行情数据
-            R<List<StockQuote>> result = quoteApiStrategyFactory.getStockQuoteList(subscribedStocks);
+            R<List<StockQuote>> result = quoteApiStrategyFactory.getStockQuoteChartList(subscribedStocks);
             if (R.isSuccess(result) && result.getData() != null) {
                 // 3. 推送行情数据给前端
                 pushStockQuotesToFrontend(quoteMessage, result.getData());
@@ -200,7 +202,7 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
     private List<QueryStockQuote> getAllSubscribedStocks(QuoteMessage quoteMessage) {
         List<QueryStockQuote> subscribedStocks = new ArrayList<>();
         try {
-            Set<String> subscribedStocksSet = redisService.getCacheSet(TradeConstants.STOCK_GLOBAL_INDICES_INFO_PREFIX + quoteMessage.getSessionId());
+            Set<String> subscribedStocksSet = redisService.getCacheSet(TradeConstants.STOCK_HOT_INFO_PREFIX + quoteMessage.getSessionId());
             if (CollectionUtils.isNotEmpty(subscribedStocksSet)) {
                 for (String stockInfo : subscribedStocksSet) {
                     String[] stockInfoArr = stockInfo.split(":");
@@ -208,6 +210,7 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
                     queryStockQuote.setProductCode(stockInfoArr[0]);
                     queryStockQuote.setMarketCode(stockInfoArr[1]);
                     queryStockQuote.setStockCode(stockInfoArr[2]);
+                    queryStockQuote.setType(stockInfoArr[3]);
                     subscribedStocks.add(queryStockQuote);
                 }
             }
@@ -228,7 +231,7 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
         try {
             JSONObject stockQuotesJson = new JSONObject();
             stockQuotesJson.put("stockQuotes", stockQuotes);
-            stockQuotesJson.put("type", "global_indices");
+            stockQuotesJson.put("type", "hot_stocks");
             webSocketService.sendMessageBySessionId(quoteMessage.getSessionId(), stockQuotesJson.toJSONString());
             log.info("成功推送股票行情数据到前端");
         } catch (Exception e) {
@@ -238,6 +241,6 @@ public class GlobalIndicesSubscribeStrategy implements SubscribeStrategy {
 
     @Override
     public String getStrategyName() {
-        return "global_indices";
+        return "hot_stocks";
     }
 }
