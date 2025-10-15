@@ -372,6 +372,10 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
 
     @Override
     public R<List<StockQuote>> getStockQuoteList(List<QueryStockQuote> list) {
+
+        if (!stockQueryMappingConfig.isMsnGetStockQuoteListSwitch()){
+            return R.fail("获取股票行情失败：行情API未启用");
+        }
         log.info("批量获取股票行情，数量：{}", list != null ? list.size() : 0);
 
         // 参数验证
@@ -508,11 +512,6 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
      */
     @Override
     public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> list) {
-
-
-        if (!stockQueryMappingConfig.isMsnGetStockQuoteListSwitch()){
-            return R.fail("获取股票行情失败：行情API未启用");
-        }
 
         log.info("批量获取股票图表行情");
         // 参数验证
