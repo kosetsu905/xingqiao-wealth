@@ -198,4 +198,12 @@
             #{id}
         </foreach>
     </delete>
+    
+    <!-- 根据用户ID和日期范围查询交易订单 -->
+    <select id="selectCustomerTradeOrdersByUserIdAndDateRange" resultMap="CustomerTradeOrdersResult">
+        <include refid="selectCustomerTradeOrdersVo"/>
+        from customer_trade_orders
+        where user_id = #{userId}
+          and order_time between #{startDate} and #{endDate}
+    </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.xingqiao.order.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.xingqiao.order.domain.CustomerTradeOrders;
 import com.xingqiao.common.core.web.page.TableDataInfo;
@@ -100,4 +101,12 @@ public interface ICustomerTradeOrdersService
      * @return 结果
      */
     public int deleteCustomerTradeOrdersById(String id);
+    
+    /**
+     * 获取今日盈亏
+     * 
+     * @param userId 用户ID
+     * @return 今日盈亏金额
+     */
+    public BigDecimal getTodayProfitLossByUserId(String userId);
 }

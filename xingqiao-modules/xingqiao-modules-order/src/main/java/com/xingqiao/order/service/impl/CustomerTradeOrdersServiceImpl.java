@@ -1,5 +1,6 @@
 package com.xingqiao.order.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -161,8 +162,46 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @return 结果
      */
     @Override
-    public int deleteCustomerTradeOrdersById(String id)
-    {
+    public int deleteCustomerTradeOrdersById(String id) {
         return customerTradeOrdersMapper.deleteCustomerTradeOrdersById(id);
+    }
+    
+    @Override
+    public BigDecimal getTodayProfitLossByUserId(String userId) {
+        // 初始化今日盈亏为0
+        BigDecimal todayProfitLoss = BigDecimal.ZERO;
+        
+        try {
+            // 创建查询条件
+            CustomerTradeOrders customerTradeOrders = new CustomerTradeOrders();
+            customerTradeOrders.setUserId(userId);
+            
+            // 获取今天的日期范围
+            String today = DateUtils.getDate();
+            String startDate = today + " 00:00:00";
+            String endDate = today + " 23:59:59";
+            
+            // 查询今日所有已成交的订单
+            List<CustomerTradeOrders> todayOrders = customerTradeOrdersMapper.selectCustomerTradeOrdersByUserIdAndDateRange(
+                    userId, startDate, endDate);
+            
+            // 计算今日盈亏
+            if (todayOrders != null && !todayOrders.isEmpty()) {
+                for (CustomerTradeOrders order : todayOrders) {
+                    // 只计算已成交的订单（状态为3：完全成交）
+                    if (order.getStatus().equals(3L) && order.getFilledAmount() != null && order.getAmount() != null) {
+                        // 买入订单：盈亏 = 已成交金额 - 委托金额（通常为负，因为买入会支出资金）
+                        // 卖出订单：盈亏 = 已成交金额 - 委托金额（通常为正，因为卖出会收入资金）
+                        BigDecimal orderProfitLoss = order.getFilledAmount().subtract(order.getAmount());
+                        todayProfitLoss = todayProfitLoss.add(orderProfitLoss);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // 记录异常日志
+            e.printStackTrace();
+        }
+        
+        return todayProfitLoss;
     }
 }
