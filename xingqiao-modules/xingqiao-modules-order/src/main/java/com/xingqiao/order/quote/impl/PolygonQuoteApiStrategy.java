@@ -7,7 +7,6 @@ import com.xingqiao.common.redis.service.RedisService;
 import com.xingqiao.order.service.PolygonService;
 import com.xingqiao.order.quote.QuoteApiStrategy;
 import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.util.*;
 
