@@ -32,11 +32,8 @@ public class PolygonQuoteApiStrategy implements QuoteApiStrategy {
     public R<StockQuote> getStockCurrentQuote(QueryStockQuote queryStockQuote) {
         try {
             String stockCode = queryStockQuote.getStockCode();
-            String redisKey = "polygon:quote:" + stockCode;
             Map<String, Object> data = polygonService.getMarketData(stockCode);
             StockQuote quote = mapToStockQuote(queryStockQuote, data);
-            // 缓存 2 分钟
-            redisService.setCacheObject(redisKey, quote);
             return R.ok(quote);
         } catch (Exception e) {
             return R.fail("获取市场行情失败: " + e.getMessage());
