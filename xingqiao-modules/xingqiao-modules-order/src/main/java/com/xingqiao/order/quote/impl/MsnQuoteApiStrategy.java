@@ -59,6 +59,11 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
         this.timeRangeUtil = timeRangeUtil;
     }
 
+    @Override
+    public R<StockQuote> getStockCurrentQuote(QueryStockQuote queryStockQuote) {
+        return null;
+    }
+
     /**
      * 获取单个股票行情
      */

@@ -77,6 +77,26 @@ public class QuoteApiStrategyFactory {
 
     }
 
+    /**
+     *
+     * 获取实时的股票数据
+     *
+     * @param queryStockQuoteList 股票查询条件
+     * @return 获取实时的股票数据数据结果
+     */
+    public R<List<StockQuote>> getStockCurrentQuote(List<QueryStockQuote> queryStockQuoteList) {
+        log.info("开始获取实时的股票数据，请求数量: {}", queryStockQuoteList != null ? queryStockQuoteList.size() : 0);
+
+        // 参数验证
+        if (queryStockQuoteList == null || queryStockQuoteList.isEmpty()) {
+            log.warn("股票代码列表不能为空");
+            return R.fail("股票代码列表不能为空");
+        }
+        QuoteApiStrategy strategy = getStrategy(stockQueryMappingConfig.getStockQuoteChartStrategy());
+        return strategy.getStockQuoteChartList(queryStockQuoteList);
+
+    }
+
 
     /**
      * 根据策略名称获取行情API策略

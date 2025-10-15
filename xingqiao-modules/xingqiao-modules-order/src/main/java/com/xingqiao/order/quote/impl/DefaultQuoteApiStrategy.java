@@ -34,6 +34,10 @@ public class DefaultQuoteApiStrategy implements QuoteApiStrategy {
     private RedisService redisService;
 
 
+    @Override
+    public R<StockQuote> getStockCurrentQuote(QueryStockQuote queryStockQuote) {
+        return null;
+    }
 
     @Override
     public R<StockQuote> getStockQuote(QueryStockQuote queryStockQuote) {
