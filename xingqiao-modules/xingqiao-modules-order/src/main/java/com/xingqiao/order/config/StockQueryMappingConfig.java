@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author xingqiao
  */
+@Setter
+@Getter
 @Configuration
 @RefreshScope
 @ConfigurationProperties(prefix = "order.stock")
@@ -24,8 +26,6 @@ public class StockQueryMappingConfig {
     /**
      *查询单个股票周期行情指定策略
      */
-    @Getter
-    @Setter
     private String stockQuoteChartStrategy;
 
 
@@ -33,7 +33,18 @@ public class StockQueryMappingConfig {
      * 查询单个股票实时行情指定策略
      * 实时查询不缓存redis
      */
-    @Getter
-    @Setter
     private String stockTradeStrategy;
+
+
+    /**
+     *  msn查询单个股票行情开关
+     */
+    private boolean msnGetStockQuoteSwitch;
+
+
+    /**
+     *  msn查询批量股票行情开关
+     */
+    private boolean msnGetStockQuoteListSwitch;
+
 }

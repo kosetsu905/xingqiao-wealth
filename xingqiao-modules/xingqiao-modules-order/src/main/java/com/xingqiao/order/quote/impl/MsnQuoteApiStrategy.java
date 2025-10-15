@@ -10,6 +10,7 @@ import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.redis.service.RedisService;
 import com.xingqiao.order.config.StockCodeMappingConfig;
+import com.xingqiao.order.config.StockQueryMappingConfig;
 import com.xingqiao.order.quote.QuoteApiStrategy;
 import com.xingqiao.order.utils.TimeRangeUtil;
 import org.slf4j.Logger;
@@ -47,14 +48,17 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
     private final RedisService redisService;
     private final StockCodeMappingConfig stockCodeMappingConfig;
     private final TimeRangeUtil timeRangeUtil;
+    private final StockQueryMappingConfig stockQueryMappingConfig;
 
     public MsnQuoteApiStrategy(RestTemplate restTemplate, ObjectMapper objectMapper,
                                StockCodeMappingConfig stockCodeMappingConfig,
                                RedisService redisService,
+                               StockQueryMappingConfig stockQueryMappingConfig,
                                TimeRangeUtil timeRangeUtil) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.stockCodeMappingConfig = stockCodeMappingConfig;
+        this.stockQueryMappingConfig = stockQueryMappingConfig;
         this.redisService = redisService;
         this.timeRangeUtil = timeRangeUtil;
     }
@@ -69,8 +73,13 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
      */
     @Override
     public R<StockQuote> getStockQuote(QueryStockQuote queryStockQuote) {
-        log.info("获取股票行情：{}", queryStockQuote);
 
+
+        if (!stockQueryMappingConfig.isMsnGetStockQuoteSwitch()){
+            return R.fail("获取股票行情失败：行情API未启用");
+        }
+
+        log.info("获取股票行情：{}", queryStockQuote);
         // 参数验证
         if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
             log.warn("股票代码不能为空");
@@ -499,6 +508,12 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
      */
     @Override
     public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> list) {
+
+
+        if (!stockQueryMappingConfig.isMsnGetStockQuoteListSwitch()){
+            return R.fail("获取股票行情失败：行情API未启用");
+        }
+
         log.info("批量获取股票图表行情");
         // 参数验证
         if (list == null || list.isEmpty()) {
