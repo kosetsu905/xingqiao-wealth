@@ -81,19 +81,19 @@ public class QuoteApiStrategyFactory {
      *
      * 获取实时的股票数据
      *
-     * @param queryStockQuoteList 股票查询条件
+     * @param queryStockQuote 股票查询条件
      * @return 获取实时的股票数据数据结果
      */
-    public R<List<StockQuote>> getStockCurrentQuote(List<QueryStockQuote> queryStockQuoteList) {
-        log.info("开始获取实时的股票数据，请求数量: {}", queryStockQuoteList != null ? queryStockQuoteList.size() : 0);
+    public R<StockQuote> getStockCurrentQuote(QueryStockQuote queryStockQuote) {
+        log.info("开始获取股票行情: {}", queryStockQuote);
 
         // 参数验证
-        if (queryStockQuoteList == null || queryStockQuoteList.isEmpty()) {
-            log.warn("股票代码列表不能为空");
-            return R.fail("股票代码列表不能为空");
+        if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
+            log.warn("股票代码不能为空");
+            return R.fail("股票代码不能为空");
         }
-        QuoteApiStrategy strategy = getStrategy(stockQueryMappingConfig.getStockQuoteChartStrategy());
-        return strategy.getStockQuoteChartList(queryStockQuoteList);
+        QuoteApiStrategy strategy = getStrategy(stockQueryMappingConfig.getStockTradeStrategy());
+        return strategy.getStockCurrentQuote(queryStockQuote);
 
     }
 
