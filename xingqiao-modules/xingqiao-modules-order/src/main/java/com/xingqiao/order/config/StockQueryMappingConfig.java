@@ -39,12 +39,12 @@ public class StockQueryMappingConfig {
     /**
      *  msn查询单个股票行情开关
      */
-    private boolean msnGetStockQuoteSwitch;
+    private boolean msnGetStockQuoteSwitch = true;
 
 
     /**
      *  msn查询批量股票行情开关
      */
-    private boolean msnGetStockQuoteListSwitch;
+    private boolean msnGetStockQuoteListSwitch = true;
 
 }
