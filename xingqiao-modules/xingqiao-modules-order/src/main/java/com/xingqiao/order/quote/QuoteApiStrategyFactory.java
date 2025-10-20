@@ -3,6 +3,8 @@ package com.xingqiao.order.quote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.common.core.domain.R;
+import com.xingqiao.order.config.StockCodeMappingConfig;
+import com.xingqiao.order.config.StockQueryMappingConfig;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class QuoteApiStrategyFactory {
 
     @Autowired
     private Set<QuoteApiStrategy> quoteApiStrategies;
+    @Autowired
+    private StockQueryMappingConfig stockQueryMappingConfig;
+
 
     private final Map<String, QuoteApiStrategy> strategyMap = new HashMap<>();
 
@@ -57,7 +62,7 @@ public class QuoteApiStrategyFactory {
      * 获取实际范围的股票数据
      *
      * @param queryStockQuoteList 股票查询条件
-     * @return 历史行情列表结果
+     * @return 获取实际范围的股票数据结果
      */
     public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> queryStockQuoteList) {
         log.info("开始批量获取时间范围股票行情，请求数量: {}", queryStockQuoteList != null ? queryStockQuoteList.size() : 0);
@@ -67,30 +72,29 @@ public class QuoteApiStrategyFactory {
             log.warn("股票代码列表不能为空");
             return R.fail("股票代码列表不能为空");
         }
+        QuoteApiStrategy strategy = getStrategy(stockQueryMappingConfig.getStockQuoteChartStrategy());
+        return strategy.getStockQuoteChartList(queryStockQuoteList);
 
-        // 遍历所有策略,请求获取行情数据保存到redis，最后在默认策略获取缓存数据返回
-        for (QuoteApiStrategy strategy : quoteApiStrategies) {
-            try {
-                log.debug("尝试使用策略: {} 获取行情数据", strategy.getStrategyName());
-                strategy.getStockQuoteChartList(queryStockQuoteList);
-            } catch (Exception e) {
-                log.error("使用策略: {} 获取行情数据时发生异常", strategy.getStrategyName(), e);
-            }
-        }
-        log.warn("从缓存获取历史数据");
-        try {
-            R<List<StockQuote>> defaultResult = defaultStrategy.getStockQuoteChartList(queryStockQuoteList);
-            if (defaultResult != null && defaultResult.getData() != null) {
-                log.info("从默认策略获取历史缓存数据成功");
-                return defaultResult;
-            }
-        } catch (Exception e) {
-            log.error("尝试从默认策略获取历史数据时发生异常", e);
-        }
+    }
 
-        // 如果连默认策略都失败，则返回空结果
-        log.error("无法获取任何行情数据，返回空结果");
-        return R.ok(Collections.emptyList());
+    /**
+     *
+     * 获取实时的股票数据
+     *
+     * @param queryStockQuote 股票查询条件
+     * @return 获取实时的股票数据数据结果
+     */
+    public R<StockQuote> getStockCurrentQuote(QueryStockQuote queryStockQuote) {
+        log.info("开始获取股票行情: {}", queryStockQuote);
+
+        // 参数验证
+        if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
+            log.warn("股票代码不能为空");
+            return R.fail("股票代码不能为空");
+        }
+        QuoteApiStrategy strategy = getStrategy(stockQueryMappingConfig.getStockTradeStrategy());
+        return strategy.getStockCurrentQuote(queryStockQuote);
+
     }
 
 

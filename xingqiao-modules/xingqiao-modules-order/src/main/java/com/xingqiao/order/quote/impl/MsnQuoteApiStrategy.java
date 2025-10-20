@@ -3,12 +3,14 @@ package com.xingqiao.order.quote.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xingqiao.api.trade.domain.QueryStockQuoteList;
 import com.xingqiao.api.trade.domain.StockChartQuote;
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
 import com.xingqiao.common.core.domain.R;
 import com.xingqiao.common.redis.service.RedisService;
 import com.xingqiao.order.config.StockCodeMappingConfig;
+import com.xingqiao.order.config.StockQueryMappingConfig;
 import com.xingqiao.order.quote.QuoteApiStrategy;
 import com.xingqiao.order.utils.TimeRangeUtil;
 import org.slf4j.Logger;
@@ -46,16 +48,24 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
     private final RedisService redisService;
     private final StockCodeMappingConfig stockCodeMappingConfig;
     private final TimeRangeUtil timeRangeUtil;
+    private final StockQueryMappingConfig stockQueryMappingConfig;
 
     public MsnQuoteApiStrategy(RestTemplate restTemplate, ObjectMapper objectMapper,
                                StockCodeMappingConfig stockCodeMappingConfig,
                                RedisService redisService,
+                               StockQueryMappingConfig stockQueryMappingConfig,
                                TimeRangeUtil timeRangeUtil) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.stockCodeMappingConfig = stockCodeMappingConfig;
+        this.stockQueryMappingConfig = stockQueryMappingConfig;
         this.redisService = redisService;
         this.timeRangeUtil = timeRangeUtil;
+    }
+
+    @Override
+    public R<StockQuote> getStockCurrentQuote(QueryStockQuote queryStockQuote) {
+        return null;
     }
 
     /**
@@ -63,8 +73,13 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
      */
     @Override
     public R<StockQuote> getStockQuote(QueryStockQuote queryStockQuote) {
-        log.info("获取股票行情：{}", queryStockQuote);
 
+
+        if (!stockQueryMappingConfig.isMsnGetStockQuoteSwitch()){
+            return R.fail("获取股票行情失败：行情API未启用");
+        }
+
+        log.info("获取股票行情：{}", queryStockQuote);
         // 参数验证
         if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
             log.warn("股票代码不能为空");
@@ -357,6 +372,10 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
 
     @Override
     public R<List<StockQuote>> getStockQuoteList(List<QueryStockQuote> list) {
+
+        if (!stockQueryMappingConfig.isMsnGetStockQuoteListSwitch()){
+            return R.fail("获取股票行情失败：行情API未启用");
+        }
         log.info("批量获取股票行情，数量：{}", list != null ? list.size() : 0);
 
         // 参数验证
@@ -486,8 +505,14 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
     }
 
 
+    /**
+     * 数据量大不保存redis
+     * @param list
+     * @return
+     */
     @Override
     public R<List<StockQuote>> getStockQuoteChartList(List<QueryStockQuote> list) {
+
         log.info("批量获取股票图表行情");
         // 参数验证
         if (list == null || list.isEmpty()) {
@@ -495,139 +520,82 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
             return R.fail("股票代码列表不能为空");
         }
         try {
+            List<StockQuote> resultList = new ArrayList<>();
+
             //当前行情数据
             getStockQuoteList(list);
-            // 需要查询的股票和已有缓存的股票
-            List<QueryStockQuote> needQueryList = new ArrayList<>();
-            //查询图表行情数据
-            List<StockQuote> resultList = new ArrayList<>();
-            // 创建返回实体
-            LocalDateTime currentTime = LocalDateTime.now();
-            for (QueryStockQuote queryStockQuote : list) {
-                if (queryStockQuote == null || queryStockQuote.getStockCode() == null) {
+
+            // 根据type对needQueryList进行分组
+            Map<String, List<QueryStockQuote>> groupedByType = list.stream()
+                    .collect(Collectors.groupingBy(QueryStockQuote::getType, Collectors.toList()));
+
+            // 遍历每个分组进行处理
+            for (Map.Entry<String, List<QueryStockQuote>> entry : groupedByType.entrySet()) {
+                String type = entry.getKey();
+                List<QueryStockQuote> groupList = entry.getValue();
+
+                // 构建批量查询参数
+                StringBuilder thirdPartyCodesBuilder = new StringBuilder();
+                Map<String, QueryStockQuote> thirdPartyCodeMap = new HashMap<>();
+
+                for (QueryStockQuote queryStockQuote : groupList) {
+                    String thirdPartyCode = stockCodeMappingConfig.getThirdPartyCode(queryStockQuote);
+                    if (thirdPartyCode != null) {
+                        if (thirdPartyCodesBuilder.length() > 0) {
+                            thirdPartyCodesBuilder.append(",");
+                        }
+                        thirdPartyCodesBuilder.append(thirdPartyCode);
+                        // 保存第三方代码与查询对象的映射
+                        thirdPartyCodeMap.put(thirdPartyCode, queryStockQuote);
+                    } else {
+                        log.warn("Invalid third party code for stock: {}", queryStockQuote.getStockCode());
+                    }
+                }
+
+                // 检查是否有有效的第三方代码可查询
+                if (thirdPartyCodesBuilder.length() == 0) {
+                    log.warn("No valid third party codes for batch query");
                     continue;
                 }
-                // 构建缓存键
-                String redisKey = getRedisKey(queryStockQuote);
-                // 尝试从缓存获取
-                StockQuote cachedQuote = redisService.getCacheObject(redisKey);
-                if (Objects.isNull(cachedQuote)) {
-                    log.error("缓存中没有该股票行情数据：{}", redisKey);
-                    continue;
-                }
-                // 构建缓存键
-                String redisChartKey = getRedisCharKey(queryStockQuote);
-                // 尝试从缓存获取
-                StockChartQuote  cachedChartQuote = redisService.getCacheObject(redisChartKey);
 
-                //如果没有图表数据需要查询
-                if (Objects.isNull(cachedChartQuote)||
-                        Objects.isNull(cachedChartQuote.getPrices())||
-                        cachedChartQuote.getPrices().length==0) {
-                    needQueryList.add(queryStockQuote);
-                } else {
-                    // 判断是否在开市时间
-                    boolean isTradingHour = timeRangeUtil.isInTradingHours(queryStockQuote.getMarketCode());
-                    log.debug("当前时间是否在 {} 市场开市时间内: {}", queryStockQuote.getMarketCode(), isTradingHour);
-                    // 非开市时间且缓存有数据，直接返回缓存数据
-                    if (!isTradingHour) {
-                        log.info("批量查询 - 非开市时间，直接返回缓存数据：{}", queryStockQuote.getStockCode());
-                        cachedQuote.setStockChartQuote(cachedChartQuote);
-                        resultList.add(cachedQuote);
-                        continue;
-                    }
-                    //如果有图表数据但是已经超过设置的时间间隔比如2分钟需要查询
-                    if (cachedChartQuote.getMsnDataChartTime() != null) {
-                        long diffMinutes = java.time.Duration.between(cachedChartQuote.getMsnDataChartTime(), currentTime).toMinutes();
-                        if (diffMinutes <= stockCodeMappingConfig.getFrequency()) {
-                            log.info("返回缓存股票行情数据（根据msnDataTime）：{}", queryStockQuote.getStockCode());
-                            cachedQuote.setStockChartQuote(cachedChartQuote);
-                            resultList.add(cachedQuote);
-                            continue;
-                        }
-                    }
-                    //需要查询图表数据的列表
-                    needQueryList.add(queryStockQuote);
-                }
-            }
+                // 构建批量请求URL
+                String url = String.format(stockCodeMappingConfig.getQuoteSummaryUrl(), stockCodeMappingConfig.getKey(), stockCodeMappingConfig.getId(), thirdPartyCodesBuilder, "Charts",type);
+                // 创建HTTP头
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Accept", "application/json");
 
-            // 如果有需要查询的股票
-            if (!needQueryList.isEmpty()) {
-                // 根据type对needQueryList进行分组
-                Map<String, List<QueryStockQuote>> groupedByType = needQueryList.stream()
-                        .collect(Collectors.groupingBy(QueryStockQuote::getType, Collectors.toList()));
+                // 发送请求
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-                // 遍历每个分组进行处理
-                for (Map.Entry<String, List<QueryStockQuote>> entry : groupedByType.entrySet()) {
-                    String type = entry.getKey();
-                    List<QueryStockQuote> groupList = entry.getValue();
+                // 解析响应
+                JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-                    // 构建批量查询参数
-                    StringBuilder thirdPartyCodesBuilder = new StringBuilder();
-                    Map<String, QueryStockQuote> thirdPartyCodeMap = new HashMap<>();
+                // 设置当前时间为msnDataTime和itickDataTime
+                LocalDateTime currentTime = LocalDateTime.now();
 
-                    for (QueryStockQuote queryStockQuote : groupList) {
-                        String thirdPartyCode = stockCodeMappingConfig.getThirdPartyCode(queryStockQuote);
-                        if (thirdPartyCode != null) {
-                            if (thirdPartyCodesBuilder.length() > 0) {
-                                thirdPartyCodesBuilder.append(",");
-                            }
-                            thirdPartyCodesBuilder.append(thirdPartyCode);
-                            // 保存第三方代码与查询对象的映射
-                            thirdPartyCodeMap.put(thirdPartyCode, queryStockQuote);
-                        } else {
-                            log.warn("Invalid third party code for stock: {}", queryStockQuote.getStockCode());
-                        }
-                    }
+                // 处理批量响应
+                if (rootNode != null && rootNode.isArray()) {
+                    for (int i = 0; i < rootNode.size(); i++) {
+                        JsonNode itemArray = rootNode.get(i);
+                        if (itemArray != null && itemArray.isArray() && !itemArray.isEmpty()) {
+                            JsonNode quoteData = itemArray.get(0);
+                            if (quoteData != null && quoteData.has("instrumentId")) {
+                                String instrumentId = quoteData.get("instrumentId").asText();
+                                QueryStockQuote queryStockQuote = thirdPartyCodeMap.get(instrumentId);
 
-                    // 检查是否有有效的第三方代码可查询
-                    if (thirdPartyCodesBuilder.length() == 0) {
-                        log.warn("No valid third party codes for batch query");
-                        continue;
-                    }
-
-                    // 构建批量请求URL
-                    String url = String.format(stockCodeMappingConfig.getQuoteSummaryUrl(), stockCodeMappingConfig.getKey(), stockCodeMappingConfig.getId(), thirdPartyCodesBuilder, "Charts",type);
-                    // 创建HTTP头
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set("Accept", "application/json");
-
-                    // 发送请求
-                    HttpEntity<String> entity = new HttpEntity<>(headers);
-                    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
-                    // 解析响应
-                    JsonNode rootNode = objectMapper.readTree(response.getBody());
-
-                    // 设置当前时间为msnDataTime和itickDataTime
-                    currentTime = LocalDateTime.now();
-
-                    // 处理批量响应
-                    if (rootNode != null && rootNode.isArray()) {
-                        for (int i = 0; i < rootNode.size(); i++) {
-                            JsonNode itemArray = rootNode.get(i);
-                            if (itemArray != null && itemArray.isArray() && !itemArray.isEmpty()) {
-                                JsonNode quoteData = itemArray.get(0);
-                                if (quoteData != null && quoteData.has("instrumentId")) {
-                                    String instrumentId = quoteData.get("instrumentId").asText();
-                                    QueryStockQuote queryStockQuote = thirdPartyCodeMap.get(instrumentId);
-
-                                    if (queryStockQuote != null) {
-                                        // 转换为StockQuote对象
-                                        StockChartQuote  cachedChartQuote = convertToStockChartQuote(quoteData, queryStockQuote);
-                                        // 设置msnDataTime
-                                        cachedChartQuote.setMsnDataChartTime(currentTime);
-                                        // 保存到缓存
-                                        String redisChartKey = getRedisCharKey(queryStockQuote);
-                                        redisService.setCacheObject(redisChartKey, cachedChartQuote);
-                                        // 构建缓存键
-                                        String redisKey = getRedisKey(queryStockQuote);
-                                        // 尝试从缓存获取
-                                        StockQuote cachedQuote = redisService.getCacheObject(redisKey);
-                                        cachedQuote.setStockChartQuote(cachedChartQuote);
-                                        // 添加到结果列表
-                                        resultList.add(cachedQuote);
-                                    }
+                                if (queryStockQuote != null) {
+                                    // 转换为StockQuote对象
+                                    StockChartQuote  cachedChartQuote = convertToStockChartQuote(quoteData, queryStockQuote);
+                                    // 设置msnDataTime
+                                    cachedChartQuote.setMsnDataChartTime(currentTime);
+                                    // 构建缓存键
+                                    String redisKey = getRedisKey(queryStockQuote);
+                                    // 尝试从缓存获取
+                                    StockQuote cachedQuote = redisService.getCacheObject(redisKey);
+                                    cachedQuote.setStockChartQuote(cachedChartQuote);
+                                    // 添加到结果列表
+                                    resultList.add(cachedQuote);
                                 }
                             }
                         }
@@ -672,8 +640,8 @@ public class MsnQuoteApiStrategy implements QuoteApiStrategy {
                     stockChartQuote.setPricesLow(parseBigDecimalArray(series.get("pricesLow")));
                     stockChartQuote.setVolumes(parseBigDecimalArray(series.get("volumes")));
 
-                    // 时间戳
-                    stockChartQuote.setTimeStamps(null);
+                    // 提取时间戳数组
+                    stockChartQuote.setTimeStamps(parseStringArray(series.get("timeStamps")));
 
                     // 提取最高价和最低价
                     stockChartQuote.setPriceHigh(getBigDecimalFromNode(series, "priceHigh"));
