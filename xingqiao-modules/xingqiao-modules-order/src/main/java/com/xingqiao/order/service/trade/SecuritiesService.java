@@ -1,12 +1,10 @@
-package com.xingqiao.order.service.trade.impl;
-
+package com.xingqiao.order.service.trade;
 
 import java.util.List;
 import com.xingqiao.common.core.utils.DateUtils;
 import org.springframework.stereotype.Service;
 import com.xingqiao.order.mapper.SecuritiesMapper;
 import com.xingqiao.order.domain.Securities;
-import com.xingqiao.order.service.trade.ISecuritiesService;
 
 import javax.annotation.Resource;
 
@@ -17,7 +15,7 @@ import javax.annotation.Resource;
  * @date 2025-09-21
  */
 @Service
-public class SecuritiesServiceImpl implements ISecuritiesService
+public class SecuritiesService
 {
     @Resource
     private SecuritiesMapper securitiesMapper;
@@ -28,7 +26,6 @@ public class SecuritiesServiceImpl implements ISecuritiesService
      * @param id 证券信息主键
      * @return 证券信息
      */
-    @Override
     public Securities selectSecuritiesById(String id)
     {
         return securitiesMapper.selectSecuritiesById(id);
@@ -38,9 +35,8 @@ public class SecuritiesServiceImpl implements ISecuritiesService
      * 查询证券信息列表
      *
      * @param securities 证券信息
-     * @return 证券信息
+     * @return 证券信息集合
      */
-    @Override
     public List<Securities> selectSecuritiesList(Securities securities)
     {
         return securitiesMapper.selectSecuritiesList(securities);
@@ -52,7 +48,6 @@ public class SecuritiesServiceImpl implements ISecuritiesService
      * @param securities 证券信息
      * @return 结果
      */
-    @Override
     public int insertSecurities(Securities securities)
     {
         securities.setCreateTime(DateUtils.getNowDate());
@@ -65,7 +60,6 @@ public class SecuritiesServiceImpl implements ISecuritiesService
      * @param securities 证券信息
      * @return 结果
      */
-    @Override
     public int updateSecurities(Securities securities)
     {
         securities.setUpdateTime(DateUtils.getNowDate());
@@ -75,10 +69,9 @@ public class SecuritiesServiceImpl implements ISecuritiesService
     /**
      * 批量删除证券信息
      *
-     * @param ids 需要删除的证券信息主键
+     * @param ids 需要删除的证券信息主键集合
      * @return 结果
      */
-    @Override
     public int deleteSecuritiesByIds(String[] ids)
     {
         return securitiesMapper.deleteSecuritiesByIds(ids);
@@ -90,7 +83,6 @@ public class SecuritiesServiceImpl implements ISecuritiesService
      * @param id 证券信息主键
      * @return 结果
      */
-    @Override
     public int deleteSecuritiesById(String id)
     {
         return securitiesMapper.deleteSecuritiesById(id);

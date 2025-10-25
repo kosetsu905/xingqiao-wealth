@@ -15,7 +15,7 @@ import com.xingqiao.common.log.annotation.Log;
 import com.xingqiao.common.log.enums.BusinessType;
 import com.xingqiao.common.security.annotation.RequiresPermissions;
 import com.xingqiao.order.domain.CustomerPositions;
-import com.xingqiao.order.service.trade.ICustomerPositionsService;
+import com.xingqiao.order.service.trade.CustomerPositionsService;
 import com.xingqiao.common.core.web.controller.BaseController;
 import com.xingqiao.common.core.web.domain.AjaxResult;
 import com.xingqiao.common.core.utils.poi.ExcelUtil;
@@ -32,7 +32,7 @@ import com.xingqiao.common.core.web.page.TableDataInfo;
 public class CustomerPositionsController extends BaseController
 {
     @Autowired
-    private ICustomerPositionsService customerPositionsService;
+    private CustomerPositionsService customerPositionsService;
 
     /**
      * 查询客户持仓列表

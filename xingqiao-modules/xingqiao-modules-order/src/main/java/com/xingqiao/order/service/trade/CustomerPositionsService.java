@@ -1,4 +1,4 @@
-package com.xingqiao.order.service.trade.impl;
+package com.xingqiao.order.service.trade;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.order.domain.CustomerPositions;
 import com.xingqiao.order.mapper.CustomerPositionsMapper;
-import com.xingqiao.order.service.trade.ICustomerPositionsService;
 
 /**
  * 客户持仓Service业务层处理
@@ -16,7 +15,7 @@ import com.xingqiao.order.service.trade.ICustomerPositionsService;
  * @date 2025-09-21
  */
 @Service
-public class CustomerPositionsServiceImpl implements ICustomerPositionsService
+public class CustomerPositionsService
 {
     @Autowired
     private CustomerPositionsMapper customerPositionsMapper;
@@ -27,7 +26,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param id 客户持仓主键
      * @return 客户持仓
      */
-    @Override
     public CustomerPositions selectCustomerPositionsById(String id)
     {
         return customerPositionsMapper.selectCustomerPositionsById(id);
@@ -39,7 +37,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param customerPositions 客户持仓
      * @return 客户持仓集合
      */
-    @Override
     public List<CustomerPositions> selectCustomerPositionsList(CustomerPositions customerPositions)
     {
         return customerPositionsMapper.selectCustomerPositionsList(customerPositions);
@@ -51,7 +48,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param customerPositions 客户持仓
      * @return 结果
      */
-    @Override
     public int insertCustomerPositions(CustomerPositions customerPositions)
     {
         customerPositions.setCreateTime(DateUtils.getNowDate());
@@ -64,7 +60,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param customerPositions 客户持仓
      * @return 结果
      */
-    @Override
     public int updateCustomerPositions(CustomerPositions customerPositions)
     {
         customerPositions.setUpdateTime(DateUtils.getNowDate());
@@ -77,7 +72,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param ids 需要删除的客户持仓主键集合
      * @return 结果
      */
-    @Override
     public int deleteCustomerPositionsByIds(String[] ids)
     {
         return customerPositionsMapper.deleteCustomerPositionsByIds(ids);
@@ -89,7 +83,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param id 客户持仓主键
      * @return 结果
      */
-    @Override
     public int deleteCustomerPositionsById(String id)
     {
         return customerPositionsMapper.deleteCustomerPositionsById(id);
@@ -101,7 +94,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param userId 用户ID
      * @return 客户持仓集合
      */
-    @Override
     public List<CustomerPositions> selectCustomerPositionsByUserId(String userId)
     {
         CustomerPositions customerPositions = new CustomerPositions();
@@ -115,7 +107,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param accountId 账户ID
      * @return 客户持仓集合
      */
-    @Override
     public List<CustomerPositions> selectCustomerPositionsByAccountId(String accountId)
     {
         CustomerPositions customerPositions = new CustomerPositions();
@@ -129,7 +120,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param securityId 证券ID
      * @return 客户持仓集合
      */
-    @Override
     public List<CustomerPositions> selectCustomerPositionsBySecurityId(String securityId)
     {
         CustomerPositions customerPositions = new CustomerPositions();
@@ -145,7 +135,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param positionType 持仓类型
      * @return 客户持仓
      */
-    @Override
     public CustomerPositions selectCustomerPositionByAccountSecurityType(String accountId, String securityId, Long positionType)
     {
         CustomerPositions customerPositions = new CustomerPositions();
@@ -162,7 +151,6 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
      * @param accountId 账户ID
      * @return 持仓价值总和
      */
-    @Override
     public BigDecimal calculateTotalPositionsValueByAccountId(String accountId) {
         // 获取该账户下的所有持仓
         List<CustomerPositions> positionsList = selectCustomerPositionsByAccountId(accountId);

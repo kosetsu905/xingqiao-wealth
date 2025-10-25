@@ -1,48 +1,46 @@
-package com.xingqiao.order.service.trade.impl;
+package com.xingqiao.order.service.trade;
 
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.order.domain.CustomerAccounts;
 import com.xingqiao.order.mapper.CustomerAccountsMapper;
-import com.xingqiao.order.service.trade.ICustomerAccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
-
-import com.xingqiao.common.core.constant.UserConstants;
-import com.xingqiao.common.core.text.Convert;
-import com.xingqiao.order.domain.CustomerAccounts;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 import java.util.List;
-
 
 @Slf4j
 @Service
-public class CustomerAccountsServiceImpl implements ICustomerAccountsService {
+public class CustomerAccountsService {
 
     @Autowired
     private CustomerAccountsMapper customerAccountsMapper;
 
-    @Override
+    /**
+     * 查询账户列表
+     */
     public List<CustomerAccounts> selectCustomerAccountsList(CustomerAccounts customerAccounts) {
         return customerAccountsMapper.selectCustomerAccountsList(customerAccounts);
     }
 
-    @Override
+    /**
+     * 根据ID获取账户
+     */
     public CustomerAccounts selectCustomerAccountsById(Long id) {
         return customerAccountsMapper.selectCustomerAccountsById(id);
     }
 
-    @Override
+    /**
+     * 根据用户ID获取账户
+     */
     public CustomerAccounts selectCustomerAccountsByUserId(Long userId) {
         return customerAccountsMapper.selectCustomerAccountsById(userId);
     }
 
-    @Override
+    /**
+     * 创建新账户（初始化余额为0）
+     */
     public int createAccount(Long userId, String currency, String remark) {
         if (userId == null || currency == null || currency.trim().isEmpty()) {
             throw new IllegalArgumentException("用户ID和币种不能为空");
@@ -70,19 +68,25 @@ public class CustomerAccountsServiceImpl implements ICustomerAccountsService {
         return customerAccountsMapper.insertCustomerAccounts(account);
     }
 
-    @Override
+    /**
+     * 更新账户信息（带乐观锁）
+     */
     public int updateCustomerAccounts(CustomerAccounts customerAccounts) {
         customerAccounts.setUpdateBy(SecurityUtils.getUsername());
         return customerAccountsMapper.updateCustomerAccounts(customerAccounts);
     }
 
-    @Override
+    /**
+     * 批量删除账户（ID数组）
+     */
     public int deleteCustomerAccountsByIds(Long[] ids) {
         // 直接调用 Mapper 删除
         return customerAccountsMapper.deleteCustomerAccountsByIds(ids);
     }
 
-    @Override
+    /**
+     * 冻结账户（状态 -> 2）
+     */
     public int freezeAccount(Long id) {
         CustomerAccounts account = selectCustomerAccountsById(id);
         if (account == null) {
@@ -96,7 +100,9 @@ public class CustomerAccountsServiceImpl implements ICustomerAccountsService {
         return updateCustomerAccounts(account);
     }
 
-    @Override
+    /**
+     * 解冻账户（状态 -> 1）
+     */
     public int unfreezeAccount(Long id) {
         CustomerAccounts account = selectCustomerAccountsById(id);
         if (account == null) {
@@ -110,7 +116,9 @@ public class CustomerAccountsServiceImpl implements ICustomerAccountsService {
         return updateCustomerAccounts(account);
     }
 
-    @Override
+    /**
+     * 销户（状态 -> 3）
+     */
     public int closeAccount(Long id) {
         CustomerAccounts account = selectCustomerAccountsById(id);
         if (account == null) {
