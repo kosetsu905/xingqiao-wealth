@@ -1,5 +1,6 @@
 package com.xingqiao.order.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -153,5 +154,31 @@ public class CustomerPositionsServiceImpl implements ICustomerPositionsService
         customerPositions.setPositionType(positionType);
         List<CustomerPositions> list = customerPositionsMapper.selectCustomerPositionsList(customerPositions);
         return list != null && !list.isEmpty() ? list.get(0) : null;
+    }
+    
+    /**
+     * 根据账户ID计算该账户下所有股票持仓的价值总和
+     * 
+     * @param accountId 账户ID
+     * @return 持仓价值总和
+     */
+    @Override
+    public BigDecimal calculateTotalPositionsValueByAccountId(String accountId) {
+        // 获取该账户下的所有持仓
+        List<CustomerPositions> positionsList = selectCustomerPositionsByAccountId(accountId);
+        
+        // 初始化总和为0
+        BigDecimal totalValue = BigDecimal.ZERO;
+        
+        // 遍历持仓列表，累加每个持仓的当前市值
+        if (positionsList != null && !positionsList.isEmpty()) {
+            for (CustomerPositions position : positionsList) {
+                if (position.getMarketValue() != null) {
+                    totalValue = totalValue.add(position.getMarketValue());
+                }
+            }
+        }
+        
+        return totalValue;
     }
 }

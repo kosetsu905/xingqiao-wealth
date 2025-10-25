@@ -1,5 +1,6 @@
 package com.xingqiao.order.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.xingqiao.order.domain.CustomerPositions;
 
@@ -92,4 +93,12 @@ public interface ICustomerPositionsService
      * @return 客户持仓
      */
     public CustomerPositions selectCustomerPositionByAccountSecurityType(String accountId, String securityId, Long positionType);
+    
+    /**
+     * 根据账户ID计算该账户下所有股票持仓的价值总和
+     * 
+     * @param accountId 账户ID
+     * @return 持仓价值总和
+     */
+    public BigDecimal calculateTotalPositionsValueByAccountId(String accountId);
 }
