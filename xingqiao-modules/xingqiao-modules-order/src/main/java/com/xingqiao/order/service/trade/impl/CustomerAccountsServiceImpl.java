@@ -1,9 +1,9 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade.impl;
 
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.order.domain.CustomerAccounts;
 import com.xingqiao.order.mapper.CustomerAccountsMapper;
-import com.xingqiao.order.service.ICustomerAccountsService;
+import com.xingqiao.order.service.trade.ICustomerAccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;

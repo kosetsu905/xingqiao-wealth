@@ -1,4 +1,4 @@
-package com.xingqiao.order.service;
+package com.xingqiao.order.service.trade;
 
 import java.math.BigDecimal;
 import java.util.List;

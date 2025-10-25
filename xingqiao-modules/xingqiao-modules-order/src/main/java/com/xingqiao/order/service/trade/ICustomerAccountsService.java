@@ -1,4 +1,4 @@
-package com.xingqiao.order.service;
+package com.xingqiao.order.service.trade;
 
 import com.xingqiao.order.domain.CustomerAccounts;
 import java.util.List;

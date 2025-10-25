@@ -1,4 +1,4 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade.impl;
 
 
 import java.util.List;
@@ -6,7 +6,7 @@ import com.xingqiao.common.core.utils.DateUtils;
 import org.springframework.stereotype.Service;
 import com.xingqiao.order.mapper.SecuritiesMapper;
 import com.xingqiao.order.domain.Securities;
-import com.xingqiao.order.service.ISecuritiesService;
+import com.xingqiao.order.service.trade.ISecuritiesService;
 
 import javax.annotation.Resource;
 

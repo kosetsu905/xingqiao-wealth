@@ -15,7 +15,7 @@ import com.xingqiao.common.log.annotation.Log;
 import com.xingqiao.common.log.enums.BusinessType;
 import com.xingqiao.common.security.annotation.RequiresPermissions;
 import com.xingqiao.order.domain.CustomerPositions;
-import com.xingqiao.order.service.ICustomerPositionsService;
+import com.xingqiao.order.service.trade.ICustomerPositionsService;
 import com.xingqiao.common.core.web.controller.BaseController;
 import com.xingqiao.common.core.web.domain.AjaxResult;
 import com.xingqiao.common.core.utils.poi.ExcelUtil;

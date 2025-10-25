@@ -1,4 +1,4 @@
-package com.xingqiao.order.service;
+package com.xingqiao.order.service.trade;
 
 import org.apache.rocketmq.client.producer.SendResult;
 import com.xingqiao.order.domain.CustomerTradeOrders;

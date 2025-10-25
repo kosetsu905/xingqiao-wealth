@@ -1,4 +1,4 @@
-package com.xingqiao.order.service;
+package com.xingqiao.order.service.trade;
 
 import java.util.List;
 import com.xingqiao.order.domain.CustomerAccountFundFlows;

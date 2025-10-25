@@ -1,4 +1,4 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.xingqiao.order.mapper.CustomerTradeOrdersMapper;
 import com.xingqiao.order.domain.CustomerTradeOrders;
-import com.xingqiao.order.service.ICustomerTradeOrdersService;
+import com.xingqiao.order.service.trade.ICustomerTradeOrdersService;
 import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.common.core.web.page.TableDataInfo;
 import com.github.pagehelper.PageHelper;

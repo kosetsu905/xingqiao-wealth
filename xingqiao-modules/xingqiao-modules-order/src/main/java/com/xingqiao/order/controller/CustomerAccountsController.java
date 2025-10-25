@@ -2,8 +2,8 @@ package com.xingqiao.order.controller;
 
 import com.xingqiao.common.core.text.Convert;
 import com.xingqiao.common.core.domain.R;
-import com.xingqiao.order.service.ICustomerAccountsService;
-import com.xingqiao.order.service.impl.CustomerAccountsServiceImpl;
+import com.xingqiao.order.service.trade.ICustomerAccountsService;
+import com.xingqiao.order.service.trade.impl.CustomerAccountsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

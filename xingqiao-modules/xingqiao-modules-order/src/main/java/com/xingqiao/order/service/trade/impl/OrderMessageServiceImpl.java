@@ -1,8 +1,8 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade.impl;
 
 import com.xingqiao.common.rocketmq.service.RocketMQMessageService;
 import com.xingqiao.order.domain.CustomerTradeOrders;
-import com.xingqiao.order.service.IOrderMessageService;
+import com.xingqiao.order.service.trade.IOrderMessageService;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

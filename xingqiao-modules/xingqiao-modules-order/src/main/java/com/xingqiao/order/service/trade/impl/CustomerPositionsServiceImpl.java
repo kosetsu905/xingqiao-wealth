@@ -1,4 +1,4 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.order.domain.CustomerPositions;
 import com.xingqiao.order.mapper.CustomerPositionsMapper;
-import com.xingqiao.order.service.ICustomerPositionsService;
+import com.xingqiao.order.service.trade.ICustomerPositionsService;
 
 /**
  * 客户持仓Service业务层处理

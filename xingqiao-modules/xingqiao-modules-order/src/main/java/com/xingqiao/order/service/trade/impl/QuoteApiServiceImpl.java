@@ -1,4 +1,4 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade.impl;
 
 import com.xingqiao.api.trade.domain.StockQuote;
 import com.xingqiao.api.trade.domain.QueryStockQuote;
