@@ -8,63 +8,63 @@
         <version>3.6.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-	
+
     <artifactId>xingqiao-modules-order</artifactId>
 
     <description>
         xingqiao-modules-order交易模块
     </description>
-	
+
     <dependencies>
-    	
+
     	<!-- SpringCloud Alibaba Nacos -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-        
+
         <!-- SpringCloud Alibaba Nacos Config -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
-        
+
     	<!-- SpringCloud Alibaba Sentinel -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
-        
+
     	<!-- SpringBoot Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        
+
         <!-- Mysql Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
-        
+
         <!-- xingqiao Common DataSource -->
         <dependency>
             <groupId>com.xingqiao</groupId>
             <artifactId>xingqiao-common-datasource</artifactId>
         </dependency>
-        
+
         <!-- xingqiao Common DataScope -->
         <dependency>
             <groupId>com.xingqiao</groupId>
             <artifactId>xingqiao-common-datascope</artifactId>
         </dependency>
-        
+
         <!-- xingqiao Common Log -->
         <dependency>
             <groupId>com.xingqiao</groupId>
             <artifactId>xingqiao-common-log</artifactId>
         </dependency>
-        
+
         <!-- xingqiao Common Swagger -->
         <dependency>
             <groupId>com.xingqiao</groupId>
@@ -99,7 +99,7 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.68</version>
         </dependency>
-        
+
         <!-- Alibaba FastJSON -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -113,35 +113,27 @@
             <version>1.68</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.futu.openapi</groupId>
-            <artifactId>futu-api</artifactId>
-            <version>9.4.5408</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/futu-api-9.4.5408.jar</systemPath>
-        </dependency>
-
         <!-- 可选：Lombok 简化实体类代码 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        
+
         <!-- xingqiao Common RocketMQ -->
         <dependency>
             <groupId>com.xingqiao</groupId>
             <artifactId>xingqiao-common-rocketmq</artifactId>
             <version>3.6.6</version>
         </dependency>
-        
+
         <!-- xingqiao API Trade -->
         <dependency>
             <groupId>com.xingqiao</groupId>
             <artifactId>xingqiao-api-trade</artifactId>
             <version>3.6.6</version>
         </dependency>
-        
+
         <!-- Spring Boot Test 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -149,33 +141,33 @@
             <version>2.7.18</version>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- JUnit Jupiter 单元测试框架 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- JUnit Platform Launcher -->
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Spring Boot Redis Starter -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-        
+
         <!-- Commons Pool2 用于Redis连接池 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-        
+
         <!-- 用于Redis序列化 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -186,6 +178,29 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.longportapp</groupId>
+            <artifactId>openapi-sdk</artifactId>
+            <version>3.0.17</version>
+        </dependency>
+
+        <!--需要打包本地jar包
+mvn install:install-file -Dfile=lib/futu-api-9.4.5408.jar -DgroupId=com.futu.openapi -DartifactId=futu-api -Dversion=9.4.5408 -Dpackaging=jar
+-->
+<!--        <dependency>-->
+<!--            <groupId>com.futu.openapi</groupId>-->
+<!--            <artifactId>futu-api</artifactId>-->
+<!--            <version>9.4.5408</version>-->
+<!--        </dependency>-->
+<!--        -->
+        <dependency>
+            <groupId>com.xingqiao</groupId>
+            <artifactId>futu-api</artifactId>
+            <version>9.4.5408</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/futu-api-9.4.5408.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -204,5 +219,5 @@
             </plugin>
         </plugins>
     </build>
-   
+
 </project>
