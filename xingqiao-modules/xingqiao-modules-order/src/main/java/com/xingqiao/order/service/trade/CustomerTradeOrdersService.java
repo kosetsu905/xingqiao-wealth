@@ -1,4 +1,4 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.xingqiao.order.mapper.CustomerTradeOrdersMapper;
 import com.xingqiao.order.domain.CustomerTradeOrders;
-import com.xingqiao.order.service.ICustomerTradeOrdersService;
 import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.common.core.web.page.TableDataInfo;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 
 /**
  * 交易订单Service业务层处理
@@ -19,7 +16,7 @@ import com.github.pagehelper.PageInfo;
  * @date 2025-09-21
  */
 @Service
-public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersService
+public class CustomerTradeOrdersService
 {
     @Autowired
     private CustomerTradeOrdersMapper customerTradeOrdersMapper;
@@ -30,7 +27,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param id 交易订单主键
      * @return 交易订单
      */
-    @Override
     public CustomerTradeOrders selectCustomerTradeOrdersById(String id)
     {
         return customerTradeOrdersMapper.selectCustomerTradeOrdersById(id);
@@ -42,7 +38,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param customerTradeOrders 交易订单
      * @return 交易订单集合
      */
-    @Override
     public List<CustomerTradeOrders> selectCustomerTradeOrdersList(CustomerTradeOrders customerTradeOrders)
     {
         return customerTradeOrdersMapper.selectCustomerTradeOrdersList(customerTradeOrders);
@@ -54,7 +49,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param customerTradeOrders 交易订单
      * @return 交易订单分页数据
      */
-    @Override
     public TableDataInfo selectCustomerTradeOrdersPage(CustomerTradeOrders customerTradeOrders)
     {
         List<CustomerTradeOrders> list = customerTradeOrdersMapper.selectCustomerTradeOrdersList(customerTradeOrders);
@@ -67,7 +61,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param userId 用户ID
      * @return 交易订单集合
      */
-    @Override
     public List<CustomerTradeOrders> selectCustomerTradeOrdersByUserId(String userId)
     {
         CustomerTradeOrders customerTradeOrders = new CustomerTradeOrders();
@@ -81,7 +74,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param accountId 账户ID
      * @return 交易订单集合
      */
-    @Override
     public List<CustomerTradeOrders> selectCustomerTradeOrdersByAccountId(String accountId)
     {
         CustomerTradeOrders customerTradeOrders = new CustomerTradeOrders();
@@ -95,7 +87,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param securityId 证券ID
      * @return 交易订单集合
      */
-    @Override
     public List<CustomerTradeOrders> selectCustomerTradeOrdersBySecurityId(String securityId)
     {
         CustomerTradeOrders customerTradeOrders = new CustomerTradeOrders();
@@ -109,7 +100,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param status 订单状态
      * @return 交易订单集合
      */
-    @Override
     public List<CustomerTradeOrders> selectCustomerTradeOrdersByStatus(Long status)
     {
         CustomerTradeOrders customerTradeOrders = new CustomerTradeOrders();
@@ -123,7 +113,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param customerTradeOrders 交易订单
      * @return 结果
      */
-    @Override
     public int insertCustomerTradeOrders(CustomerTradeOrders customerTradeOrders)
     {
         customerTradeOrders.setCreateTime(DateUtils.getNowDate());
@@ -136,7 +125,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param customerTradeOrders 交易订单
      * @return 结果
      */
-    @Override
     public int updateCustomerTradeOrders(CustomerTradeOrders customerTradeOrders)
     {
         customerTradeOrders.setUpdateTime(DateUtils.getNowDate());
@@ -149,7 +137,6 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param ids 需要删除的交易订单主键集合
      * @return 结果
      */
-    @Override
     public int deleteCustomerTradeOrdersByIds(String[] ids)
     {
         return customerTradeOrdersMapper.deleteCustomerTradeOrdersByIds(ids);
@@ -161,12 +148,10 @@ public class CustomerTradeOrdersServiceImpl implements ICustomerTradeOrdersServi
      * @param id 交易订单主键
      * @return 结果
      */
-    @Override
     public int deleteCustomerTradeOrdersById(String id) {
         return customerTradeOrdersMapper.deleteCustomerTradeOrdersById(id);
     }
     
-    @Override
     public BigDecimal getTodayProfitLossByUserId(String userId) {
         // 初始化今日盈亏为0
         BigDecimal todayProfitLoss = BigDecimal.ZERO;

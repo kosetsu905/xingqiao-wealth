@@ -1,11 +1,10 @@
-package com.xingqiao.order.service.impl;
+package com.xingqiao.order.service.trade;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.xingqiao.order.mapper.CustomerAccountFundFlowsMapper;
 import com.xingqiao.order.domain.CustomerAccountFundFlows;
-import com.xingqiao.order.service.ICustomerAccountFundFlowsService;
 import com.xingqiao.common.core.utils.DateUtils;
 import com.xingqiao.common.core.web.page.TableDataInfo;
 import com.github.pagehelper.PageHelper;
@@ -18,7 +17,7 @@ import com.github.pagehelper.PageInfo;
  * @date 2025-09-21
  */
 @Service
-public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFundFlowsService
+public class CustomerAccountFundFlowsService
 {
     @Autowired
     private CustomerAccountFundFlowsMapper customerAccountFundFlowsMapper;
@@ -29,7 +28,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param id 账户资金流水主键
      * @return 账户资金流水
      */
-    @Override
     public CustomerAccountFundFlows selectCustomerAccountFundFlowsById(String id)
     {
         return customerAccountFundFlowsMapper.selectCustomerAccountFundFlowsById(id);
@@ -41,7 +39,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param customerAccountFundFlows 账户资金流水
      * @return 账户资金流水集合
      */
-    @Override
     public List<CustomerAccountFundFlows> selectCustomerAccountFundFlowsList(CustomerAccountFundFlows customerAccountFundFlows)
     {
         return customerAccountFundFlowsMapper.selectCustomerAccountFundFlowsList(customerAccountFundFlows);
@@ -53,7 +50,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param customerAccountFundFlows 账户资金流水
      * @return 账户资金流水分页数据
      */
-    @Override
     public TableDataInfo selectCustomerAccountFundFlowsPage(CustomerAccountFundFlows customerAccountFundFlows)
     {
         List<CustomerAccountFundFlows> list = customerAccountFundFlowsMapper.selectCustomerAccountFundFlowsList(customerAccountFundFlows);
@@ -66,7 +62,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param userId 用户ID
      * @return 账户资金流水集合
      */
-    @Override
     public List<CustomerAccountFundFlows> selectCustomerAccountFundFlowsByUserId(String userId)
     {
         CustomerAccountFundFlows customerAccountFundFlows = new CustomerAccountFundFlows();
@@ -80,7 +75,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param accountId 账户ID
      * @return 账户资金流水集合
      */
-    @Override
     public List<CustomerAccountFundFlows> selectCustomerAccountFundFlowsByAccountId(String accountId)
     {
         CustomerAccountFundFlows customerAccountFundFlows = new CustomerAccountFundFlows();
@@ -94,7 +88,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param flowType 流水类型
      * @return 账户资金流水集合
      */
-    @Override
     public List<CustomerAccountFundFlows> selectCustomerAccountFundFlowsByFlowType(Long flowType)
     {
         CustomerAccountFundFlows customerAccountFundFlows = new CustomerAccountFundFlows();
@@ -108,7 +101,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param customerAccountFundFlows 账户资金流水
      * @return 结果
      */
-    @Override
     public int insertCustomerAccountFundFlows(CustomerAccountFundFlows customerAccountFundFlows)
     {
         customerAccountFundFlows.setCreateTime(DateUtils.getNowDate());
@@ -121,7 +113,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param customerAccountFundFlows 账户资金流水
      * @return 结果
      */
-    @Override
     public int updateCustomerAccountFundFlows(CustomerAccountFundFlows customerAccountFundFlows)
     {
         customerAccountFundFlows.setUpdateTime(DateUtils.getNowDate());
@@ -134,7 +125,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param ids 需要删除的账户资金流水主键集合
      * @return 结果
      */
-    @Override
     public int deleteCustomerAccountFundFlowsByIds(String[] ids)
     {
         return customerAccountFundFlowsMapper.deleteCustomerAccountFundFlowsByIds(ids);
@@ -146,7 +136,6 @@ public class CustomerAccountFundFlowsServiceImpl implements ICustomerAccountFund
      * @param id 账户资金流水主键
      * @return 结果
      */
-    @Override
     public int deleteCustomerAccountFundFlowsById(String id)
     {
         return customerAccountFundFlowsMapper.deleteCustomerAccountFundFlowsById(id);

@@ -23,12 +23,12 @@ import com.xingqiao.common.log.enums.BusinessType;
 import com.xingqiao.common.security.annotation.RequiresPermissions;
 import com.xingqiao.common.security.utils.SecurityUtils;
 import com.xingqiao.order.domain.CustomerTradeOrders;
-import com.xingqiao.order.service.ICustomerTradeOrdersService;
+import com.xingqiao.order.service.trade.CustomerTradeOrdersService;
 import com.xingqiao.common.core.web.controller.BaseController;
 import com.xingqiao.common.core.web.domain.AjaxResult;
 import com.xingqiao.common.core.utils.poi.ExcelUtil;
 import com.xingqiao.common.core.web.page.TableDataInfo;
-import com.xingqiao.order.service.IOrderMessageService;
+import com.xingqiao.order.service.trade.IOrderMessageService;
 import com.xingqiao.common.rocketmq.service.RocketMQMessageService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomerTradeOrdersController extends BaseController
 {
     @Autowired
-    private ICustomerTradeOrdersService customerTradeOrdersService;
+    private CustomerTradeOrdersService customerTradeOrdersService;
     
     @Autowired
     private RocketMQMessageService rocketMQMessageService;
