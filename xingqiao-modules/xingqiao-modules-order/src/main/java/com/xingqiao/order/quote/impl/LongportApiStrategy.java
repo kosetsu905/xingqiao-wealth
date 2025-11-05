@@ -168,7 +168,7 @@ public class LongportApiStrategy implements QuoteApiStrategy {
             String redisKey = getRedisKey(queryStockQuote);
             // 尝试从Redis Hash中获取缓存数据
             StockQuote cachedQuote = redisService.getCacheObject(redisKey);
-
+            LocalDateTime currentTime = LocalDateTime.now();
             // 检查缓存是否有效
             if (!Objects.isNull(cachedQuote)) {
                 // 判断是否在开市时间
@@ -182,19 +182,17 @@ public class LongportApiStrategy implements QuoteApiStrategy {
                 }
 
                 // 开市时间，继续检查缓存是否需要更新，2分钟内返回缓存数据，2分钟可以nacos动态配置
-                if (cachedQuote.getMsnDataTime() != null) {
-                    LocalDateTime currentTime = LocalDateTime.now();
-                    // 行情时间内，继续检查缓存是否过期（2分钟）
-                    if (cachedQuote.getMsnDataTime() != null) {
-                        // 计算缓存时间与当前时间的差值（2分钟）
-                        long cacheDiffMinutes = java.time.Duration.between(cachedQuote.getLongPortDataTime(), currentTime).toMinutes();
-                        if (cacheDiffMinutes < stockCodeMappingConfig.getFrequency()) {
-                            // 缓存未过期（2分钟内），返回缓存数据
-                            log.info("从Hash缓存获取股票行情（缓存未过期）：{}", queryStockQuote.getStockCode());
-                            return R.restResult(cachedQuote, 201, "获取股票行情成功");
-                        } else {
-                            log.info("缓存已过期（超过2分钟），重新获取股票行情：{}", queryStockQuote.getStockCode());
-                        }
+
+                // 行情时间内，继续检查缓存是否过期（2分钟）
+                if (cachedQuote.getLongPortDataTime() != null) {
+                    // 计算缓存时间与当前时间的差值（2分钟）
+                    long cacheDiffMinutes = java.time.Duration.between(cachedQuote.getLongPortDataTime(), currentTime).toMinutes();
+                    if (cacheDiffMinutes < stockCodeMappingConfig.getFrequency()) {
+                        // 缓存未过期（2分钟内），返回缓存数据
+                        log.info("从Hash缓存获取股票行情（缓存未过期）：{}", queryStockQuote.getStockCode());
+                        return R.restResult(cachedQuote, 201, "获取股票行情成功");
+                    } else {
+                        log.info("缓存已过期（超过2分钟），重新获取股票行情：{}", queryStockQuote.getStockCode());
                     }
                 }
             }
@@ -202,8 +200,10 @@ public class LongportApiStrategy implements QuoteApiStrategy {
             // 缓存未命中时调用实时行情方法
             R<StockQuote> realTimeResult = getStockCurrentQuote(queryStockQuote);
             if (R.isSuccess(realTimeResult)&&realTimeResult.getData()!=null){
+                StockQuote stockQuote=realTimeResult.getData();
+                stockQuote.setLongPortDataTime(currentTime);
                 //保存获取的股票数据到Redis
-                redisService.setCacheObject(redisKey, realTimeResult.getData());
+                redisService.setCacheObject(redisKey, stockQuote);
             }
             log.info("获取股票行情成功并保存到Hash缓存：{}", queryStockQuote.getStockCode());
             return realTimeResult;
@@ -271,7 +271,7 @@ public class LongportApiStrategy implements QuoteApiStrategy {
                         continue;
                     }
                     //判断msndateTime是否在2分钟内，如果是返回缓存数据,不是重新去请求数据
-                    if (cachedQuote.getMsnDataTime() != null) {
+                    if (cachedQuote.getLongPortDataTime() != null) {
                         long diffMinutes = java.time.Duration.between(cachedQuote.getLongPortDataTime(), currentTime).toMinutes();
                         if (diffMinutes <= stockCodeMappingConfig.getFrequency()) {
                             log.info("返回缓存股票行情数据（根据msnDataTime）：{}", queryStockQuote.getStockCode());
