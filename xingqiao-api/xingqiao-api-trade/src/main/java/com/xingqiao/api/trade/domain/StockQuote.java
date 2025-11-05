@@ -176,4 +176,10 @@ public class StockQuote extends BaseStockQuote  {
      *  itick数据源更新时间
      */
     private LocalDateTime itickDataTime;
+
+
+    /**
+     *  longPort数据源更新时间
+     */
+    private LocalDateTime longPortDataTime;
 }

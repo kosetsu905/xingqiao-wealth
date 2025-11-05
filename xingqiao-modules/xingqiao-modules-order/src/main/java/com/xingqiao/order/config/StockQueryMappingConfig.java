@@ -47,4 +47,10 @@ public class StockQueryMappingConfig {
      */
     private boolean msnGetStockQuoteListSwitch = true;
 
+
+    /**
+     *  longPort查询批量股票行情开关
+     */
+    private boolean longPortGetStockQuoteListSwitch = true;
+
 }

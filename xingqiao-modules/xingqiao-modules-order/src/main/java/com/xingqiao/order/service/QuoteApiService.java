@@ -8,6 +8,15 @@ import java.util.List;
 
 public interface QuoteApiService {
 
+
+    /**
+     * 获取 单只实时股票行情
+     * 不保存缓存
+     * @return 股票行情信息
+     */
+    R<StockQuote> getStockCurrentQuote(QueryStockQuote queryStockQuote);
+
+
     /**
      * 获取单只股票行情
      * @return 股票行情信息

@@ -11,7 +11,7 @@ import com.longport.trade.*;
 public class LongportappTest {
 
     public static void main(String[] args) throws OpenApiException {
-        test3();
+        test2();
     }
 
     private static void test3() throws OpenApiException {
