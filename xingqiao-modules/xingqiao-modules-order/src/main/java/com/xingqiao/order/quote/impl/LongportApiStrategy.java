@@ -109,6 +109,7 @@ public class LongportApiStrategy implements QuoteApiStrategy {
         StockQuote stockQuote = new StockQuote();
 
         // 设置股票基本信息
+        stockQuote.setProductCode(queryStockQuote.getProductCode());
         stockQuote.setStockCode(queryStockQuote.getStockCode());
         stockQuote.setMarketCode(queryStockQuote.getMarketCode());
 
