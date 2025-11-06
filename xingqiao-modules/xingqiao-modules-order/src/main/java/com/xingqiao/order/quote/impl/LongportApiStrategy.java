@@ -20,10 +20,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.xingqiao.order.config.TradeConstants.getRedisKey;
 
@@ -75,7 +75,7 @@ public class LongportApiStrategy implements QuoteApiStrategy {
             // 使用新实现的getQuoteSync方法获取行情
             SecurityQuote[] quoteArray = getQuoteSync(new String[] { fullSymbol });
 
-            if (quoteArray == null || quoteArray.length == 0) {
+            if (quoteArray.length == 0) {
                 log.warn("未获取到股票 {} 的行情数据", fullSymbol);
                 return R.fail("未获取到行情数据");
             }
@@ -286,45 +286,51 @@ public class LongportApiStrategy implements QuoteApiStrategy {
 
             // 如果有需要查询的股票
             if (!needQueryList.isEmpty()) {
-                // 创建用于存储所有异步任务的列表
-                List<CompletableFuture<R<StockQuote>>> futures = new ArrayList<>();
-
-                // 为每个股票创建异步查询任务
-                for (QueryStockQuote query : list) {
-                    if (query != null && query.getStockCode() != null) {
-                        // 创建异步任务获取单个股票行情
-                        CompletableFuture<R<StockQuote>> future = CompletableFuture.supplyAsync(() -> {
-                            try {
-                                // 使用已实现的单只股票行情获取方法
-                                return getStockQuote(query);
-                            } catch (Exception e) {
-                                log.error("异步获取股票 {} 行情失败", query.getStockCode(), e);
-                                return R.fail("获取股票 " + query.getStockCode() + " 行情失败: " + e.getMessage());
-                            }
-                        });
-                        futures.add(future);
+                try {
+                    // 优化1：直接创建指定大小的数组，避免中间List
+                    String[] fullSymbols = new String[needQueryList.size()];
+                    for (int i = 0; i < needQueryList.size(); i++) {
+                        QueryStockQuote queryStockQuote = needQueryList.get(i);
+                        fullSymbols[i] = queryStockQuote.getStockCode() + "." + queryStockQuote.getMarketCode();
                     }
-                }
 
+                    // 使用新实现的getQuoteSync方法获取行情
+                    SecurityQuote[] quoteArray = getQuoteSync(fullSymbols);
 
-                // 等待所有异步任务完成
-                CompletableFuture<Void> allOf = CompletableFuture.allOf(
-                        futures.toArray(new CompletableFuture[0])
-                );
+                    if (quoteArray.length == 0) {
+                        log.warn("未获取到股票 {} 的行情数据", Arrays.toString(fullSymbols));
+                        return R.fail("未获取到行情数据");
+                    }
 
-                // 收集成功的结果
-                allOf.join();
-                for (CompletableFuture<R<StockQuote>> future : futures) {
-                    try {
-                        R<StockQuote> result = future.get();
-                        if (R.isSuccess(result) && result.getData() != null) {
-                            resultList.add(result.getData());
-                        } else {
-                            log.warn("单个股票行情获取失败: {}", result.getMsg());
+                    // 优化2：预先构建映射关系，避免在循环内重复过滤
+                    Map<String, QueryStockQuote> symbolToQueryMap = needQueryList.stream()
+                            .collect(Collectors.toMap(
+                                    item -> item.getMarketCode() + "." + item.getStockCode(),
+                                    Function.identity()
+                            ));
+
+                    // 优化3：使用增强for循环提高可读性
+                    for (SecurityQuote securityQuote : quoteArray) {
+                        String symbolCode = securityQuote.getSymbol();
+                        QueryStockQuote matchingQuery = symbolToQueryMap.get(symbolCode);
+
+                        if (matchingQuery != null) {
+                            StockQuote stockQuote = convertToStockQuote(securityQuote, matchingQuery);
+                            stockQuote.setLongPortDataTime(currentTime);
+
+                            // 保存到缓存
+                            String hashKey = getRedisKey(matchingQuery);
+                            redisService.setCacheObject(hashKey, stockQuote);
+                            resultList.add(stockQuote);
+
+                            log.info("获取股票实时行情成功: {} -> {}", symbolCode, securityQuote.getOpen());
                         }
-                    } catch (Exception e) {
-                        log.error("获取异步结果异常", e);
                     }
+
+                    return R.ok(resultList);
+                } catch (Exception e) {
+                    log.error("获取股票实时行情失败", e);
+                    return R.fail("获取行情失败: " + e.getMessage());
                 }
             }
             log.info("批量获取股票行情完成，成功数量: {}", resultList.size());
