@@ -305,7 +305,7 @@ public class LongportApiStrategy implements QuoteApiStrategy {
                     // 优化2：预先构建映射关系，避免在循环内重复过滤
                     Map<String, QueryStockQuote> symbolToQueryMap = needQueryList.stream()
                             .collect(Collectors.toMap(
-                                    item -> item.getMarketCode() + "." + item.getStockCode(),
+                                    item -> item.getStockCode() + "." + item.getMarketCode(),
                                     Function.identity()
                             ));
 
