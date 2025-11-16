@@ -62,6 +62,8 @@ public class CustomerAccountsService {
         account.setCreditBalance(BigDecimal.ZERO);
         account.setVersion(0L);
         account.setStatus(1L); // 正常
+        account.setAccountType(1); // 默认实盘账户
+        account.setAccountName(null); // 账户名称默认为空
         account.setRemark(remark);
         account.setCreateBy(SecurityUtils.getUsername()); // 若依当前登录用户
 

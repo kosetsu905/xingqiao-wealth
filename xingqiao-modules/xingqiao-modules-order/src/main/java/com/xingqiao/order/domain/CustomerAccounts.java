@@ -59,6 +59,14 @@ public class CustomerAccounts extends BaseEntity
     /** 状态: 1-正常, 2-冻结, 3-销户 */
     @Excel(name = "状态: 1-正常, 2-冻结, 3-销户")
     private Long status;
+    
+    /** 账户类型: 1-实盘账户, 2-虚拟账户 */
+    @Excel(name = "账户类型")
+    private Integer accountType;
+    
+    /** 账户名称 */
+    @Excel(name = "账户名称")
+    private String accountName;
 
     @Override
     public String toString() {
@@ -78,6 +86,8 @@ public class CustomerAccounts extends BaseEntity
                 .append("createTime", getCreateTime())
                 .append("updateBy", getUpdateBy())
                 .append("updateTime", getUpdateTime())
+                .append("accountType", getAccountType())
+                .append("accountName", getAccountName())
                 .toString();
     }
 }
