@@ -29,6 +29,8 @@ public interface QuoteApiStrategy {
      */
     R<StockQuote> getStockQuote(QueryStockQuote queryStockQuote);
 
+
+
     /**
      * 批量获取股票行情
      * @return 股票行情列表
