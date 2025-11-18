@@ -22,28 +22,12 @@ import java.util.List;
 public interface RemoteTradeService {
 
     /**
-     * 查询交易详情
-     * @param tradeId 交易ID
-     * @return 交易详情
-     */
-    @GetMapping("/api/trade/detail")
-    R getTradeDetail(@RequestParam("tradeId") Long tradeId, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
-
-    /**
      * 创建交易订单
      * @param tradeRequest 交易请求参数
      * @return 交易结果
      */
     @PostMapping("/api/trade/create")
     R createTrade(@RequestBody TradeRequest tradeRequest, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
-
-    /**
-     * 取消交易订单
-     * @param tradeId 交易ID
-     * @return 取消结果
-     */
-    @PostMapping("/api/trade/cancel")
-    R cancelTrade(@RequestParam("tradeId") Long tradeId, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
 
 
     /**

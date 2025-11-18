@@ -23,48 +23,24 @@ public class TradeApiServiceImpl implements TradeApiService {
     private TradeApiStrategyFactory tradeApiStrategyFactory;
     
     /**
-     * 查询交易详情
-     * @param tradeId 交易ID
-     * @return 交易详情
-     */
-    @Override
-    public R getTradeDetail(Long tradeId) {
-        try {
-            log.info("查询交易详情: tradeId={}", tradeId);
-            // 获取默认交易策略
-            TradeApiStrategy strategy = tradeApiStrategyFactory.getDefaultStrategy();
-            return strategy.getTradeDetail(tradeId);
-        } catch (Exception e) {
-            log.error("查询交易详情失败: {}", e.getMessage(), e);
-            return R.fail("查询交易详情失败: " + e.getMessage());
-        }
-    }
-    
-    /**
      * 创建交易订单
+     * @param userId 当前登录用户ID
      * @param tradeRequest 交易请求参数
      * @return 交易结果
      */
     @Override
-    public R createTrade(TradeRequest tradeRequest) {
+    public R createTrade(Long userId, TradeRequest tradeRequest) {
         try {
-            log.info("创建交易订单: request={}", tradeRequest);
+            log.info("创建交易订单: userId={}, request={}", userId, tradeRequest);
+            
+            // userId不再设置到TradeRequest中，直接传递给策略方法
+            
             // 获取默认交易策略
             TradeApiStrategy strategy = tradeApiStrategyFactory.getDefaultStrategy();
-            return strategy.createTrade(tradeRequest);
+            return strategy.createTrade(userId, tradeRequest);
         } catch (Exception e) {
             log.error("创建交易订单失败: {}", e.getMessage(), e);
             return R.fail("创建交易订单失败: " + e.getMessage());
         }
-    }
-    
-    /**
-     * 取消交易订单
-     * @param tradeId 交易ID
-     * @return 取消结果
-     */
-    @Override
-    public R cancelTrade(Long tradeId) {
-        return R.fail("取消交易订单功能暂未实现");
     }
 }
