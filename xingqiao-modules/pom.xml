@@ -10,7 +10,6 @@
 
     <modules>
         <module>xingqiao-modules-system</module>
-        <module>xingqiao-modules-coin</module>
         <module>xingqiao-modules-gen</module>
         <module>xingqiao-modules-job</module>
         <module>xingqiao-modules-file</module>
