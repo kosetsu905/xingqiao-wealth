@@ -31,7 +31,7 @@ import static com.xingqiao.order.config.TradeConstants.getRedisKey;
  * LongPort行情API策略实现类
  * 实现QuoteApiStrategy接口，使用LongPort SDK提供行情服务
  * 集成Spring Boot生命周期管理，支持行情订阅和实时数据获取
- *
+ * https://open.longportapp.cn/
  * @author Java后端架构师
  */
 @Slf4j
@@ -434,7 +434,7 @@ public class LongportApiStrategy implements QuoteApiStrategy {
             }
         });
     }
-    
+
     /**
      * 销毁LongPort行情服务
      * 在Spring容器关闭时自动执行，确保资源正确释放
