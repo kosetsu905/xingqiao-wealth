@@ -27,17 +27,13 @@ public class TradeApiStrategyFactory {
 
     /**
      * 初始化策略工厂
-     * 将所有的TradeApiStrategy实现放入Map中，并设置默认策略
+     * 设置默认策略
      */
     @PostConstruct
     public void init() {
-        for (TradeApiStrategy strategy : tradeApiStrategies) {
-            String strategyName = strategy.getStrategyName();
-            strategyMap.put(strategyName, strategy);
-            // 设置默认策略
-            if ("default".equals(strategyName)) {
-                defaultStrategy = strategy;
-            }
+        // 设置默认策略为第一个可用的策略
+        if (!tradeApiStrategies.isEmpty()) {
+            defaultStrategy = tradeApiStrategies.iterator().next();
         }
     }
 

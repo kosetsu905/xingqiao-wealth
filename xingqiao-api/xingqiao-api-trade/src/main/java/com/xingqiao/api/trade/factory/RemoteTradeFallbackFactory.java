@@ -29,18 +29,8 @@ public class RemoteTradeFallbackFactory implements FallbackFactory<RemoteTradeSe
         return new RemoteTradeService()
         {
             @Override
-            public R getTradeDetail(Long tradeId, String source) {
-                return null;
-            }
-
-            @Override
             public R createTrade(TradeRequest tradeRequest, String source) {
-                return null;
-            }
-
-            @Override
-            public R cancelTrade(Long tradeId, String source) {
-                return null;
+                return R.fail("交易服务调用失败：创建订单功能不可用");
             }
 
             @Override

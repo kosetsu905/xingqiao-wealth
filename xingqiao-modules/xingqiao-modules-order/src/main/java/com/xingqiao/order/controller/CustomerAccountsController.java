@@ -214,42 +214,42 @@ public class CustomerAccountsController extends BaseController {
         }
     }
 
-//    /**
-//     * 获取当前登录用户信息（通过token）
-//     */
-//    @GetMapping("/my/info")
-//    public R<Map<String, Object>> getMyInfo() {
-//        try {
-//            // 获取完整的登录用户信息
-//            LoginUser loginUser = SecurityUtils.getLoginUser();
-//            if (loginUser == null) {
-//                return R.fail("用户未登录");
-//            }
-//
-//            // 构建返回数据，避免直接返回敏感信息
-//            Map<String, Object> userInfo = new HashMap<>();
-//            userInfo.put("userId", loginUser.getUserid());
-//            userInfo.put("username", loginUser.getUsername());
-//            userInfo.put("loginTime", loginUser.getLoginTime());
-//            userInfo.put("ipaddr", loginUser.getIpaddr());
-//            //userInfo.put("userAgent", loginUser.getUserAgent());
-//
-//            // 查询用户的账户信息
-//            CustomerAccounts account = customerAccountsService.selectCustomerAccountsByUserId(loginUser.getUserid());
-//            if (account != null) {
-//                Map<String, Object> accountInfo = new HashMap<>();
-//                accountInfo.put("id", account.getId());
-//                accountInfo.put("currency", account.getCurrency());
-//                accountInfo.put("availableBalance", account.getAvailableBalance());
-//                accountInfo.put("totalBalance", account.getTotalBalance());
-//                accountInfo.put("status", account.getStatus());
-//                userInfo.put("account", accountInfo);
-//            }
-//
-//            return R.ok(userInfo);
-//        } catch (Exception e) {
-//            log.error("获取用户信息异常", e);
-//            return R.fail("获取用户信息失败：" + e.getMessage());
-//        }
-//    }
+   /**
+    * 获取当前登录用户信息（通过token）
+    */
+   @GetMapping("/my/info")
+   public R<Map<String, Object>> getMyInfo() {
+       try {
+           // 获取完整的登录用户信息
+           LoginUser loginUser = SecurityUtils.getLoginUser();
+           if (loginUser == null) {
+               return R.fail("用户未登录");
+           }
+
+           // 构建返回数据，避免直接返回敏感信息
+           Map<String, Object> userInfo = new HashMap<>();
+           userInfo.put("userId", loginUser.getUserid());
+           userInfo.put("username", loginUser.getUsername());
+           userInfo.put("loginTime", loginUser.getLoginTime());
+           userInfo.put("ipaddr", loginUser.getIpaddr());
+           //userInfo.put("userAgent", loginUser.getUserAgent());
+
+           // 查询用户的账户信息
+           CustomerAccounts account = customerAccountsService.selectCustomerAccountsByUserId(loginUser.getUserid());
+           if (account != null) {
+               Map<String, Object> accountInfo = new HashMap<>();
+               accountInfo.put("id", account.getId());
+               accountInfo.put("currency", account.getCurrency());
+               accountInfo.put("availableBalance", account.getAvailableBalance());
+               accountInfo.put("totalBalance", account.getTotalBalance());
+               accountInfo.put("status", account.getStatus());
+               userInfo.put("account", accountInfo);
+           }
+
+           return R.ok(userInfo);
+       } catch (Exception e) {
+           log.error("获取用户信息异常", e);
+           return R.fail("获取用户信息失败：" + e.getMessage());
+       }
+   }
 }

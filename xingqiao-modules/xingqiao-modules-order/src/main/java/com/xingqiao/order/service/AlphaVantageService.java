@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AlphaVantageService {
@@ -148,5 +149,93 @@ public class AlphaVantageService {
             throw new RuntimeException("获取股票数据失败: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * 获取公司 Overview 信息
+     */
+    public Map<String, Object> getCompanyOverview(String symbol) {
+        try {
+            String url = String.format(
+                    "%s?function=OVERVIEW&symbol=%s&apikey=%s",
+                    baseUrl, symbol, apiKey
+            );
+
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("OVERVIEW 请求失败: " + response.getStatusCode());
+            }
+
+            JsonNode root = objectMapper.readTree(response.getBody());
+
+            if (root.isEmpty()) {
+                throw new RuntimeException("OVERVIEW 返回为空，可能 symbol 不存在");
+            }
+
+            return objectMapper.convertValue(root, Map.class);
+
+        } catch (Exception e) {
+            throw new RuntimeException("获取公司 Overview 失败: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 获取新闻 + 情绪
+     */
+    public Map<String, Object> getNewsSentiment(String symbol, int limit) {
+        try {
+            String url = String.format(
+                    "%s?function=NEWS_SENTIMENT&tickers=%s&limit=%d&apikey=%s",
+                    baseUrl, symbol, limit, apiKey
+            );
+
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("NEWS_SENTIMENT 请求失败: " + response.getStatusCode());
+            }
+
+            String body = response.getBody();
+            if (body == null || !body.trim().startsWith("{")) {
+                throw new RuntimeException("Alpha Vantage 返回非 JSON 响应: " + body);
+            }
+
+            JsonNode root = objectMapper.readTree(body);
+
+            // 处理 feed 数组
+            JsonNode feedNode = root.path("feed");
+            List<Map<String, Object>> feedList = new ArrayList<>();
+            if (feedNode.isArray()) {
+                for (JsonNode articleNode : feedNode) {
+                    Map<String, Object> article = objectMapper.convertValue(articleNode, Map.class);
+
+                    // 如果只想保留当前 symbol 的 ticker_sentiment
+                    List<Map<String, Object>> tickerSentiments = (List<Map<String, Object>>) article.get("ticker_sentiment");
+                    if (tickerSentiments != null) {
+                        tickerSentiments = tickerSentiments.stream()
+                                .filter(ts -> symbol.equals(ts.get("ticker")))
+                                .collect(Collectors.toList());
+                        article.put("ticker_sentiment_filtered", tickerSentiments);
+                    }
+
+                    feedList.add(article);
+                }
+            }
+
+            // 返回结果
+            Map<String, Object> result = new HashMap<>();
+            result.put("symbol", symbol);
+            result.put("items", root.path("items").asText()); // 字符串类型
+            result.put("feed", feedList);
+            result.put("relevance_score_avg", root.path("relevance_score_avg").asDouble(0));
+            result.put("sentiment_score_avg", root.path("sentiment_score_avg").asDouble(0));
+            result.put("sentiment_score_definition", root.path("sentiment_score_definition").asText());
+            result.put("relevance_score_definition", root.path("relevance_score_definition").asText());
+
+            return result;
+
+        } catch (Exception e) {
+            throw new RuntimeException("获取 News & Sentiment 失败: " + e.getMessage(), e);
+        }
+    }
+
 
 }

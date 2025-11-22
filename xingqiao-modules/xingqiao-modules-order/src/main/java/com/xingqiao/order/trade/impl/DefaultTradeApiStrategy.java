@@ -2,12 +2,12 @@ package com.xingqiao.order.trade.impl;
 
 import com.xingqiao.api.trade.domain.TradeRequest;
 import com.xingqiao.common.core.domain.R;
+import com.xingqiao.order.domain.CustomerTradeOrders;
 import com.xingqiao.order.service.FtTrdService;
+import com.xingqiao.order.service.trade.CustomerTradeOrdersService;
 import com.xingqiao.order.trade.TradeApiStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 默认交易API策略实现类
@@ -21,56 +21,83 @@ public class DefaultTradeApiStrategy implements TradeApiStrategy {
 
     @Autowired
     private FtTrdService ftTrdService;
+    
+    @Autowired
+    private CustomerTradeOrdersService customerTradeOrdersService;
 
-    /**
-     * 获取交易详情
-     * @param tradeId 交易ID
-     * @return 交易详情
-     */
-    @Override
-    public R getTradeDetail(Long tradeId) {
-        try {
-            // 这里调用FtTrdService获取订单详情
-            // 由于FtTrdService返回CompletableFuture<String>，我们需要阻塞等待结果
-            CompletableFuture<String> future = ftTrdService.getOrderList(1, 0, 0); // 模拟调用，实际需要根据参数调整
-            String result = future.get();
-            return R.ok("获取交易详情成功", result);
-        } catch (Exception e) {
-            return R.fail("获取交易详情失败：" + e.getMessage());
-        }
-    }
+
 
     /**
      * 创建交易订单
      * @param tradeRequest 交易请求参数
      * @return 交易结果
      */
+    /**
+     * 创建交易订单
+     * @param userId 当前登录用户ID
+     * @param tradeRequest 交易请求参数
+     * @return 交易结果
+     */
     @Override
-    public R createTrade(TradeRequest tradeRequest) {
+    public R createTrade(Long userId, TradeRequest tradeRequest) {
         try {
-            // 这里根据TradeRequest参数调用FtTrdService创建交易订单
-            // 由于FtTrdService返回CompletableFuture<String>，我们需要阻塞等待结果
-            // 实际实现时需要根据TradeRequest的参数映射到FtTrdService的相应方法
-            // 这里简化处理，模拟调用
-            CompletableFuture<String> future = ftTrdService.placeOrder(
-                    1, 0, 0, 0,
-                    tradeRequest.getPrice().intValue(),
-                    tradeRequest.getQuantity().intValue(),
-                    "0", 0, 0);
-            String result = future.get();
-            return R.ok("创建交易订单成功", result);
+            // 创建CustomerTradeOrders对象并设置属性
+            CustomerTradeOrders customerTradeOrders = new CustomerTradeOrders();
+            
+            // 设置客户ID
+            customerTradeOrders.setUserId(String.valueOf(userId));
+            
+            // 设置资金账户ID（Long转换为String）
+            customerTradeOrders.setAccountId(tradeRequest.getAccountId() != null ? String.valueOf(tradeRequest.getAccountId()) : null);
+            
+            // 设置证券ID（Long转换为String）
+            customerTradeOrders.setSecurityId(tradeRequest.getSecurityId() != null ? String.valueOf(tradeRequest.getSecurityId()) : null);
+            
+            // 设置订单类型（Integer转换为Long）
+            if (tradeRequest.getOrderType() != null) {
+                customerTradeOrders.setOrderType(tradeRequest.getOrderType().longValue());
+            } else {
+                customerTradeOrders.setOrderType(1L); // 默认限价单
+            }
+            
+            // 设置买卖方向（Integer转换为Long）
+            customerTradeOrders.setDirection(tradeRequest.getDirection() != null ? tradeRequest.getDirection().longValue() : null);
+            
+            // 设置价格和数量
+            customerTradeOrders.setPrice(tradeRequest.getPrice());
+            customerTradeOrders.setQuantity(tradeRequest.getQuantity());
+            
+            // 计算预估金额
+            if (tradeRequest.getPrice() != null && tradeRequest.getQuantity() != null) {
+                customerTradeOrders.setAmount(tradeRequest.getPrice().multiply(tradeRequest.getQuantity()));
+            }
+            
+            // 设置订单过期时间
+            customerTradeOrders.setExpireTime(tradeRequest.getExpireTime());
+            
+            // 设置条件单相关字段（Integer转换为Long）
+            customerTradeOrders.setConditionType(tradeRequest.getConditionType() != null ? tradeRequest.getConditionType().longValue() : null);
+            customerTradeOrders.setConditionValue(tradeRequest.getConditionValue());
+            
+            // 设置订单状态为待报（0）
+            customerTradeOrders.setStatus(0L);
+            
+            // 设置备注信息
+            customerTradeOrders.setRemark(tradeRequest.getRemark());
+            
+            // 调用CustomerTradeOrdersService保存订单
+            int result = customerTradeOrdersService.insertCustomerTradeOrders(customerTradeOrders);
+            
+            if (result > 0) {
+                return R.ok("创建交易订单成功", customerTradeOrders.getId());
+            } else {
+                return R.fail("创建交易订单失败：数据库插入失败");
+            }
         } catch (Exception e) {
             return R.fail("创建交易订单失败：" + e.getMessage());
         }
     }
 
 
-    /**
-     * 获取策略名称
-     * @return 策略名称
-     */
-    @Override
-    public String getStrategyName() {
-        return "default";
-    }
+
 }
