@@ -29,7 +29,13 @@ public class TradeRequest implements Serializable {
      * 证券ID
      * 数据库字段类型: BIGINT UNSIGNED
      */
-    private Long securityId;
+    //private Long securityId;
+
+    /**
+     * 证券代码
+     * 数据库字段类型: VARCHAR(50)
+     */
+    private String securityCode;
 
     /**
      * 订单类型: 1-限价单, 2-市价单, 3-条件单
